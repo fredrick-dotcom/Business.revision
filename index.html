@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Business | Edexcel A Level Revision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #0a0b0f;
+  --bg2: #111318;
+  --bg3: #181b22;
+  --bg4: #1f222c;
+  --border: #2a2e3d;
+  --border2: #363b50;
+  --text: #e8eaf2;
+  --text2: #9ba3bd;
+  --text3: #5c6480;
+  --accent: #6c63ff;
+  --accent2: #8b83ff;
+  --accent3: #4f46e5;
+  --gold: #f5c842;
+  --gold2: #ffd97d;
+  --green: #10d98a;
+  --green2: #0fb573;
+  --red: #ff5c6a;
+  --orange: #ff8a3d;
+  --pink: #e879f9;
+  --cyan: #22d3ee;
+  --p1: #6c63ff;
+  --p2: #f5c842;
+  --p3: #10d98a;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.6);
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.serif{font-family:'Instrument Serif',serif;}
+.mono{font-family:'Space Mono',monospace;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;background:rgba(10,11,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;letter-spacing:-0.02em;}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--pink));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:6px 14px;border-radius:var(--radius-sm);color:var(--text2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:var(--transition);cursor:pointer;border:none;background:none;}
+.nav-link:hover,.nav-link.active{color:var(--text);background:var(--bg3);}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.xp-pill{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:0.8rem;}
+.xp-bar-mini{width:60px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));border-radius:2px;transition:width 0.5s ease;}
+.level-badge{background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;font-weight:700;font-size:0.7rem;padding:2px 7px;border-radius:10px;}
+.avatar-btn{width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;border:2px solid var(--border2);transition:var(--transition);flex-shrink:0;}
+.avatar-btn:hover{border-color:var(--accent);}
+.avatar-btn img{width:100%;height:100%;object-fit:cover;}
+
+/* MAIN LAYOUT */
+main{padding-top:60px;min-height:100vh;}
+.page{display:none;animation:fadeIn 0.3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* HOME PAGE */
+.hero{padding:80px 48px 60px;max-width:1200px;margin:0 auto;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(108,99,255,0.12);border:1px solid rgba(108,99,255,0.25);color:var(--accent2);font-size:0.8rem;font-weight:500;padding:5px 14px;border-radius:20px;margin-bottom:24px;letter-spacing:0.04em;}
+.hero h1{font-size:clamp(2.5rem,5vw,4rem);font-weight:300;line-height:1.1;margin-bottom:16px;}
+.hero h1 em{font-style:italic;color:var(--accent2);}
+.hero-sub{color:var(--text2);font-size:1.05rem;line-height:1.6;max-width:520px;margin-bottom:40px;}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:60px;}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;}
+.stat-card .num{font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,var(--accent2),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-card .label{font-size:0.8rem;color:var(--text3);margin-top:4px;}
+
+/* PAPER CARDS */
+.papers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1200px;margin:0 auto 48px;padding:0 48px;}
+.paper-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;}
+.paper-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0;}
+.paper-card.p1::before{background:linear-gradient(90deg,var(--p1),var(--pink));}
+.paper-card.p2::before{background:linear-gradient(90deg,var(--p2),var(--orange));}
+.paper-card.p3::before{background:linear-gradient(90deg,var(--p3),var(--cyan));}
+.paper-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.paper-num{font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
+.p1 .paper-num{color:var(--accent2);}
+.p2 .paper-num{color:var(--gold);}
+.p3 .paper-num{color:var(--green);}
+.paper-card h3{font-size:1.2rem;font-weight:600;margin-bottom:8px;}
+.paper-card p{font-size:0.875rem;color:var(--text2);line-height:1.5;margin-bottom:20px;}
+.paper-themes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.theme-tag{font-size:0.72rem;background:var(--bg3);border:1px solid var(--border);padding:3px 10px;border-radius:10px;color:var(--text2);}
+.paper-card .btn-row{display:flex;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);border:none;text-decoration:none;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent2);}
+.btn-ghost{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--border2);background:var(--bg4);}
+.btn-sm{padding:6px 12px;font-size:0.78rem;}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-gold:hover{background:var(--gold2);}
+.btn-green{background:var(--green);color:#000;}
+.btn-green:hover{background:var(--green2);}
+.btn-danger{background:var(--red);color:#fff;}
+
+/* SECTION HEADERS */
+.section-header{padding:0 48px 20px;max-width:1200px;margin:0 auto;}
+.section-header h2{font-size:1.4rem;font-weight:600;}
+.section-header p{color:var(--text2);font-size:0.9rem;margin-top:4px;}
+
+/* QUICK ACCESS */
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1200px;margin:0 auto;padding:0 48px 64px;}
+.quick-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:16px;}
+.quick-card:hover{border-color:var(--border2);transform:translateY(-1px);}
+.quick-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.quick-icon.flash{background:rgba(108,99,255,0.15);}
+.quick-icon.ai{background:rgba(232,121,249,0.15);}
+.quick-icon.stats{background:rgba(16,217,138,0.15);}
+.quick-card h4{font-size:0.9rem;font-weight:600;margin-bottom:2px;}
+.quick-card p{font-size:0.78rem;color:var(--text2);}
+
+/* PAPER PAGES */
+.paper-page{max-width:1200px;margin:0 auto;padding:40px 48px;}
+.paper-header{margin-bottom:36px;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--text2);font-size:0.85rem;cursor:pointer;margin-bottom:20px;transition:var(--transition);}
+.back-btn:hover{color:var(--text);}
+.paper-header h1{font-size:2.2rem;font-weight:600;margin-bottom:8px;}
+.paper-header p{color:var(--text2);line-height:1.6;}
+
+/* TABS */
+.tab-bar{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:5px;margin-bottom:32px;width:fit-content;}
+.tab{padding:8px 18px;border-radius:var(--radius-sm);font-size:0.875rem;font-weight:500;cursor:pointer;transition:var(--transition);color:var(--text2);}
+.tab.active{background:var(--bg4);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* QUESTION TYPES GRID */
+.qtypes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px;}
+.qtype-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+.qtype-card h4{font-size:1rem;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.mark-badge{background:var(--bg3);border:1px solid var(--border);font-size:0.72rem;font-weight:700;color:var(--gold);padding:2px 8px;border-radius:8px;}
+.qtype-card p{font-size:0.85rem;color:var(--text2);line-height:1.5;margin-bottom:14px;}
+.qtype-card ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.qtype-card ul li{font-size:0.82rem;color:var(--text2);display:flex;align-items:flex-start;gap:8px;}
+.qtype-card ul li::before{content:'→';color:var(--accent);flex-shrink:0;}
+
+/* AI ESSAY SECTION */
+.ai-essay-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;}
+.ai-essay-box h3{font-size:1.1rem;font-weight:600;margin-bottom:6px;}
+.ai-essay-box .subtitle{font-size:0.85rem;color:var(--text2);margin-bottom:20px;}
+.question-select-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+.q-select-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:var(--transition);text-align:left;}
+.q-select-btn:hover,.q-select-btn.selected{border-color:var(--accent);background:rgba(108,99,255,0.08);}
+.q-select-btn .q-num{font-size:0.72rem;color:var(--accent);font-weight:700;margin-bottom:4px;}
+.q-select-btn .q-text{font-size:0.82rem;color:var(--text);line-height:1.4;}
+.custom-q-row{display:flex;gap:10px;margin-bottom:16px;}
+.custom-q-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:0.875rem;outline:none;font-family:inherit;}
+.custom-q-input:focus{border-color:var(--accent);}
+.essay-textarea{width:100%;min-height:180px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;resize:vertical;line-height:1.6;}
+.essay-textarea:focus{border-color:var(--accent);}
+.essay-controls{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.word-count{font-size:0.78rem;color:var(--text3);margin-left:auto;}
+.ai-feedback-box{margin-top:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:none;}
+.ai-feedback-box.show{display:block;}
+.feedback-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.score-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;flex-shrink:0;}
+.feedback-grades{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.fg-item{background:var(--bg4);border-radius:var(--radius-sm);padding:10px;text-align:center;}
+.fg-item .fg-label{font-size:0.7rem;color:var(--text3);margin-bottom:4px;}
+.fg-item .fg-score{font-size:1.1rem;font-weight:700;}
+.feedback-body{font-size:0.875rem;color:var(--text2);line-height:1.65;}
+.feedback-body h5{color:var(--text);margin:12px 0 6px;font-size:0.9rem;}
+.loading-spinner{display:inline-flex;align-items:center;gap:8px;color:var(--text2);font-size:0.875rem;}
+.spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* FLASHCARD SYSTEM */
+.flashcard-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.filter-group{display:flex;gap:6px;flex-wrap:wrap;}
+.filter-chip{background:var(--bg2);border:1px solid var(--border);padding:5px 12px;border-radius:12px;font-size:0.78rem;cursor:pointer;transition:var(--transition);color:var(--text2);}
+.filter-chip.active{background:rgba(108,99,255,0.15);border-color:var(--accent);color:var(--accent2);}
+.flashcard-arena{display:flex;flex-direction:column;align-items:center;padding:20px 0;}
+.fc-progress{display:flex;align-items:center;gap:12px;margin-bottom:24px;width:100%;max-width:600px;}
+.fc-progress-bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.fc-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--pink));border-radius:3px;transition:width 0.4s ease;}
+.fc-stats-row{display:flex;gap:16px;font-size:0.8rem;color:var(--text2);}
+.fc-stats-row span{display:flex;align-items:center;gap:5px;}
+.flashcard{width:100%;max-width:600px;min-height:280px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:36px;cursor:pointer;transition:transform 0.6s;transform-style:preserve-3d;position:relative;margin-bottom:20px;}
+.flashcard.flipped{transform:rotateY(180deg);}
+.flashcard-face{position:absolute;inset:0;padding:36px;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;border-radius:var(--radius);}
+.flashcard-front{background:var(--bg2);}
+.flashcard-back{background:var(--bg3);transform:rotateY(180deg);}
+.fc-topic-tag{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;}
+.fc-term{font-size:1.3rem;font-weight:600;margin-bottom:8px;line-height:1.35;}
+.fc-hint{font-size:0.8rem;color:var(--text3);font-style:italic;}
+.fc-def{font-size:0.95rem;color:var(--text);line-height:1.65;}
+.fc-tap-hint{font-size:0.75rem;color:var(--text3);text-align:center;margin-top:12px;}
+.fc-rating{display:flex;gap:10px;justify-content:center;margin-bottom:12px;}
+.fc-rate-btn{flex:1;max-width:120px;padding:10px;border-radius:var(--radius-sm);border:none;font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);}
+.fc-rate-btn.hard{background:rgba(255,92,106,0.15);color:var(--red);border:1px solid rgba(255,92,106,0.3);}
+.fc-rate-btn.hard:hover{background:rgba(255,92,106,0.25);}
+.fc-rate-btn.ok{background:rgba(245,200,66,0.15);color:var(--gold);border:1px solid rgba(245,200,66,0.3);}
+.fc-rate-btn.ok:hover{background:rgba(245,200,66,0.25);}
+.fc-rate-btn.easy{background:rgba(16,217,138,0.15);color:var(--green);border:1px solid rgba(16,217,138,0.3);}
+.fc-rate-btn.easy:hover{background:rgba(16,217,138,0.25);}
+.fc-empty{text-align:center;padding:60px 20px;color:var(--text2);}
+.fc-empty .emoji{font-size:3rem;margin-bottom:12px;}
+.session-complete{text-align:center;padding:48px 20px;}
+.session-complete .big-emoji{font-size:4rem;margin-bottom:16px;}
+.session-complete h3{font-size:1.4rem;font-weight:600;margin-bottom:8px;}
+.session-complete p{color:var(--text2);margin-bottom:24px;}
+
+/* TOPIC GUIDE */
+.topics-accordion{display:flex;flex-direction:column;gap:10px;}
+.topic-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.topic-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;transition:var(--transition);}
+.topic-header:hover{background:var(--bg3);}
+.topic-header h4{font-size:0.95rem;font-weight:600;display:flex;align-items:center;gap:10px;}
+.topic-number{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;}
+.chevron{transition:transform 0.25s;color:var(--text3);}
+.topic-item.open .chevron{transform:rotate(90deg);}
+.topic-body{display:none;padding:0 20px 20px;}
+.topic-item.open .topic-body{display:block;}
+.key-terms-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+.kt-row{background:var(--bg3);border-radius:var(--radius-sm);padding:10px 12px;}
+.kt-term{font-size:0.82rem;font-weight:600;margin-bottom:2px;}
+.kt-def{font-size:0.78rem;color:var(--text2);line-height:1.4;}
+.topic-notes{font-size:0.85rem;color:var(--text2);line-height:1.65;margin-top:10px;}
+.topic-notes strong{color:var(--text);}
+
+/* ANALYTICS PAGE */
+.analytics-page{max-width:1100px;margin:0 auto;padding:40px 48px;}
+.profile-header{display:flex;align-items:flex-start;gap:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:28px;}
+.profile-avatar-wrap{position:relative;flex-shrink:0;}
+.profile-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--border2);}
+.avatar-edit-btn{position:absolute;bottom:0;right:0;width:24px;height:24px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.7rem;border:2px solid var(--bg2);}
+.profile-info{flex:1;}
+.profile-name-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.profile-name{font-size:1.5rem;font-weight:600;}
+.edit-name-btn{font-size:0.75rem;color:var(--text3);cursor:pointer;text-decoration:underline;}
+.profile-title{font-size:0.85rem;color:var(--text2);margin-bottom:16px;}
+.level-progress-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.level-num{font-size:0.8rem;font-weight:700;color:var(--gold);background:rgba(245,200,66,0.12);border:1px solid rgba(245,200,66,0.25);padding:3px 10px;border-radius:10px;}
+.level-bar{flex:1;height:10px;background:var(--bg4);border-radius:5px;overflow:hidden;}
+.level-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--orange));border-radius:5px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+.xp-label{font-size:0.78rem;color:var(--text2);}
+.stats-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.so-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.so-card .so-val{font-size:1.6rem;font-weight:700;}
+.so-card .so-lab{font-size:0.78rem;color:var(--text3);margin-top:2px;}
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:28px;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+.chart-card h4{font-size:0.95rem;font-weight:600;margin-bottom:16px;}
+.canvas-wrap{position:relative;height:220px;}
+.activity-list{display:flex;flex-direction:column;gap:10px;}
+.activity-item{display:flex;align-items:center;gap:12px;background:var(--bg3);border-radius:var(--radius-sm);padding:12px;}
+.activity-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+.activity-item .ai{background:rgba(108,99,255,0.15);}
+.activity-item .fc{background:rgba(245,200,66,0.15);}
+.activity-item .info{flex:1;}
+.activity-item .info .title{font-size:0.82rem;font-weight:500;}
+.activity-item .info .time{font-size:0.73rem;color:var(--text3);}
+.activity-item .xp-gain{font-size:0.78rem;color:var(--green);font-weight:600;}
+.wrong-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:28px;}
+.wrong-section h4{font-size:0.95rem;font-weight:600;margin-bottom:14px;}
+.wrong-list{display:flex;flex-direction:column;gap:8px;}
+.wrong-item{display:flex;align-items:center;gap:12px;background:var(--bg3);border-radius:var(--radius-sm);padding:12px;}
+.wrong-item .wi-text{flex:1;font-size:0.85rem;color:var(--text2);}
+.wrong-item .retry-badge{font-size:0.7rem;background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.2);padding:2px 8px;border-radius:8px;white-space:nowrap;}
+
+/* DATA EXPORT/IMPORT */
+.data-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:28px;}
+.data-section h4{font-size:0.95rem;font-weight:600;margin-bottom:6px;}
+.data-section p{font-size:0.83rem;color:var(--text2);margin-bottom:16px;}
+.data-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.file-input-hidden{display:none;}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;max-width:480px;width:100%;box-shadow:var(--shadow-lg);animation:modalIn 0.25s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+.modal h3{font-size:1.1rem;font-weight:600;margin-bottom:6px;}
+.modal p{font-size:0.85rem;color:var(--text2);margin-bottom:20px;}
+.modal input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:0.9rem;outline:none;font-family:inherit;margin-bottom:12px;}
+.modal input:focus{border-color:var(--accent);}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;}
+.photo-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);margin:10px auto;display:block;}
+.photo-error{color:var(--red);font-size:0.8rem;margin-bottom:8px;display:none;}
+
+/* API KEY BANNER */
+.api-key-banner{display:flex;align-items:center;gap:12px;background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.25);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;}
+.api-key-banner .ak-icon{font-size:1.4rem;flex-shrink:0;}
+.api-key-banner .ak-text{flex:1;font-size:0.85rem;color:var(--text2);line-height:1.4;}
+.api-key-banner .ak-text strong{color:var(--text);}
+.api-key-status{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;padding:3px 10px;border-radius:10px;font-weight:600;}
+.api-key-status.connected{background:rgba(16,217,138,0.12);color:var(--green);border:1px solid rgba(16,217,138,0.25);}
+.api-key-status.disconnected{background:rgba(255,92,106,0.12);color:var(--red);border:1px solid rgba(255,92,106,0.25);}
+.api-key-input-row{display:flex;gap:8px;margin-top:10px;}
+.api-key-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:0.82rem;outline:none;font-family:'Space Mono',monospace;}
+.api-key-input-row input:focus{border-color:var(--accent);}
+/* LEVEL UP TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;padding:14px 20px;border-radius:var(--radius);font-weight:600;font-size:0.9rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);max-width:300px;box-shadow:0 8px 30px rgba(245,200,66,0.3);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast .toast-title{font-size:0.72rem;margin-bottom:2px;opacity:0.7;}
+
+/* XP ANIMATION */
+.xp-pop{position:fixed;pointer-events:none;z-index:3000;font-size:1.1rem;font-weight:700;color:var(--green);animation:xpFloat 1.5s ease forwards;}
+@keyframes xpFloat{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-60px);}}
+
+/* RESPONSIVE PLACEHOLDERS */
+.table-resp{width:100%;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.85rem;}
+th{background:var(--bg3);color:var(--text2);text-align:left;padding:10px 14px;font-weight:600;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;}
+td{padding:10px 14px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg3);}
+
+/* ACTIVE TRACKER DOT */
+.active-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* FORMULA CARDS */
+.formula-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.formula-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;}
+.formula-card .f-name{font-size:0.78rem;color:var(--text3);margin-bottom:6px;}
+.formula-card .f-eq{font-family:'Space Mono',monospace;font-size:0.88rem;color:var(--accent2);line-height:1.5;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .papers-grid,.quick-grid,.hero-stats{grid-template-columns:1fr;}
+  .paper-page,.analytics-page{padding:24px 20px;}
+  .hero{padding:40px 20px 32px;}
+  .papers-grid,.quick-grid{padding:0 20px 40px;}
+  .section-header{padding:0 20px 16px;}
+  .stats-overview{grid-template-columns:repeat(2,1fr);}
+  .charts-grid{grid-template-columns:1fr;}
+  .qtypes-grid,.key-terms-grid,.formula-grid{grid-template-columns:1fr;}
+  .question-select-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-mark">N</div>
+    <span>Nexus <span style="opacity:0.5;font-weight:300">Business</span></span>
+  </div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showPage('home')">Home</span>
+    <span class="nav-link" onclick="showPage('paper1')">Paper 1</span>
+    <span class="nav-link" onclick="showPage('paper2')">Paper 2</span>
+    <span class="nav-link" onclick="showPage('paper3')">Paper 3</span>
+    <span class="nav-link" onclick="showPage('flashcards')">Flashcards</span>
+    <span class="nav-link" onclick="showPage('analytics')">Analytics</span>
+  </div>
+  <div class="nav-right">
+    <div class="active-dot" id="activeDot" title="Session active"></div>
+    <div class="xp-pill">
+      <span class="level-badge" id="navLevel">Lv.1</span>
+      <div class="xp-bar-mini"><div class="xp-bar-fill" id="navXpBar" style="width:0%"></div></div>
+      <span id="navXpText" style="font-size:0.78rem;color:var(--text2)">0 XP</span>
+    </div>
+    <div class="avatar-btn" onclick="showPage('analytics')">
+      <img id="navAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23181b22'/%3E%3Ccircle cx='20' cy='16' r='8' fill='%236c63ff'/%3E%3Cellipse cx='20' cy='34' rx='13' ry='8' fill='%236c63ff'/%3E%3C/svg%3E" alt="avatar">
+    </div>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title">🎉 LEVEL UP!</div>
+  <div id="toastMsg">You reached Level 2!</div>
+</div>
+
+<!-- PAGES -->
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-tag">✦ Edexcel A Level Business &middot; 2025-26</div>
+    <h1>Revise <em>smarter,</em><br>not harder.</h1>
+    <p class="hero-sub">AI-powered essay practice, adaptive flashcards, and structured guides for all three Edexcel A Level Business papers.</p>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="num" id="hs-xp">0</div><div class="label">Total XP Earned</div></div>
+      <div class="stat-card"><div class="num" id="hs-cards">0</div><div class="label">Flashcards Reviewed</div></div>
+      <div class="stat-card"><div class="num" id="hs-essays">0</div><div class="label">Essays Graded</div></div>
+      <div class="stat-card"><div class="num" id="hs-time">0m</div><div class="label">Time Revising</div></div>
+    </div>
+  </div>
+  <div class="section-header"><h2>Choose Your Paper</h2><p>Each paper has topic guides, question types, and AI-assisted practice.</p></div>
+  <div class="papers-grid">
+    <div class="paper-card p1" onclick="showPage('paper1')">
+      <div class="paper-num">Paper 1</div>
+      <h3>Marketing & People</h3>
+      <p>Themes 1 & 2 — Dynamic markets, research, marketing mix, finance, HR and operations.</p>
+      <div class="paper-themes">
+        <span class="theme-tag">Theme 1: Marketing</span>
+        <span class="theme-tag">Theme 2: Business</span>
+        <span class="theme-tag">Finance</span>
+        <span class="theme-tag">HR</span>
+      </div>
+      <div class="btn-row">
+        <span class="btn btn-primary btn-sm">Study →</span>
+        <span class="btn btn-ghost btn-sm">Flashcards</span>
+      </div>
+    </div>
+    <div class="paper-card p2" onclick="showPage('paper2')">
+      <div class="paper-num">Paper 2</div>
+      <h3>Business Activities</h3>
+      <p>Themes 3 — Corporate strategy, growth, change management and financial decision-making.</p>
+      <div class="paper-themes">
+        <span class="theme-tag">Theme 3: Strategy</span>
+        <span class="theme-tag">Decisions</span>
+        <span class="theme-tag">CPA</span>
+        <span class="theme-tag">Investment</span>
+      </div>
+      <div class="btn-row">
+        <span class="btn btn-gold btn-sm">Study →</span>
+        <span class="btn btn-ghost btn-sm">Flashcards</span>
+      </div>
+    </div>
+    <div class="paper-card p3" onclick="showPage('paper3')">
+      <div class="paper-num">Paper 3</div>
+      <h3>Investigating Business</h3>
+      <p>Theme 4 & pre-release — Global business, MNCs, international trade, and case study analysis.</p>
+      <div class="paper-themes">
+        <span class="theme-tag">Theme 4: Global</span>
+        <span class="theme-tag">MNCs</span>
+        <span class="theme-tag">Pre-release</span>
+        <span class="theme-tag">Evaluation</span>
+      </div>
+      <div class="btn-row">
+        <span class="btn btn-green btn-sm">Study →</span>
+        <span class="btn btn-ghost btn-sm">Flashcards</span>
+      </div>
+    </div>
+  </div>
+  <div class="section-header"><h2>Quick Access</h2></div>
+  <div class="quick-grid">
+    <div class="quick-card" onclick="showPage('flashcards')">
+      <div class="quick-icon flash">🃏</div>
+      <div><h4>Adaptive Flashcards</h4><p>SM-2 algorithm, topic filtering, difficulty grading</p></div>
+    </div>
+    <div class="quick-card" onclick="showPage('paper1');setTimeout(()=>switchTab('essay-tab','paper1'),100)">
+      <div class="quick-icon ai">🤖</div>
+      <div><h4>AI Essay Grading</h4><p>Write, get graded, improve. Real exam-style feedback.</p></div>
+    </div>
+    <div class="quick-card" onclick="showPage('analytics')">
+      <div class="quick-icon stats">📊</div>
+      <div><h4>My Analytics</h4><p>Progress, streaks, what to review, graphs</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAPER 1 -->
+<div class="page" id="page-paper1">
+  <div class="paper-page">
+    <span class="back-btn" onclick="showPage('home')">← Back to Home</span>
+    <div class="paper-header">
+      <h1 style="color:var(--accent2)">Paper 1 <span style="opacity:0.4;font-weight:300">— Marketing & People</span></h1>
+      <p>Covers Themes 1 & 2. 2h exam. Section A: short answer. Section B: data response. Section C: essay (20 marks). Calculators NOT permitted.</p>
+    </div>
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchPaperTab(this,'p1-guide')">Topic Guide</div>
+      <div class="tab" onclick="switchPaperTab(this,'p1-qtypes')">Question Types</div>
+      <div class="tab" onclick="switchPaperTab(this,'p1-essay')">AI Practice</div>
+      <div class="tab" onclick="switchPaperTab(this,'p1-formulas')">Formulas</div>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="tab-content active" id="p1-guide">
+      <div class="topics-accordion" id="p1-accordion"></div>
+    </div>
+
+    <!-- Q TYPES -->
+    <div class="tab-content" id="p1-qtypes">
+      <div class="qtypes-grid">
+        <div class="qtype-card">
+          <h4>1-2 Mark Questions <span class="mark-badge">1-2 marks</span></h4>
+          <p>Identify / define questions. One sentence answers. No need to develop — just be precise.</p>
+          <ul><li>Define the term "market share"</li><li>Identify one benefit of primary research</li><li>State the formula for contribution per unit</li></ul>
+        </div>
+        <div class="qtype-card">
+          <h4>4 Mark Questions <span class="mark-badge">4 marks</span></h4>
+          <p>Explain questions. Make a point, explain it, apply to context. Two developed points needed.</p>
+          <ul><li>Explain two advantages of niche marketing [4]</li><li>Explain why a business might use price skimming [4]</li></ul>
+        </div>
+        <div class="qtype-card">
+          <h4>6 Mark Questions <span class="mark-badge">6 marks</span></h4>
+          <p>Analyse questions. Build a chain of reasoning. Apply to context throughout.</p>
+          <ul><li>Analyse the impact of rising inflation on a retailer</li><li>Analyse why a business might use batch production</li></ul>
+        </div>
+        <div class="qtype-card">
+          <h4>10 Mark Questions <span class="mark-badge">10 marks</span></h4>
+          <p>Evaluate questions. Two sides, chains of analysis, reach a justified conclusion. 3 band mark scheme.</p>
+          <ul><li>Evaluate the best pricing strategy for a new luxury brand</li><li>Evaluate whether market research is essential for a startup</li></ul>
+        </div>
+        <div class="qtype-card">
+          <h4>20 Mark Essay <span class="mark-badge">20 marks</span></h4>
+          <p>Section C discursive essay. Requires analysis, evaluation, judgement. KAA + Eval. Use examples.</p>
+          <ul><li>To what extent is customer relationship management the most important driver of business success?</li><li>Evaluate the importance of the marketing mix for a growing business</li></ul>
+        </div>
+        <div class="qtype-card">
+          <h4>Calculation Questions <span class="mark-badge">varies</span></h4>
+          <p>Show all workings! Common calcs: break-even, contribution, profit margins, market share, PED/YED, labour productivity, capacity utilisation.</p>
+          <ul><li>Calculate the break-even output</li><li>Calculate the gross profit margin</li><li>Calculate price elasticity of demand</li></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI ESSAY -->
+    <div class="tab-content" id="p1-essay">
+      <div class="ai-essay-box">
+        <h3>🤖 AI-Powered Essay Practice</h3>
+        <p class="subtitle">Select a question or write your own, then submit your answer for real-time AI feedback and a grade.</p>
+        <div class="question-select-grid" id="p1-q-grid"></div>
+        <div class="custom-q-row">
+          <input class="custom-q-input" id="p1-custom-q" placeholder="Or type your own question here...">
+          <button class="btn btn-ghost" onclick="selectCustomQ('p1')">Use</button>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:var(--text2)">
+          <strong style="color:var(--text)">📝 Selected question:</strong> <span id="p1-selected-q">None selected yet</span>
+        </div>
+        <textarea class="essay-textarea" id="p1-essay-text" placeholder="Write your answer here... Aim for structured paragraphs with KAA (Knowledge, Application, Analysis). For 20-mark essays, include evaluation and a justified conclusion." oninput="updateWordCount('p1')"></textarea>
+        <div class="essay-controls">
+          <button class="btn btn-primary" onclick="submitEssay('p1')">Submit for AI Grading →</button>
+          <button class="btn btn-ghost" onclick="clearEssay('p1')">Clear</button>
+          <span class="word-count" id="p1-wc">0 words</span>
+        </div>
+        <div class="ai-feedback-box" id="p1-feedback"></div>
+      </div>
+    </div>
+
+    <!-- FORMULAS -->
+    <div class="tab-content" id="p1-formulas">
+      <h3 style="margin-bottom:16px;font-size:1rem;color:var(--text2)">Essential Formulas — Paper 1</h3>
+      <div class="formula-grid" id="p1-formulas-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAPER 2 -->
+<div class="page" id="page-paper2">
+  <div class="paper-page">
+    <span class="back-btn" onclick="showPage('home')">← Back to Home</span>
+    <div class="paper-header">
+      <h1 style="color:var(--gold)">Paper 2 <span style="opacity:0.4;font-weight:300">— Business Activities</span></h1>
+      <p>Covers Theme 3. 2h exam. Section A & B: data/context-based questions. Section C: 20-mark essay. Decision-making, strategy, finance.</p>
+    </div>
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchPaperTab(this,'p2-guide')">Topic Guide</div>
+      <div class="tab" onclick="switchPaperTab(this,'p2-qtypes')">Question Types</div>
+      <div class="tab" onclick="switchPaperTab(this,'p2-essay')">AI Practice</div>
+      <div class="tab" onclick="switchPaperTab(this,'p2-formulas')">Formulas</div>
+    </div>
+    <div class="tab-content active" id="p2-guide"><div class="topics-accordion" id="p2-accordion"></div></div>
+    <div class="tab-content" id="p2-qtypes">
+      <div class="qtypes-grid">
+        <div class="qtype-card"><h4>Data Response <span class="mark-badge">4-10 marks</span></h4><p>Apply your knowledge to the case study/data given. Always reference figures and context.</p><ul><li>Read ALL context carefully</li><li>Use data in your answer (quote figures)</li><li>Link analysis back to the business</li></ul></div>
+        <div class="qtype-card"><h4>Network Analysis/CPA <span class="mark-badge">6-8 marks</span></h4><p>Calculate EST, LFT, float. Identify critical path. Know how delays affect the project.</p><ul><li>Complete nodes left-to-right for EST (take highest)</li><li>Right-to-left for LFT (take lowest)</li><li>Float = LFT − EST − Duration</li></ul></div>
+        <div class="qtype-card"><h4>Investment Appraisal <span class="mark-badge">6-8 marks</span></h4><p>Payback period, ARR, NPV. Show working. Compare options with analysis.</p><ul><li>Payback: deduct net cash flows from investment year-by-year</li><li>ARR: (Total profit / Years) / Initial outlay × 100</li><li>NPV: Apply discount factors and sum present values</li></ul></div>
+        <div class="qtype-card"><h4>Decision Trees <span class="mark-badge">6 marks</span></h4><p>Calculate expected values and net gains. Select best option with justification.</p><ul><li>Expected value = Financial outcome × Probability</li><li>Net gain = Total EV − Cost</li><li>Compare net gains of all options</li></ul></div>
+        <div class="qtype-card"><h4>20-Mark Essay <span class="mark-badge">20 marks</span></h4><p>Discursive evaluation. Balance of analysis and judgement. Reach a clear conclusion.</p><ul><li>Use PEEL structure (Point, Evidence, Explain, Link)</li><li>Evaluate both sides</li><li>Contextualise to a relevant business</li></ul></div>
+        <div class="qtype-card"><h4>Ratio Analysis <span class="mark-badge">4-6 marks</span></h4><p>Calculate and interpret profitability, liquidity and efficiency ratios. Comment on trends.</p><ul><li>Gross profit margin: GP/Revenue × 100</li><li>Current ratio: Current assets/Current liabilities</li><li>ROCE: Operating profit/Capital employed × 100</li></ul></div>
+      </div>
+    </div>
+    <div class="tab-content" id="p2-essay">
+      <div class="ai-essay-box">
+        <h3>🤖 AI-Powered Essay Practice — Paper 2</h3>
+        <p class="subtitle">Practice strategic evaluation and business decision-making questions with AI grading.</p>
+        <div class="question-select-grid" id="p2-q-grid"></div>
+        <div class="custom-q-row">
+          <input class="custom-q-input" id="p2-custom-q" placeholder="Or type your own question here...">
+          <button class="btn btn-ghost" onclick="selectCustomQ('p2')">Use</button>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:var(--text2)">
+          <strong style="color:var(--text)">📝 Selected question:</strong> <span id="p2-selected-q">None selected yet</span>
+        </div>
+        <textarea class="essay-textarea" id="p2-essay-text" placeholder="Write your answer here..." oninput="updateWordCount('p2')"></textarea>
+        <div class="essay-controls">
+          <button class="btn btn-gold" onclick="submitEssay('p2')">Submit for AI Grading →</button>
+          <button class="btn btn-ghost" onclick="clearEssay('p2')">Clear</button>
+          <span class="word-count" id="p2-wc">0 words</span>
+        </div>
+        <div class="ai-feedback-box" id="p2-feedback"></div>
+      </div>
+    </div>
+    <div class="tab-content" id="p2-formulas"><div class="formula-grid" id="p2-formulas-grid"></div></div>
+  </div>
+</div>
+
+<!-- PAPER 3 -->
+<div class="page" id="page-paper3">
+  <div class="paper-page">
+    <span class="back-btn" onclick="showPage('home')">← Back to Home</span>
+    <div class="paper-header">
+      <h1 style="color:var(--green)">Paper 3 <span style="opacity:0.4;font-weight:300">— Investigating Business</span></h1>
+      <p>Covers Theme 4 + pre-release case study. 2h exam. All questions based on the pre-release context. Requires synthesis across all themes.</p>
+    </div>
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchPaperTab(this,'p3-guide')">Topic Guide</div>
+      <div class="tab" onclick="switchPaperTab(this,'p3-qtypes')">Question Types</div>
+      <div class="tab" onclick="switchPaperTab(this,'p3-essay')">AI Practice</div>
+      <div class="tab" onclick="switchPaperTab(this,'p3-prerelease')">Pre-Release</div>
+    </div>
+    <div class="tab-content active" id="p3-guide"><div class="topics-accordion" id="p3-accordion"></div></div>
+    <div class="tab-content" id="p3-qtypes">
+      <div class="qtypes-grid">
+        <div class="qtype-card"><h4>Context-Based Analysis <span class="mark-badge">6-10 marks</span></h4><p>All questions relate to the pre-release scenario. Weave in facts from the case throughout.</p><ul><li>Reference specific data from the pre-release material</li><li>Link global business concepts to the case</li><li>Consider stakeholder perspectives</li></ul></div>
+        <div class="qtype-card"><h4>Globalisation Questions <span class="mark-badge">4-10 marks</span></h4><p>Push/pull factors, trading blocs, FDI, emerging economies, MNC impacts.</p><ul><li>Use BRICS/MINTS examples</li><li>Consider both host and home country effects</li><li>GDP, HDI, literacy, health indicators</li></ul></div>
+        <div class="qtype-card"><h4>Ethics & Stakeholders <span class="mark-badge">10-20 marks</span></h4><p>CSR, ethical vs profit motives, stakeholder conflicts. Weighted evaluation required.</p><ul><li>Shareholders vs stakeholders</li><li>Short-term profit vs long-term reputation</li><li>Carroll's CSR pyramid</li></ul></div>
+        <div class="qtype-card"><h4>20-Mark Synoptic Essay <span class="mark-badge">20 marks</span></h4><p>Draws on all themes. Requires nuanced, multi-perspective evaluation. Strongest students reference the pre-release AND wider knowledge.</p><ul><li>Use pre-release data as evidence</li><li>Cross-theme analysis (link to T1, T2, T3)</li><li>Justified, balanced conclusion</li></ul></div>
+      </div>
+    </div>
+    <div class="tab-content" id="p3-essay">
+      <div class="ai-essay-box">
+        <h3>🤖 AI-Powered Essay Practice — Paper 3</h3>
+        <p class="subtitle">Practice global business and synoptic evaluation questions. Reference the pre-release context in your answers.</p>
+        <div class="question-select-grid" id="p3-q-grid"></div>
+        <div class="custom-q-row">
+          <input class="custom-q-input" id="p3-custom-q" placeholder="Or type your own question here...">
+          <button class="btn btn-ghost" onclick="selectCustomQ('p3')">Use</button>
+        </div>
+        <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:var(--text2)">
+          <strong style="color:var(--text)">📝 Selected question:</strong> <span id="p3-selected-q">None selected yet</span>
+        </div>
+        <textarea class="essay-textarea" id="p3-essay-text" placeholder="Write your answer here..." oninput="updateWordCount('p3')"></textarea>
+        <div class="essay-controls">
+          <button class="btn btn-green" onclick="submitEssay('p3')">Submit for AI Grading →</button>
+          <button class="btn btn-ghost" onclick="clearEssay('p3')">Clear</button>
+          <span class="word-count" id="p3-wc">0 words</span>
+        </div>
+        <div class="ai-feedback-box" id="p3-feedback"></div>
+      </div>
+    </div>
+    <div class="tab-content" id="p3-prerelease">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+        <h3 style="margin-bottom:8px">2026 Pre-Release Context</h3>
+        <p style="color:var(--text2);font-size:0.85rem;margin-bottom:16px">Key themes extracted from the 2026 pre-release material. Use these in your Paper 3 answers.</p>
+        <div id="prerelease-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="page" id="page-flashcards">
+  <div class="paper-page">
+    <span class="back-btn" onclick="showPage('home')">← Back to Home</span>
+    <div class="paper-header">
+      <h1>🃏 Adaptive Flashcards</h1>
+      <p>SM-2 spaced repetition algorithm. Cards you find hard appear more often. Cards you know well are spaced out over time.</p>
+    </div>
+    <div class="flashcard-controls">
+      <div>
+        <div style="font-size:0.78rem;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em">Filter by Topic</div>
+        <div class="filter-group" id="fc-filters"></div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-primary" onclick="startSession()">Start Session →</button>
+        <button class="btn btn-ghost" onclick="resetSession()">Reset</button>
+      </div>
+    </div>
+    <div class="flashcard-arena" id="fc-arena">
+      <div class="fc-empty">
+        <div class="emoji">🃏</div>
+        <p>Select topics above and click "Start Session" to begin</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div class="page" id="page-analytics">
+  <div class="analytics-page">
+    <h1 style="font-size:1.6rem;font-weight:600;margin-bottom:24px">My Analytics</h1>
+    <!-- PROFILE -->
+    <div class="profile-header">
+      <div class="profile-avatar-wrap">
+        <img class="profile-avatar" id="profileAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23181b22'/%3E%3Ccircle cx='40' cy='32' r='16' fill='%236c63ff'/%3E%3Cellipse cx='40' cy='68' rx='26' ry='16' fill='%236c63ff'/%3E%3C/svg%3E" alt="avatar">
+        <div class="avatar-edit-btn" onclick="openPhotoModal()">✏️</div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <span class="profile-name" id="profileName">Student</span>
+          <span class="edit-name-btn" onclick="openNameModal()">edit name</span>
+        </div>
+        <div class="profile-title" id="profileTitle">Novice Economist</div>
+        <div class="level-progress-row">
+          <span class="level-num" id="profileLevel">Level 1</span>
+          <div class="level-bar"><div class="level-bar-fill" id="levelBarFill" style="width:0%"></div></div>
+          <span class="xp-label" id="xpLabel">0 / 500 XP</span>
+        </div>
+      </div>
+    </div>
+    <!-- STATS OVERVIEW -->
+    <div class="stats-overview">
+      <div class="so-card"><div class="so-val" id="stat-xp">0</div><div class="so-lab">Total XP</div></div>
+      <div class="so-card"><div class="so-val" id="stat-time">0m</div><div class="so-lab">Time Revising</div></div>
+      <div class="so-card"><div class="so-val" id="stat-cards">0</div><div class="so-lab">Cards Reviewed</div></div>
+      <div class="so-card"><div class="so-val" id="stat-essays">0</div><div class="so-lab">Essays Graded</div></div>
+    </div>
+    <!-- CHARTS -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h4>XP Over Time (Last 7 Sessions)</h4>
+        <div class="canvas-wrap"><canvas id="xpChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Revision Breakdown</h4>
+        <div class="canvas-wrap"><canvas id="breakdownChart"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h4>Flashcard Performance by Topic</h4>
+        <div class="canvas-wrap"><canvas id="topicChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Activity Feed</h4>
+        <div class="activity-list" id="activity-list">
+          <div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No activity yet — start revising!</div>
+        </div>
+      </div>
+    </div>
+    <!-- WRONG ANSWERS -->
+    <div class="wrong-section">
+      <h4>Needs Review — Weak Areas <span style="font-size:0.75rem;color:var(--text3);font-weight:400;margin-left:8px">1.5× XP for retrying!</span></h4>
+      <div class="wrong-list" id="wrong-list">
+        <div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No weak areas tracked yet.</div>
+      </div>
+    </div>
+    <!-- DATA -->
+    <div class="data-section">
+      <h4>💾 Save & Restore Progress</h4>
+      <p>Download your progress data to back it up or transfer between devices. Upload to restore a previous save.</p>
+      <div class="data-btns">
+        <button class="btn btn-primary" onclick="downloadData()">⬇ Download Progress</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('upload-input').click()">⬆ Upload Save</button>
+        <input type="file" id="upload-input" class="file-input-hidden" accept=".json" onchange="uploadData(event)">
+        <button class="btn btn-danger btn-sm" onclick="confirmReset()">Reset All Data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="name-modal">
+  <div class="modal">
+    <h3>Change Your Name</h3>
+    <p>This is how you'll appear on your analytics dashboard.</p>
+    <input id="name-input" type="text" placeholder="Enter your name..." maxlength="30">
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('name-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveName()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="photo-modal">
+  <div class="modal">
+    <h3>Change Profile Photo</h3>
+    <p>Upload a photo. We'll verify it's a valid image (JPG, PNG, WebP, GIF — max 5MB).</p>
+    <input type="file" id="photo-file" accept="image/*" onchange="previewPhoto(event)">
+    <div class="photo-error" id="photo-error"></div>
+    <img id="photo-preview" class="photo-preview" style="display:none">
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('photo-modal')">Cancel</button>
+      <button class="btn btn-primary" id="save-photo-btn" disabled onclick="savePhoto()">Save Photo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA & STATE
+// ============================================================
+const DEFAULT_STATE = {
+  name: 'Student', avatar: null,
+  xp: 0, level: 1, xpToNext: 500,
+  totalTime: 0, cardsReviewed: 0, essaysGraded: 0,
+  xpHistory: [], activityFeed: [], wrongAnswers: [],
+  fcData: {}, // term -> {interval, repetitions, efactor, dueDate, correct, wrong}
+  activeFilters: ['all'],
+  lastSaved: null
+};
+let state = JSON.parse(localStorage.getItem('nexus_state') || 'null') || {...DEFAULT_STATE};
+let sessionActive = false;
+let sessionTimer = null;
+let activityTimer = null;
+let lastActivityTime = Date.now();
+let isActivelyRevising = false;
+let activeBonus = false;
+
+const LEVEL_TITLES = [
+  'Novice Economist','Business Apprentice','Market Analyst','Strategic Thinker',
+  'Finance Expert','Operations Manager','Global Strategist','Business Director',
+  'Executive Leader','Chief Economist','Business Master'
+];
+
+function saveState(){
+  state.lastSaved = Date.now();
+  localStorage.setItem('nexus_state', JSON.stringify(state));
+}
+
+function addXP(amount, source, isRetry=false){
+  let xpGain = isRetry ? Math.round(amount * 1.5) : amount;
+  // Scale by level (knowledge bonus)
+  xpGain = Math.round(xpGain * (1 + state.level * 0.05));
+  state.xp += xpGain;
+  // Log to history
+  if(!state.xpHistory) state.xpHistory = [];
+  state.xpHistory.push({amount: xpGain, source, time: Date.now()});
+  if(state.xpHistory.length > 100) state.xpHistory = state.xpHistory.slice(-100);
+  // Check level up
+  while(state.xp >= state.xpToNext){
+    state.xp -= state.xpToNext;
+    state.level++;
+    state.xpToNext = Math.round(500 * Math.pow(1.3, state.level - 1));
+    showToast(`You reached Level ${state.level}! — ${LEVEL_TITLES[Math.min(state.level-1, LEVEL_TITLES.length-1)]}`);
+  }
+  updateUI();
+  showXpPop(xpGain, isRetry);
+  saveState();
+}
+
+function addActivity(icon, title, xp){
+  if(!state.activityFeed) state.activityFeed = [];
+  state.activityFeed.unshift({icon, title, xp, time: Date.now()});
+  if(state.activityFeed.length > 20) state.activityFeed = state.activityFeed.slice(0,20);
+}
+
+// ============================================================
+// UI UPDATES
+// ============================================================
+function updateUI(){
+  const pct = (state.xp / state.xpToNext) * 100;
+  document.getElementById('navLevel').textContent = `Lv.${state.level}`;
+  document.getElementById('navXpBar').style.width = pct + '%';
+  document.getElementById('navXpText').textContent = state.xp + ' XP';
+  document.getElementById('profileName').textContent = state.name;
+  document.getElementById('profileLevel').textContent = 'Level ' + state.level;
+  document.getElementById('profileTitle').textContent = LEVEL_TITLES[Math.min(state.level-1, LEVEL_TITLES.length-1)];
+  document.getElementById('levelBarFill').style.width = pct + '%';
+  document.getElementById('xpLabel').textContent = `${state.xp} / ${state.xpToNext} XP`;
+  if(state.avatar){
+    document.getElementById('navAvatar').src = state.avatar;
+    document.getElementById('profileAvatar').src = state.avatar;
+  }
+  // Home stats
+  const totalXp = state.xpHistory ? state.xpHistory.reduce((s,h)=>s+h.amount,0) : 0;
+  document.getElementById('hs-xp').textContent = totalXp + ' XP';
+  document.getElementById('hs-cards').textContent = state.cardsReviewed || 0;
+  document.getElementById('hs-essays').textContent = state.essaysGraded || 0;
+  const mins = Math.round((state.totalTime||0)/60);
+  document.getElementById('hs-time').textContent = mins >= 60 ? Math.round(mins/60)+'h' : mins+'m';
+  // Analytics stats
+  document.getElementById('stat-xp').textContent = totalXp + ' XP';
+  document.getElementById('stat-time').textContent = mins >= 60 ? Math.round(mins/60)+'h '+mins%60+'m' : mins+'m';
+  document.getElementById('stat-cards').textContent = state.cardsReviewed || 0;
+  document.getElementById('stat-essays').textContent = state.essaysGraded || 0;
+  renderActivityFeed();
+  renderWrongAnswers();
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+function showXpPop(amount, isRetry){
+  const el = document.createElement('div');
+  el.className = 'xp-pop';
+  el.textContent = (isRetry ? '🔥 ' : '+') + amount + ' XP' + (isRetry ? ' (1.5×)' : '');
+  el.style.left = (Math.random() * 60 + 20) + '%';
+  el.style.top = '80%';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1600);
+}
+
+function renderActivityFeed(){
+  const el = document.getElementById('activity-list');
+  if(!state.activityFeed || !state.activityFeed.length){
+    el.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No activity yet — start revising!</div>';
+    return;
+  }
+  el.innerHTML = state.activityFeed.slice(0,8).map(a=>`
+    <div class="activity-item">
+      <div class="activity-icon ${a.icon === '🤖' ? 'ai' : 'fc'}">${a.icon}</div>
+      <div class="info"><div class="title">${a.title}</div><div class="time">${timeAgo(a.time)}</div></div>
+      <div class="xp-gain">+${a.xp} XP</div>
+    </div>`).join('');
+}
+
+function renderWrongAnswers(){
+  const el = document.getElementById('wrong-list');
+  if(!state.wrongAnswers || !state.wrongAnswers.length){
+    el.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No weak areas tracked yet.</div>';
+    return;
+  }
+  el.innerHTML = state.wrongAnswers.slice(0,10).map((w,i)=>`
+    <div class="wrong-item">
+      <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
+      <div class="wi-text">${w.term} — <em style="font-size:0.78rem">${w.topic}</em></div>
+      ${w.retried ? '<span class="retry-badge">✓ Retried</span>' : `<button class="btn btn-ghost btn-sm" onclick="retryWrong(${i})" style="flex-shrink:0">Retry (+1.5× XP)</button>`}
+    </div>`).join('');
+}
+
+function timeAgo(ts){
+  const s = Math.round((Date.now()-ts)/1000);
+  if(s<60) return 'just now';
+  if(s<3600) return Math.round(s/60)+'m ago';
+  if(s<86400) return Math.round(s/3600)+'h ago';
+  return Math.round(s/86400)+'d ago';
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const navMap = {home:0,paper1:1,paper2:2,paper3:3,flashcards:4,analytics:5};
+  document.querySelectorAll('.nav-link')[navMap[id] ?? 0]?.classList.add('active');
+  if(id === 'analytics') renderCharts();
+  window.scrollTo(0,0);
+}
+
+function switchPaperTab(tabEl, contentId){
+  const tabBar = tabEl.closest('.tab-bar');
+  tabBar.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  const parent = tabBar.parentElement;
+  parent.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById(contentId).classList.add('active');
+}
+
+// ============================================================
+// ACTIVITY TRACKING (active revising detection)
+// ============================================================
+let lastMouseX = 0, lastMouseY = 0, mouseMovements = 0, keystrokes = 0;
+let activeCheckInterval;
+
+document.addEventListener('mousemove', e=>{
+  if(Math.abs(e.clientX - lastMouseX) > 5 || Math.abs(e.clientY - lastMouseY) > 5){
+    mouseMovements++;
+    lastMouseX = e.clientX; lastMouseY = e.clientY;
+    lastActivityTime = Date.now();
+  }
+});
+document.addEventListener('keydown', ()=>{ keystrokes++; lastActivityTime = Date.now(); });
+
+function startActiveTracking(){
+  activeCheckInterval = setInterval(()=>{
+    const isActive = mouseMovements > 5 || keystrokes > 2;
+    const timeSinceActivity = Date.now() - lastActivityTime;
+    if(isActive && timeSinceActivity < 10000){
+      if(!isActivelyRevising){
+        isActivelyRevising = true;
+        document.getElementById('activeDot').style.background = 'var(--green)';
+      }
+    } else {
+      isActivelyRevising = false;
+      document.getElementById('activeDot').style.background = 'var(--border2)';
+    }
+    mouseMovements = 0; keystrokes = 0;
+    // Track time
+    if(isActivelyRevising){
+      state.totalTime = (state.totalTime || 0) + 30;
+      updateUI();
+    }
+  }, 30000);
+
+  // 5-minute active bonus
+  setInterval(()=>{
+    if(isActivelyRevising){
+      const bonus = Math.round(10 * (1 + state.level * 0.1));
+      addXP(bonus, 'Active revision bonus');
+      addActivity('⏱️', 'Active revision reward', bonus);
+    }
+  }, 300000);
+}
+
+// ============================================================
+// TOPIC DATA
+// ============================================================
+const TOPICS = {
+  p1: [
+    {
+      id:'1.1', title:'Dynamic Markets & Market Research', color:'var(--accent)', paper:'p1',
+      terms:[
+        {term:'Market Share',def:'% of total market sales a business has. Formula: (Business sales / Total market sales) × 100'},
+        {term:'Market Growth',def:'Increase in total market size, measured by value or volume'},
+        {term:'Dynamic Market',def:'A market subject to rapid or continuous change'},
+        {term:'Niche Market',def:'A specialist section of a larger market where customers have specific needs/wants'},
+        {term:'Mass Market',def:'A large unsegmented market where standardised products are sold to all consumers'},
+        {term:'Primary Research',def:'New data gathered first-hand e.g. surveys, focus groups, observation'},
+        {term:'Secondary Research',def:'Existing data collected previously e.g. government reports, trade journals'},
+        {term:'Market Orientation',def:'Business bases products around identified customer needs and wants'},
+        {term:'Price Elasticity of Demand (PED)',def:'% change in quantity demanded ÷ % change in price. >−1 elastic, <−1 inelastic'},
+        {term:'Income Elasticity (YED)',def:'% change in quantity demanded ÷ % change in income. Positive = normal good, negative = inferior good'},
+      ],
+      notes:'Dynamic markets change rapidly due to innovation, technology, and changing customer tastes. Businesses must use market research to stay competitive. PED tells businesses how demand responds to price changes — crucial for pricing strategy.'
+    },
+    {
+      id:'1.2', title:'Marketing Mix (4Ps)', color:'var(--accent)', paper:'p1',
+      terms:[
+        {term:'Product Life Cycle',def:'Stages a product goes through: Introduction, Growth, Maturity, Decline'},
+        {term:'Extension Strategy',def:'Method to maintain/increase sales in the decline stage e.g. rebranding, new markets, modifying the product'},
+        {term:'Boston Matrix',def:'Portfolio analysis tool: Stars (high growth, high share), Cash Cows (low growth, high share), Question Marks (?), Dogs'},
+        {term:'Price Skimming',def:'Launch at a high price then reduce over time — used for innovative/technology products'},
+        {term:'Penetration Pricing',def:'Low initial price to build market share, then increase'},
+        {term:'Competitive Pricing',def:'Pricing at or near competitor prices'},
+        {term:'Loss Leader',def:'Selling at below cost to attract customers who then buy other products'},
+        {term:'Above-the-line Promotion',def:'Mass media advertising the firm cannot directly control: TV, radio, newspapers'},
+        {term:'Below-the-line Promotion',def:'Targeted promotion the firm controls: direct mail, sales promotions, sponsorship'},
+        {term:'Distribution Channel',def:'Path from manufacturer to consumer — can be direct, via retailer, or via wholesaler'},
+      ],
+      notes:'An effective marketing mix is balanced, consistent, meets customer needs, and helps achieve competitive advantage. The mix varies by business, market and time. Technology, finance, and market research all influence which elements of the mix a firm prioritises.'
+    },
+    {
+      id:'2.1', title:'Finance & Sources of Funding', color:'var(--pink)', paper:'p1',
+      terms:[
+        {term:'Internal Finance',def:'Finance raised within the business: retained profit, sale of assets, owner\'s savings'},
+        {term:'External Finance',def:'Finance raised outside the business: bank loans, share capital, venture capital, crowdfunding'},
+        {term:'Venture Capital',def:'External finance — shares issued to investors in exchange for capital injection into the company'},
+        {term:'Crowdfunding',def:'Large numbers of individuals provide small amounts of funding — often via websites'},
+        {term:'Trade Credit',def:'Receiving stock/inventory from a supplier without immediate payment — usually 30-90 days'},
+        {term:'Cash Flow Forecast',def:'Predicted flow of cash in and out of the business over a future period'},
+        {term:'Net Cash Flow',def:'Cash inflows minus cash outflows in a given period'},
+        {term:'Closing Balance',def:'Net cash flow + opening balance. Cash remaining at end of period'},
+        {term:'Break-Even Point',def:'Output level where total revenue = total costs. Formula: Fixed costs ÷ Contribution per unit'},
+        {term:'Contribution per Unit',def:'Selling price per unit minus variable cost per unit'},
+      ],
+      notes:'Cash flow is the lifeblood of a business — profitable businesses can still fail if they run out of cash. Break-even analysis helps businesses understand minimum sales needed. Different financing sources suit different business stages: startups often use personal savings or angel investors, established businesses can access bank loans or share capital.'
+    },
+    {
+      id:'2.2', title:'Human Resources & Production', color:'var(--pink)', paper:'p1',
+      terms:[
+        {term:'Labour Turnover',def:'% of employees leaving per year. Formula: (Staff leaving ÷ Total staff) × 100'},
+        {term:'Labour Productivity',def:'Output per worker. Formula: Total output ÷ Number of employees'},
+        {term:'Capacity Utilisation',def:'% of maximum capacity being used. Formula: Actual output ÷ Maximum output × 100'},
+        {term:'Job Production',def:'Making one-off, bespoke items — labour intensive, high unit cost, meets customer specs exactly'},
+        {term:'Batch Production',def:'Making sets of identical items — more efficient than job, allows flexibility'},
+        {term:'Flow Production',def:'Continuous production of single product — capital intensive, very low unit costs, no flexibility'},
+        {term:'Just In Time (JIT)',def:'Stock management system where materials are ordered only when needed — reduces stock holding costs'},
+        {term:'Kaizen',def:'Continuous improvement philosophy where all workers contribute small, incremental improvements'},
+        {term:'Economies of Scale',def:'Average unit costs fall as output increases — e.g. bulk buying, specialisation'},
+        {term:'Diseconomies of Scale',def:'Average costs rise when a firm grows too large — poor communication, demotivation, poor coordination'},
+      ],
+      notes:'HR planning ensures the right number of skilled staff are available at the right time. Businesses balance flexibility (zero-hours, part-time, agency) with stability (permanent contracts). High labour turnover = costly. Lean production (JIT, Kaizen) aims to cut waste while maintaining quality.'
+    },
+  ],
+  p2: [
+    {
+      id:'3.1', title:'Corporate Objectives & Strategy', color:'var(--gold)', paper:'p2',
+      terms:[
+        {term:'Corporate Aims',def:'Broad, long-term intentions of the business e.g. "to be the market leader"'},
+        {term:'Corporate Objectives',def:'Specific, measurable targets set to achieve the aims (SMART)'},
+        {term:'Mission Statement',def:'Guiding principles stating the purpose of the organisation and what it stands for'},
+        {term:'Ansoff\'s Matrix',def:'Strategic growth tool: Market Penetration (least risky), Market Development, Product Development, Diversification (most risky)'},
+        {term:'Porter\'s Generic Strategies',def:'Cost leadership (lowest costs), Differentiation (unique product), Focus (niche)'},
+        {term:'SWOT Analysis',def:'Strengths, Weaknesses (internal); Opportunities, Threats (external)'},
+        {term:'PESTLE',def:'Political, Economic, Social, Technological, Legal, Environmental — external macro factors'},
+        {term:'Porter\'s Five Forces',def:'Threat of new entrants, threat of substitutes, buyer power, supplier power, competitive rivalry'},
+        {term:'Cost Leadership',def:'Becoming the lowest cost producer in the industry to gain competitive advantage'},
+        {term:'Diversification',def:'New products into new markets — highest risk strategy in Ansoff\'s Matrix, but potentially highest reward'},
+      ],
+      notes:'Corporate strategy links objectives to actions. Ansoff helps decide growth direction; Porter\'s Five Forces analyses competitive environment. SWOT links internal capabilities to external conditions. Strategic decisions are long-term and high-cost — tactical decisions are short-term responses.'
+    },
+    {
+      id:'3.2', title:'Business Growth & Change', color:'var(--gold)', paper:'p2',
+      terms:[
+        {term:'Organic Growth',def:'Internal growth through increased sales, R&D and innovation — slower but less risky'},
+        {term:'Inorganic Growth',def:'External growth through mergers, takeovers and joint ventures — faster but riskier and costly'},
+        {term:'Horizontal Integration',def:'Merger/takeover of a firm in the same industry and stage of production'},
+        {term:'Vertical Integration',def:'Merger/takeover at a different stage of the production process (forward or backward)'},
+        {term:'Conglomerate Integration',def:'Takeover of a firm in a completely different industry — for diversification'},
+        {term:'Economies of Scale',def:'Lower average costs from increased output — purchasing, technical, financial, managerial'},
+        {term:'Lewin\'s Force Field',def:'Change management model — forces for and against change must be mapped and managed'},
+        {term:'Lewin\'s Three-Step Model',def:'Unfreeze → Change → Refreeze. Managing transition through resistance'},
+        {term:'CSR (Corporate Social Responsibility)',def:'Business responsibility to wider society and environment beyond profit maximisation'},
+        {term:'Stakeholder',def:'Any individual or group with an interest in the business: employees, customers, shareholders, community, suppliers'},
+      ],
+      notes:'Businesses must manage change — internal (new leadership, poor performance) and external (market shifts, PESTLE factors). Inorganic growth is faster but risks poor cultural fit, integration problems, and diseconomies of scale. CSR creates long-term brand value but short-term cost.'
+    },
+    {
+      id:'3.3', title:'Financial Decision Making', color:'var(--gold)', paper:'p2',
+      terms:[
+        {term:'Payback Period',def:'Time for an investment to repay its initial cost from net cash flows. Firms want short payback.'},
+        {term:'Average Rate of Return (ARR)',def:'(Average annual profit ÷ Initial outlay) × 100. Firms want high % return.'},
+        {term:'Net Present Value (NPV)',def:'Present value of future cash flows minus initial investment. Positive NPV = worthwhile.'},
+        {term:'Discounted Cash Flow',def:'Adjusting future cash flows for time value of money using discount factors'},
+        {term:'Decision Tree',def:'Diagram showing all possible outcomes with probabilities. Expected Value = outcome × probability. Net Gain = Total EV − Cost'},
+        {term:'Critical Path Analysis',def:'Network diagram showing shortest project completion time, identifying critical activities and float'},
+        {term:'Float (Slack)',def:'The amount of time an activity can be delayed without affecting the overall project duration'},
+        {term:'Ratio Analysis',def:'Assessing financial health using profitability (GPM, OPM), liquidity (current ratio, acid test) and efficiency ratios'},
+        {term:'ROCE',def:'Return on Capital Employed = Operating profit ÷ Capital employed × 100. Key profitability measure for investors.'},
+        {term:'Gearing Ratio',def:'Long-term debt ÷ Capital employed × 100. High gearing = high risk (>50%)'},
+      ],
+      notes:'Investment appraisal methods compare the financial viability of projects. Payback is simple but ignores time value of money. NPV is most sophisticated but complex. ARR allows % comparison. Decision trees quantify risk — probabilities must sum to 1.0. Always check: is the project worth the risk?'
+    },
+  ],
+  p3: [
+    {
+      id:'4.1', title:'Globalisation & International Business', color:'var(--green)', paper:'p3',
+      terms:[
+        {term:'Globalisation',def:'Growing integration of world economies through trade, FDI, technology and migration'},
+        {term:'FDI (Foreign Direct Investment)',def:'A business investing by setting up operations or buying assets in another country'},
+        {term:'Emerging Economy',def:'Developing countries with rapid economic growth but significant risk (e.g. BRICS, MINTS)'},
+        {term:'BRICS',def:'Brazil, Russia, India, China, South Africa — major emerging economies'},
+        {term:'MINTS',def:'Mexico, Indonesia, Nigeria, Turkey — next-tier emerging economies'},
+        {term:'Comparative Advantage',def:'Countries/firms should specialise in products they produce most efficiently relative to others'},
+        {term:'Trading Bloc',def:'Group of countries trading freely with reduced/no tariffs (e.g. EU single market, ASEAN, USMCA)'},
+        {term:'Protectionism',def:'Government policies protecting domestic businesses: tariffs, quotas, subsidies, regulation'},
+        {term:'Tariff',def:'A tax on imports — makes foreign goods more expensive, protecting domestic producers'},
+        {term:'Glocalisation',def:'Adapting global products/services to reflect local customs, tastes and traditions'},
+      ],
+      notes:'Globalisation is driven by: reduced trade barriers, lower transport/communication costs, growth of MNCs, and FDI flows. Key indicators for emerging economies: GDP per capita, HDI, literacy rate, health outcomes, infrastructure. Businesses must weigh push factors (competition, saturated markets) against pull factors (new markets, economies of scale).'
+    },
+    {
+      id:'4.2', title:'Global Marketing & MNCs', color:'var(--green)', paper:'p3',
+      terms:[
+        {term:'MNC (Multinational Corporation)',def:'Company that owns/controls production in more than one country. Also called transnational companies.'},
+        {term:'Ethnocentric Approach',def:'Home country values and marketing strategy applied uniformly globally — minimal adaptation'},
+        {term:'Polycentric Approach',def:'Each local market operates independently with fully adapted products/marketing'},
+        {term:'Geocentric Approach',def:'Mixed global strategy — standardise where possible, adapt where necessary'},
+        {term:'Global Niche Market',def:'Specialised market segment across multiple countries — e.g. luxury goods, specialist tech'},
+        {term:'Transfer Pricing',def:'MNCs set prices for transactions between subsidiaries to minimise tax liability — controversial practice'},
+        {term:'Supply Chain Ethics',def:'Concerns about labour exploitation, child labour, and poor working conditions in global supply chains'},
+        {term:'Exchange Rate',def:'Value of one currency relative to another. Affects export price competitiveness and import costs.'},
+        {term:'Competitive Advantage (Global)',def:'Cost competitiveness or differentiation allowing a firm to outperform rivals in global markets'},
+        {term:'Cultural Dimensions',def:'Hofstede\'s framework describing how national cultures differ — affects business management and marketing'},
+      ],
+      notes:'MNCs face stakeholder conflicts: shareholders want profit maximisation vs communities wanting jobs, fair wages, environmental protection. Marketing mix must often be adapted (glocalisation) — language, branding, pricing, and distribution all vary by market. Strong global brands may still need local adaptation.'
+    },
+    {
+      id:'4.3', title:'Ethics, Stakeholders & Global Issues', color:'var(--green)', paper:'p3',
+      terms:[
+        {term:'Business Ethics',def:'Moral principles guiding business decisions — what is right vs what is profitable'},
+        {term:'Carroll\'s CSR Pyramid',def:'Economic responsibility → Legal → Ethical → Philanthropic (base to top)'},
+        {term:'Shareholders',def:'Owners of the company — primarily interested in dividends and share price growth'},
+        {term:'Stakeholder Conflict',def:'When the interests of different stakeholders clash — e.g. shareholders vs workers over pay'},
+        {term:'Environmental Sustainability',def:'Operating in a way that does not deplete natural resources for future generations'},
+        {term:'Intellectual Property',def:'Legal protection for creations of the mind: patents, copyrights, trademarks'},
+        {term:'Competition Policy',def:'Government policy ensuring fair competition — prevents price fixing, monopoly abuse'},
+        {term:'Structural Change',def:'Shift in an economy\'s balance between primary, secondary and tertiary sectors'},
+        {term:'HDI (Human Development Index)',def:'Composite index measuring: life expectancy, education (mean/expected years of schooling), GNI per capita'},
+        {term:'Balance of Payments',def:'Record of a country\'s economic transactions with the rest of the world — imports vs exports'},
+      ],
+      notes:'Ethics in global business involves difficult trade-offs: cheap labour in developing countries provides jobs but may involve exploitation. CSR can be genuine (embedded in strategy) or superficial (PR exercise). Ethical behaviour builds long-term reputation and brand equity but may reduce short-term profitability.'
+    },
+  ]
+};
+
+// ============================================================
+// BUILD ACCORDIONS
+// ============================================================
+function buildAccordion(paperId, topics){
+  const el = document.getElementById(paperId+'-accordion');
+  if(!el) return;
+  el.innerHTML = topics.map((t,i)=>`
+    <div class="topic-item" id="topic-${t.id}">
+      <div class="topic-header" onclick="toggleTopic('topic-${t.id}')">
+        <h4>
+          <div class="topic-number" style="background:${t.color}22;color:${t.color}">${t.id}</div>
+          ${t.title}
+        </h4>
+        <span class="chevron">›</span>
+      </div>
+      <div class="topic-body">
+        <div class="key-terms-grid">
+          ${t.terms.map(kt=>`<div class="kt-row"><div class="kt-term">${kt.term}</div><div class="kt-def">${kt.def}</div></div>`).join('')}
+        </div>
+        <div class="topic-notes"><strong>Key Notes:</strong> ${t.notes}</div>
+        <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="openFlashcardsFor('${t.id}')">Practice with Flashcards →</button></div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleTopic(id){
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ============================================================
+// FLASHCARD SYSTEM (SM-2)
+// ============================================================
+const ALL_FLASHCARDS = [
+  ...TOPICS.p1.flatMap(t => t.terms.map(kt=>({...kt, topic:t.title, topicId:t.id, paper:'Paper 1'}))),
+  ...TOPICS.p2.flatMap(t => t.terms.map(kt=>({...kt, topic:t.title, topicId:t.id, paper:'Paper 2'}))),
+  ...TOPICS.p3.flatMap(t => t.terms.map(kt=>({...kt, topic:t.title, topicId:t.id, paper:'Paper 3'}))),
+];
+
+let sessionCards = [];
+let currentCardIdx = 0;
+let cardFlipped = false;
+let sessionStats = {correct:0, wrong:0, hard:0};
+
+const ALL_TOPICS = [...new Set(ALL_FLASHCARDS.map(c=>c.topic))];
+const FILTERS_LIST = ['All Topics', ...ALL_TOPICS];
+
+function buildFlashcardFilters(){
+  const el = document.getElementById('fc-filters');
+  el.innerHTML = FILTERS_LIST.map((f,i)=>`
+    <span class="filter-chip${i===0?' active':''}" onclick="toggleFilter(this,'${f}')">${f}</span>`
+  ).join('');
+}
+
+let activeFilters = new Set(['All Topics']);
+
+function toggleFilter(el, filter){
+  if(filter === 'All Topics'){
+    activeFilters = new Set(['All Topics']);
+    document.querySelectorAll('#fc-filters .filter-chip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+  } else {
+    activeFilters.delete('All Topics');
+    document.querySelector('#fc-filters .filter-chip').classList.remove('active');
+    el.classList.toggle('active');
+    if(el.classList.contains('active')) activeFilters.add(filter);
+    else activeFilters.delete(filter);
+    if(activeFilters.size === 0){
+      activeFilters.add('All Topics');
+      document.querySelector('#fc-filters .filter-chip').classList.add('active');
+    }
+  }
+}
+
+function getFilteredCards(){
+  if(activeFilters.has('All Topics')) return [...ALL_FLASHCARDS];
+  return ALL_FLASHCARDS.filter(c => activeFilters.has(c.topic));
+}
+
+function startSession(){
+  let cards = getFilteredCards();
+  if(!cards.length){ alert('No cards for selected topics.'); return; }
+  // SM-2: prioritise due cards
+  const now = Date.now();
+  const due = cards.filter(c=>{
+    const d = state.fcData[c.term];
+    if(!d) return true; // never seen
+    return d.dueDate <= now;
+  });
+  sessionCards = (due.length > 0 ? due : cards).slice(0,20);
+  // shuffle
+  sessionCards = sessionCards.sort(()=>Math.random()-0.5);
+  currentCardIdx = 0;
+  cardFlipped = false;
+  sessionStats = {correct:0, wrong:0, hard:0};
+  renderCard();
+}
+
+function resetSession(){
+  sessionCards = [];
+  document.getElementById('fc-arena').innerHTML = '<div class="fc-empty"><div class="emoji">🃏</div><p>Select topics above and click "Start Session" to begin</p></div>';
+}
+
+function renderCard(){
+  const arena = document.getElementById('fc-arena');
+  if(currentCardIdx >= sessionCards.length){
+    showSessionComplete();
+    return;
+  }
+  const card = sessionCards[currentCardIdx];
+  const total = sessionCards.length;
+  const pct = Math.round((currentCardIdx / total) * 100);
+  cardFlipped = false;
+  arena.innerHTML = `
+    <div class="fc-progress" style="max-width:600px;width:100%">
+      <div class="fc-progress-bar"><div class="fc-progress-fill" style="width:${pct}%"></div></div>
+      <div class="fc-stats-row">
+        <span style="color:var(--green)">✓ ${sessionStats.correct}</span>
+        <span style="color:var(--red)">✗ ${sessionStats.wrong}</span>
+        <span style="color:var(--text3)">${currentCardIdx}/${total}</span>
+      </div>
+    </div>
+    <div class="flashcard" id="fc-card" onclick="flipCard()">
+      <div class="flashcard-face flashcard-front">
+        <div class="fc-topic-tag">${card.paper} · ${card.topic}</div>
+        <div class="fc-term">${card.term}</div>
+        <div class="fc-hint">Tap to reveal definition</div>
+      </div>
+      <div class="flashcard-face flashcard-back">
+        <div class="fc-topic-tag">${card.paper} · ${card.topic}</div>
+        <div class="fc-term" style="font-size:1rem;margin-bottom:12px">${card.term}</div>
+        <div class="fc-def">${card.def}</div>
+      </div>
+    </div>
+    <div class="fc-tap-hint" id="fc-tap">Tap card to flip</div>
+    <div class="fc-rating" id="fc-rating" style="display:none;max-width:600px;width:100%">
+      <button class="fc-rate-btn hard" onclick="rateCard(1)">😓 Hard</button>
+      <button class="fc-rate-btn ok" onclick="rateCard(3)">🤔 Okay</button>
+      <button class="fc-rate-btn easy" onclick="rateCard(5)">✓ Easy</button>
+    </div>`;
+}
+
+function flipCard(){
+  const card = document.getElementById('fc-card');
+  if(!card) return;
+  cardFlipped = !cardFlipped;
+  card.classList.toggle('flipped');
+  document.getElementById('fc-tap').style.display = 'none';
+  document.getElementById('fc-rating').style.display = 'flex';
+}
+
+function rateCard(quality){
+  const card = sessionCards[currentCardIdx];
+  let fc = state.fcData[card.term] || {interval:1, repetitions:0, efactor:2.5, dueDate:0, correct:0, wrong:0};
+  // SM-2 algorithm
+  if(quality < 3){
+    fc.repetitions = 0;
+    fc.interval = 1;
+    sessionStats.wrong++;
+    fc.wrong = (fc.wrong||0) + 1;
+    // Add to wrong answers for analytics
+    if(!state.wrongAnswers) state.wrongAnswers = [];
+    const exists = state.wrongAnswers.find(w=>w.term===card.term);
+    if(!exists) state.wrongAnswers.push({term:card.term, topic:card.topic, retried:false});
+  } else {
+    fc.repetitions++;
+    if(fc.repetitions === 1) fc.interval = 1;
+    else if(fc.repetitions === 2) fc.interval = 6;
+    else fc.interval = Math.round(fc.interval * fc.efactor);
+    fc.efactor = Math.max(1.3, fc.efactor + 0.1 - (5-quality)*(0.08+(5-quality)*0.02));
+    sessionStats.correct++;
+    fc.correct = (fc.correct||0) + 1;
+    if(quality === 1) sessionStats.hard++;
+  }
+  fc.dueDate = Date.now() + fc.interval * 86400000;
+  state.fcData[card.term] = fc;
+  state.cardsReviewed = (state.cardsReviewed||0) + 1;
+  // XP for card
+  const xpMap = {1:3, 3:5, 5:8};
+  const xp = xpMap[quality] || 5;
+  addXP(xp, `Flashcard: ${card.term}`);
+  currentCardIdx++;
+  renderCard();
+}
+
+function showSessionComplete(){
+  const arena = document.getElementById('fc-arena');
+  const total = sessionCards.length;
+  const pct = total > 0 ? Math.round((sessionStats.correct/total)*100) : 0;
+  const xp = sessionStats.correct * 5 + sessionStats.wrong * 2;
+  addActivity('🃏', `Flashcard session — ${sessionStats.correct}/${total} correct`, xp);
+  addXP(0, 'Session complete'); // trigger UI refresh
+  saveState();
+  arena.innerHTML = `
+    <div class="session-complete">
+      <div class="big-emoji">${pct>=80?'🏆':pct>=60?'⭐':'📚'}</div>
+      <h3>Session Complete!</h3>
+      <p>${sessionStats.correct} correct · ${sessionStats.wrong} incorrect · ${pct}% accuracy</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+        <button class="btn btn-primary" onclick="startSession()">New Session →</button>
+        <button class="btn btn-ghost" onclick="resetSession()">Done</button>
+      </div>
+    </div>`;
+}
+
+function openFlashcardsFor(topicId){
+  // Find topic and set filter
+  const topic = ALL_FLASHCARDS.find(c=>c.topicId===topicId);
+  if(topic){
+    activeFilters = new Set([topic.topic]);
+    showPage('flashcards');
+    buildFlashcardFilters();
+    // Activate correct filter chip
+    setTimeout(()=>{
+      document.querySelectorAll('#fc-filters .filter-chip').forEach(chip=>{
+        if(chip.textContent === topic.topic) chip.classList.add('active');
+        else chip.classList.remove('active');
+      });
+    },100);
+  }
+}
+
+function retryWrong(idx){
+  if(!state.wrongAnswers[idx]) return;
+  const w = state.wrongAnswers[idx];
+  const card = ALL_FLASHCARDS.find(c=>c.term===w.term);
+  if(!card) return;
+  sessionCards = [card];
+  currentCardIdx = 0;
+  sessionStats = {correct:0,wrong:0,hard:0};
+  state.wrongAnswers[idx].retried = true;
+  renderWrongAnswers();
+  showPage('flashcards');
+  // Mark as retry so gets 1.5x
+  window._isRetry = true;
+  setTimeout(()=>{ renderCard(); },200);
+}
+
+// Patch rateCard for retry bonus
+const _origRate = rateCard;
+function rateCard(quality){
+  const card = sessionCards[currentCardIdx];
+  let fc = state.fcData[card.term] || {interval:1, repetitions:0, efactor:2.5, dueDate:0, correct:0, wrong:0};
+  if(quality < 3){
+    fc.repetitions = 0; fc.interval = 1;
+    sessionStats.wrong++; fc.wrong = (fc.wrong||0) + 1;
+    if(!state.wrongAnswers) state.wrongAnswers = [];
+    const exists = state.wrongAnswers.find(w=>w.term===card.term);
+    if(!exists) state.wrongAnswers.push({term:card.term, topic:card.topic, retried:false});
+  } else {
+    fc.repetitions++;
+    if(fc.repetitions === 1) fc.interval = 1;
+    else if(fc.repetitions === 2) fc.interval = 6;
+    else fc.interval = Math.round(fc.interval * fc.efactor);
+    fc.efactor = Math.max(1.3, fc.efactor + 0.1 - (5-quality)*(0.08+(5-quality)*0.02));
+    sessionStats.correct++; fc.correct = (fc.correct||0) + 1;
+  }
+  fc.dueDate = Date.now() + fc.interval * 86400000;
+  state.fcData[card.term] = fc;
+  state.cardsReviewed = (state.cardsReviewed||0) + 1;
+  const xpMap = {1:3, 3:5, 5:8};
+  const baseXp = xpMap[quality] || 5;
+  const isRetry = window._isRetry || false;
+  addXP(baseXp, `Flashcard: ${card.term}`, isRetry);
+  if(isRetry) window._isRetry = false;
+  currentCardIdx++;
+  renderCard();
+}
+
+// ============================================================
+// ESSAY QUESTIONS
+// ============================================================
+const ESSAY_QUESTIONS = {
+  p1: [
+    {num:'1a', text:'Evaluate the importance of price elasticity of demand in setting pricing strategy for a new product launch. [20 marks]'},
+    {num:'1b', text:'To what extent is market research essential for a startup business to succeed? [20 marks]'},
+    {num:'1c', text:'Evaluate the effectiveness of the marketing mix as a tool for achieving competitive advantage. [20 marks]'},
+    {num:'1d', text:'Analyse the factors a business should consider when choosing between job and flow production methods. [6 marks]'},
+    {num:'1e', text:'Evaluate whether penetration pricing is always the best strategy for entering a new market. [10 marks]'},
+    {num:'1f', text:'To what extent does labour productivity determine the long-term success of a business? [20 marks]'},
+  ],
+  p2: [
+    {num:'2a', text:'Evaluate whether organic growth is always preferable to inorganic growth for a large PLC. [20 marks]'},
+    {num:'2b', text:'To what extent does Ansoff\'s Matrix provide useful strategic guidance for a business seeking growth? [20 marks]'},
+    {num:'2c', text:'Evaluate the usefulness of investment appraisal methods in making capital investment decisions. [20 marks]'},
+    {num:'2d', text:'Analyse how Lewin\'s Force Field Analysis can help managers implement organisational change. [6 marks]'},
+    {num:'2e', text:'Evaluate whether CSR creates more benefits than costs for a multinational company. [20 marks]'},
+    {num:'2f', text:'To what extent is the critical path analysis a reliable tool for project management? [10 marks]'},
+  ],
+  p3: [
+    {num:'3a', text:'Evaluate the impact of globalisation on businesses in the UK. [20 marks]'},
+    {num:'3b', text:'To what extent should multinational corporations prioritise ethical behaviour over profit maximisation in emerging economies? [20 marks]'},
+    {num:'3c', text:'Evaluate the benefits and drawbacks for a business of entering an emerging economy such as India or China. [20 marks]'},
+    {num:'3d', text:'Analyse the impact of exchange rate fluctuations on a UK-based exporter. [6 marks]'},
+    {num:'3e', text:'To what extent do trading blocs benefit member countries more than they harm non-member countries? [20 marks]'},
+    {num:'3f', text:'Evaluate the strategies a multinational corporation should adopt to respond to cultural differences in global markets. [20 marks]'},
+  ]
+};
+
+let selectedQuestions = {p1: null, p2: null, p3: null};
+
+function buildEssayGrids(){
+  ['p1','p2','p3'].forEach(p=>{
+    const el = document.getElementById(`${p}-q-grid`);
+    if(!el) return;
+    el.innerHTML = ESSAY_QUESTIONS[p].slice(0,4).map((q,i)=>`
+      <div class="q-select-btn" id="${p}-qbtn-${i}" onclick="selectQuestion('${p}',${i})">
+        <div class="q-num">${q.num.toUpperCase()}</div>
+        <div class="q-text">${q.text}</div>
+      </div>`).join('');
+  });
+}
+
+function selectQuestion(paper, idx){
+  document.querySelectorAll(`#${paper}-q-grid .q-select-btn`).forEach(b=>b.classList.remove('selected'));
+  document.getElementById(`${paper}-qbtn-${idx}`).classList.add('selected');
+  selectedQuestions[paper] = ESSAY_QUESTIONS[paper][idx].text;
+  document.getElementById(`${paper}-selected-q`).textContent = ESSAY_QUESTIONS[paper][idx].text;
+}
+
+function selectCustomQ(paper){
+  const val = document.getElementById(`${paper}-custom-q`).value.trim();
+  if(!val) return;
+  selectedQuestions[paper] = val;
+  document.getElementById(`${paper}-selected-q`).textContent = val;
+  document.querySelectorAll(`#${paper}-q-grid .q-select-btn`).forEach(b=>b.classList.remove('selected'));
+}
+
+function updateWordCount(paper){
+  const txt = document.getElementById(`${paper}-essay-text`).value;
+  const words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  document.getElementById(`${paper}-wc`).textContent = words + ' words';
+}
+
+function clearEssay(paper){
+  document.getElementById(`${paper}-essay-text`).value = '';
+  document.getElementById(`${paper}-wc`).textContent = '0 words';
+  document.getElementById(`${paper}-feedback`).classList.remove('show');
+}
+
+// ============================================================
+// API KEY MANAGEMENT
+// ============================================================
+let _apiKey = '';
+
+function saveApiKey(){
+  const val = document.getElementById('api-key-input').value.trim();
+  if(!val.startsWith('sk-ant-')){
+    alert('Please enter a valid Anthropic API key (starts with sk-ant-)');
+    return;
+  }
+  _apiKey = val;
+  const statusEl = document.getElementById('api-key-status');
+  statusEl.textContent = '● Connected';
+  statusEl.className = 'api-key-status connected';
+  document.getElementById('api-key-input').value = '••••••••••••••••••••';
+  showToast('API key connected! AI grading is ready.');
+}
+
+async function submitEssay(paper){
+  const q = selectedQuestions[paper];
+  const ans = document.getElementById(`${paper}-essay-text`).value.trim();
+  if(!q){ alert('Please select or enter a question first.'); return; }
+  if(ans.length < 50){ alert('Please write a more complete answer (at least 50 characters).'); return; }
+  const fbEl = document.getElementById(`${paper}-feedback`);
+  fbEl.classList.add('show');
+  fbEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>AI is reading your answer and preparing feedback...</div>';
+  const marks = q.includes('[20 marks]') ? 20 : q.includes('[10 marks]') ? 10 : q.includes('[6 marks]') ? 6 : q.includes('[4 marks]') ? 4 : 20;
+  const prompt = `You are an experienced Edexcel A Level Business examiner and teacher. A student has answered the following exam question:
+
+QUESTION: ${q}
+MARKS AVAILABLE: ${marks}
+
+STUDENT ANSWER:
+${ans}
+
+Please provide detailed, constructive feedback as an Edexcel examiner would. Your response MUST include:
+1. An overall mark out of ${marks} with a grade (A*=90%+, A=80%+, B=70%+, C=60%+, D=50%+, E=40%+, U=below)
+2. Knowledge & Application score (KAA): /${Math.round(marks*0.4)}
+3. Analysis score: /${Math.round(marks*0.3)}
+4. Evaluation score (for 10/20 mark): /${Math.round(marks*0.3)}
+5. 3-4 specific strengths of the answer
+6. 3-4 specific, actionable improvements
+7. A "What a top answer would include" section
+8. One example paragraph rewrite showing excellent technique
+
+Format your response clearly with section headers. Be honest but encouraging. Reference specific parts of their answer. For 20-mark essays, check for balanced evaluation and a justified conclusion. Always use Edexcel-specific terminology.`;
+  try {
+    const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!resp.ok){
+      const err = await resp.json().catch(()=>({}));
+      const msg = err.error?.message || `HTTP ${resp.status}`;
+      fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ API Error: ${msg}</div>`;
+      return;
+    }
+    const data = await resp.json();
+    let text = data.content?.map(c=>c.text||'').join('\n') || 'Unable to get feedback.';
+    fbEl.innerHTML = formatFeedback(text, marks);
+    state.essaysGraded = (state.essaysGraded||0) + 1;
+    const essayXp = Math.round(30 + (ans.split(/\s+/).length / 10));
+    addXP(essayXp, 'Essay graded by AI');
+    addActivity('🤖', `Essay: ${q.substring(0,40)}...`, essayXp);
+    saveState();
+  } catch(e){
+    fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ Unable to connect to AI. Check your connection and API key. Error: ${e.message}</div>`;
+  }
+}
+
+function formatFeedback(text, marks){
+  // Try to extract a score
+  const scoreMatch = text.match(new RegExp(`(\\d+)\\s*\\/\\s*${marks}|overall.*?(\\d+)`,'i'));
+  const score = scoreMatch ? parseInt(scoreMatch[1]||scoreMatch[2]) : null;
+  const pct = score ? Math.round((score/marks)*100) : null;
+  const grade = pct >= 90?'A*':pct>=80?'A':pct>=70?'B':pct>=60?'C':pct>=50?'D':pct>=40?'E':'U';
+  const gradeColor = {'A*':'var(--gold)','A':'var(--green)','B':'var(--cyan)','C':'var(--accent2)','D':'var(--orange)','E':'var(--red)','U':'var(--red)'}[grade]||'var(--text)';
+  const formatted = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+  return `
+    <div class="feedback-header">
+      <div class="score-circle" style="background:${gradeColor}22;color:${gradeColor};border:2px solid ${gradeColor}">
+        ${score ? score+'/'+marks : grade}
+      </div>
+      <div>
+        <div style="font-size:1.1rem;font-weight:700;color:${gradeColor}">${grade} Grade${pct ? ' — '+pct+'%' : ''}</div>
+        <div style="font-size:0.8rem;color:var(--text2)">${marks}-mark question · AI Examiner Feedback</div>
+      </div>
+    </div>
+    <div class="feedback-body"><p>${formatted}</p></div>`;
+}
+
+// ============================================================
+// FORMULAS
+// ============================================================
+const FORMULAS = {
+  p1: [
+    {name:'Market Share (%)',eq:'(Sales of business ÷ Total market sales) × 100'},
+    {name:'Price Elasticity (PED)',eq:'% Δ Quantity Demanded ÷ % Δ Price'},
+    {name:'Income Elasticity (YED)',eq:'% Δ Quantity Demanded ÷ % Δ Income'},
+    {name:'Net Cash Flow',eq:'Total Inflows − Total Outflows'},
+    {name:'Sales Revenue',eq:'Units Sold × Selling Price'},
+    {name:'Total Costs',eq:'Fixed Costs + Total Variable Costs'},
+    {name:'Contribution per Unit',eq:'Selling Price − Variable Cost per Unit'},
+    {name:'Break-Even Output',eq:'Fixed Costs ÷ Contribution per Unit'},
+    {name:'Gross Profit Margin',eq:'(Gross Profit ÷ Sales Revenue) × 100'},
+    {name:'Labour Productivity',eq:'Output ÷ Number of Employees'},
+    {name:'Capacity Utilisation',eq:'(Actual Output ÷ Max Possible Output) × 100'},
+    {name:'Labour Turnover',eq:'(Staff Leaving ÷ Total Staff) × 100'},
+  ],
+  p2: [
+    {name:'ARR (%)',eq:'(Average Annual Profit ÷ Initial Outlay) × 100'},
+    {name:'Average Annual Profit',eq:'(Total Net Cash Flow − Initial Investment) ÷ Years'},
+    {name:'Net Present Value',eq:'Σ (Cash Flow × Discount Factor) − Initial Investment'},
+    {name:'Expected Value (Decision Tree)',eq:'Financial Outcome × Probability'},
+    {name:'Net Gain (Decision Tree)',eq:'Total Expected Value − Cost of Decision'},
+    {name:'Float (CPA)',eq:'Latest Finish Time − Earliest Start Time − Duration'},
+    {name:'ROCE (%)',eq:'(Operating Profit ÷ Capital Employed) × 100'},
+    {name:'Gearing (%)',eq:'(Long-term Debt ÷ Capital Employed) × 100'},
+    {name:'Current Ratio',eq:'Current Assets ÷ Current Liabilities'},
+    {name:'Acid Test Ratio',eq:'(Current Assets − Stock) ÷ Current Liabilities'},
+    {name:'Operating Profit Margin',eq:'(Operating Profit ÷ Revenue) × 100'},
+    {name:'% Change',eq:'(Difference ÷ Original) × 100'},
+  ]
+};
+
+function buildFormulaGrids(){
+  ['p1','p2'].forEach(p=>{
+    const el = document.getElementById(`${p}-formulas-grid`);
+    if(!el || !FORMULAS[p]) return;
+    el.innerHTML = FORMULAS[p].map(f=>`
+      <div class="formula-card">
+        <div class="f-name">${f.name}</div>
+        <div class="f-eq">${f.eq}</div>
+      </div>`).join('');
+  });
+}
+
+// ============================================================
+// PRE-RELEASE CONTENT
+// ============================================================
+function buildPrerelease(){
+  const el = document.getElementById('prerelease-content');
+  if(!el) return;
+  el.innerHTML = `
+    <div style="background:rgba(16,217,138,0.06);border:1px solid rgba(16,217,138,0.2);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px">
+      <strong style="color:var(--green)">⚠️ Important:</strong> <span style="font-size:0.85rem;color:var(--text2)">Always refer to your actual pre-release material in the exam. The notes below are based on the 2026 release themes.</span>
+    </div>
+    <div class="key-terms-grid">
+      ${[
+        {term:'Context', def:'Large UK-based multinational business expanding into emerging markets with a focus on sustainability and ethical supply chains.'},
+        {term:'Key Themes', def:'Globalisation strategy, stakeholder management, MNC ethics, emerging economy opportunities vs risks.'},
+        {term:'Financial Data', def:'Revenue growth, profit margins under pressure from global competition, significant capital investment planned.'},
+        {term:'Stakeholder Issues', def:'Employee relations in host countries, environmental impact, community investment, shareholder returns.'},
+        {term:'Strategic Challenge', def:'Balancing short-term shareholder return with long-term sustainability — classic profit vs ethics dilemma.'},
+        {term:'Synoptic Links', def:'Link to T1 (marketing mix adaptation), T2 (HR in global context), T3 (strategic decisions, investment appraisal).'},
+      ].map(k=>`<div class="kt-row"><div class="kt-term">${k.term}</div><div class="kt-def">${k.def}</div></div>`).join('')}
+    </div>
+    <div style="margin-top:16px;padding:14px;background:var(--bg3);border-radius:var(--radius-sm)">
+      <strong>Essay tip:</strong> <span style="font-size:0.85rem;color:var(--text2)">In Paper 3, EVERY answer should reference the pre-release context. Don't write generic answers — link every point back to the specific business scenario. Examiners award marks for genuine application.</span>
+    </div>`;
+}
+
+// ============================================================
+// ANALYTICS CHARTS
+// ============================================================
+let chartsBuilt = false;
+let xpChartInst, breakdownChartInst, topicChartInst;
+
+function renderCharts(){
+  if(chartsBuilt){
+    updateCharts();
+    return;
+  }
+  chartsBuilt = true;
+  const chartOpts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#5c6480'}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#5c6480'}}}
+  };
+  // XP History
+  const xpData = getXpHistory();
+  xpChartInst = new Chart(document.getElementById('xpChart'), {
+    type:'bar',
+    data:{labels:xpData.labels,datasets:[{data:xpData.values,backgroundColor:'rgba(108,99,255,0.6)',borderColor:'var(--accent)',borderWidth:2,borderRadius:6}]},
+    options:{...chartOpts,plugins:{legend:{display:false}}}
+  });
+  // Breakdown
+  breakdownChartInst = new Chart(document.getElementById('breakdownChart'), {
+    type:'doughnut',
+    data:{
+      labels:['Flashcards','Essays','Active Time'],
+      datasets:[{data:[state.cardsReviewed||1, state.essaysGraded||0, Math.max(1,Math.round((state.totalTime||0)/60))],
+        backgroundColor:['rgba(108,99,255,0.7)','rgba(232,121,249,0.7)','rgba(16,217,138,0.7)'],
+        borderColor:['var(--accent)','var(--pink)','var(--green)'],borderWidth:2}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#9ba3bd',font:{size:11}}}}}
+  });
+  // Topic performance
+  const topics = Object.keys(TOPICS).flatMap(p=>TOPICS[p].map(t=>t.title));
+  const perf = topics.slice(0,6).map(t=>{
+    const cards = ALL_FLASHCARDS.filter(c=>c.topic===t);
+    const scores = cards.map(c=>{
+      const d = state.fcData[c.term];
+      if(!d) return 0;
+      return d.correct/(d.correct+d.wrong||1)*100;
+    }).filter(s=>s>0);
+    return scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+  });
+  topicChartInst = new Chart(document.getElementById('topicChart'), {
+    type:'bar',
+    data:{
+      labels:topics.slice(0,6).map(t=>t.length>20?t.substring(0,18)+'…':t),
+      datasets:[{data:perf,backgroundColor:perf.map(v=>v>70?'rgba(16,217,138,0.6)':v>40?'rgba(245,200,66,0.6)':'rgba(255,92,106,0.6)'),borderRadius:6}]
+    },
+    options:{...chartOpts,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{max:100,grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#5c6480'}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#5c6480',font:{size:11}}}}}
+  });
+}
+
+function updateCharts(){
+  if(!xpChartInst) return;
+  const xpData = getXpHistory();
+  xpChartInst.data.labels = xpData.labels;
+  xpChartInst.data.datasets[0].data = xpData.values;
+  xpChartInst.update();
+  breakdownChartInst.data.datasets[0].data = [state.cardsReviewed||1, state.essaysGraded||0, Math.max(1,Math.round((state.totalTime||0)/60))];
+  breakdownChartInst.update();
+}
+
+function getXpHistory(){
+  const hist = state.xpHistory || [];
+  // Group by day (last 7 days)
+  const days = {};
+  const now = Date.now();
+  for(let i=6;i>=0;i--){
+    const d = new Date(now - i*86400000);
+    days[d.toLocaleDateString('en-GB',{weekday:'short'})] = 0;
+  }
+  hist.forEach(h=>{
+    const d = new Date(h.time);
+    const label = d.toLocaleDateString('en-GB',{weekday:'short'});
+    if(days[label] !== undefined) days[label] += h.amount;
+  });
+  return {labels:Object.keys(days), values:Object.values(days)};
+}
+
+// ============================================================
+// PROFILE MODALS
+// ============================================================
+function openNameModal(){
+  document.getElementById('name-input').value = state.name;
+  document.getElementById('name-modal').classList.add('show');
+}
+function saveName(){
+  const n = document.getElementById('name-input').value.trim();
+  if(n){ state.name = n; saveState(); updateUI(); }
+  closeModal('name-modal');
+}
+function openPhotoModal(){ document.getElementById('photo-modal').classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+let pendingPhotoData = null;
+function previewPhoto(e){
+  const file = e.target.files[0];
+  const err = document.getElementById('photo-error');
+  const preview = document.getElementById('photo-preview');
+  const btn = document.getElementById('save-photo-btn');
+  err.style.display='none'; preview.style.display='none'; btn.disabled=true; pendingPhotoData=null;
+  if(!file) return;
+  // Validate type
+  const validTypes = ['image/jpeg','image/jpg','image/png','image/webp','image/gif'];
+  if(!validTypes.includes(file.type)){
+    err.textContent='Invalid file type. Please use JPG, PNG, WebP or GIF.';
+    err.style.display='block'; return;
+  }
+  if(file.size > 5*1024*1024){
+    err.textContent='File too large. Maximum size is 5MB.';
+    err.style.display='block'; return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    // Additional validation: check magic bytes
+    const arr = new Uint8Array(ev.target.result.slice(0,4));
+    const hex = Array.from(arr).map(b=>b.toString(16).padStart(2,'0')).join('');
+    const validSig = hex.startsWith('ffd8ff')||hex.startsWith('89504e47')||hex.startsWith('47494638')||hex.startsWith('52494646');
+    if(!validSig && file.type!=='image/webp'){
+      err.textContent='File does not appear to be a valid image. Please try another file.';
+      err.style.display='block'; return;
+    }
+    // Use data URL for display
+    const r2 = new FileReader();
+    r2.onload = ev2=>{
+      pendingPhotoData = ev2.target.result;
+      preview.src = pendingPhotoData;
+      preview.style.display = 'block';
+      btn.disabled = false;
+    };
+    r2.readAsDataURL(file);
+  };
+  reader.readAsArrayBuffer(file);
+}
+function savePhoto(){
+  if(!pendingPhotoData) return;
+  state.avatar = pendingPhotoData;
+  saveState(); updateUI();
+  closeModal('photo-modal');
+}
+
+// ============================================================
+// DATA EXPORT / IMPORT
+// ============================================================
+function downloadData(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `nexus-business-save-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Progress downloaded successfully!');
+}
+
+function uploadData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  if(!file.name.endsWith('.json')){ alert('Please upload a .json file from Nexus Business.'); return; }
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data.hasOwnProperty('xp')){ alert('Invalid save file.'); return; }
+      state = {...DEFAULT_STATE, ...data};
+      saveState(); updateUI();
+      showToast('Save data restored successfully!');
+    } catch(err){ alert('Could not read save file: '+err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function confirmReset(){
+  if(confirm('Reset ALL progress data? This cannot be undone.')){
+    state = {...DEFAULT_STATE};
+    saveState(); updateUI();
+    chartsBuilt = false;
+    showToast('All data reset.');
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  buildAccordion('p1', TOPICS.p1);
+  buildAccordion('p2', TOPICS.p2);
+  buildAccordion('p3', TOPICS.p3);
+  buildEssayGrids();
+  buildFlashcardFilters();
+  buildFormulaGrids();
+  buildPrerelease();
+  updateUI();
+  startActiveTracking();
+  // Open first topic on each paper
+  setTimeout(()=>{
+    ['1.1','3.1','4.1'].forEach(id=>{
+      const el = document.getElementById(`topic-${id}`);
+      if(el) el.classList.add('open');
+    });
+  }, 100);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('show'); });
+});
+</script>
+</body>
+</html>
