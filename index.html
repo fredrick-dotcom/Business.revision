@@ -334,8 +334,78 @@ tr:hover td{background:var(--bg3);}
 .formula-card .f-name{font-size:0.78rem;color:var(--text3);margin-bottom:6px;}
 .formula-card .f-eq{font-family:'Space Mono',monospace;font-size:0.88rem;color:var(--accent2);line-height:1.5;}
 
-/* RESPONSIVE */
-@media(max-width:900px){
+/* AI PRACTICE PAGE */
+.aip-page{max-width:860px;margin:0 auto;padding:48px 48px;}
+.aip-setup{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:36px;}
+.aip-setup h2{font-size:1.5rem;font-weight:600;margin-bottom:6px;}
+.aip-setup .aip-sub{font-size:0.9rem;color:var(--text2);margin-bottom:32px;}
+.aip-selectors{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.aip-select-group label{display:block;font-size:0.78rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.aip-select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text);font-size:0.9rem;font-family:inherit;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c6480' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+.aip-select:focus{border-color:var(--accent);}
+.aip-select option{background:var(--bg3);}
+.aip-paper-pills{display:flex;gap:10px;margin-bottom:28px;}
+.aip-paper-pill{flex:1;padding:14px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--bg3);cursor:pointer;transition:var(--transition);text-align:center;}
+.aip-paper-pill h4{font-size:0.9rem;font-weight:700;margin-bottom:2px;}
+.aip-paper-pill p{font-size:0.75rem;color:var(--text3);}
+.aip-paper-pill.p1.selected{border-color:var(--accent);background:rgba(108,99,255,0.1);}
+.aip-paper-pill.p2.selected{border-color:var(--gold);background:rgba(245,200,66,0.08);}
+.aip-paper-pill.p3.selected{border-color:var(--green);background:rgba(16,217,138,0.08);}
+.aip-paper-pill.p1 h4{color:var(--accent2);}
+.aip-paper-pill.p2 h4{color:var(--gold);}
+.aip-paper-pill.p3 h4{color:var(--green);}
+.aip-qtype-group{margin-bottom:28px;}
+.aip-qtype-group label{display:block;font-size:0.78rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;}
+.aip-qtype-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.aip-qtype-pill{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:0.82rem;cursor:pointer;transition:var(--transition);}
+.aip-qtype-pill:hover{border-color:var(--border2);color:var(--text);}
+.aip-qtype-pill.selected{border-color:var(--accent);background:rgba(108,99,255,0.12);color:var(--accent2);font-weight:600;}
+.aip-continue-btn{width:100%;padding:14px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-size:1rem;font-weight:600;border:none;cursor:pointer;transition:var(--transition);display:none;}
+.aip-continue-btn.show{display:block;}
+.aip-continue-btn:hover{background:var(--accent2);}
+
+/* AI PRACTICE WRITING SCREEN */
+.aip-writing{display:none;}
+.aip-writing.show{display:block;}
+.aip-setup-screen{display:block;}
+.aip-setup-screen.hide{display:none;}
+.aip-writing-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.aip-back{color:var(--text2);cursor:pointer;font-size:0.85rem;transition:var(--transition);flex-shrink:0;}
+.aip-back:hover{color:var(--text);}
+.aip-meta-pill{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:12px;font-size:0.78rem;font-weight:600;}
+.aip-meta-pill.p1{background:rgba(108,99,255,0.12);color:var(--accent2);border:1px solid rgba(108,99,255,0.25);}
+.aip-meta-pill.p2{background:rgba(245,200,66,0.1);color:var(--gold);border:1px solid rgba(245,200,66,0.25);}
+.aip-meta-pill.p3{background:rgba(16,217,138,0.1);color:var(--green);border:1px solid rgba(16,217,138,0.25);}
+.aip-question-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:20px;}
+.aip-question-box .aip-q-label{font-size:0.75rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.aip-question-box .aip-q-text{font-size:1rem;font-weight:500;line-height:1.5;color:var(--text);}
+.aip-mark-badge{display:inline-block;margin-top:10px;background:var(--bg3);border:1px solid var(--border);color:var(--gold);font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:8px;}
+.aip-tips-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.aip-tip-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;}
+.aip-tip-card h5{font-size:0.78rem;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em;}
+.aip-tip-card ul{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.aip-tip-card ul li{font-size:0.78rem;color:var(--text3);display:flex;align-items:flex-start;gap:6px;}
+.aip-tip-card ul li::before{content:'→';color:var(--accent);flex-shrink:0;}
+.aip-ai-hint-btn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text2);font-size:0.82rem;cursor:pointer;transition:var(--transition);display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;}
+.aip-ai-hint-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.aip-hint-box{background:var(--bg3);border:1px solid rgba(108,99,255,0.25);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:0.85rem;color:var(--text2);line-height:1.6;display:none;}
+.aip-hint-box.show{display:block;}
+
+/* TIMER */
+.aip-timer-wrap{position:fixed;bottom:28px;left:28px;z-index:500;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow);min-width:160px;display:none;}
+.aip-timer-wrap.show{display:block;}
+.aip-timer-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.aip-timer-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite;}
+.aip-timer-dot.over{background:var(--red);animation:none;}
+.aip-timer-time{font-family:'Space Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text);letter-spacing:0.04em;}
+.aip-timer-time.over{color:var(--red);}
+.aip-timer-suggested{font-size:0.72rem;color:var(--text3);line-height:1.3;}
+.aip-timer-suggested span{color:var(--text2);}
+.aip-timer-btns{display:flex;gap:6px;margin-top:10px;}
+.aip-timer-btn{flex:1;padding:5px 0;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:0.72rem;cursor:pointer;transition:var(--transition);text-align:center;}
+.aip-timer-btn:hover{border-color:var(--border2);color:var(--text);}
+.aip-timer-btn.danger{border-color:rgba(255,92,106,0.3);color:var(--red);}
+.aip-timer-btn.danger:hover{background:rgba(255,92,106,0.1);}
   .papers-grid,.quick-grid,.hero-stats{grid-template-columns:1fr;}
   .paper-page,.analytics-page{padding:24px 20px;}
   .hero{padding:40px 20px 32px;}
@@ -362,6 +432,7 @@ tr:hover td{background:var(--bg3);}
     <span class="nav-link" onclick="showPage('paper2')">Paper 2</span>
     <span class="nav-link" onclick="showPage('paper3')">Paper 3</span>
     <span class="nav-link" onclick="showPage('flashcards')">Flashcards</span>
+    <span class="nav-link" onclick="showPage('aipractice')">🤖 AI Practice</span>
     <span class="nav-link" onclick="showPage('analytics')">Analytics</span>
   </div>
   <div class="nav-right">
@@ -452,7 +523,7 @@ tr:hover td{background:var(--bg3);}
       <div class="quick-icon flash">🃏</div>
       <div><h4>Adaptive Flashcards</h4><p>SM-2 algorithm, topic filtering, difficulty grading</p></div>
     </div>
-    <div class="quick-card" onclick="showPage('paper1');setTimeout(()=>switchTab('essay-tab','paper1'),100)">
+    <div class="quick-card" onclick="showPage('aipractice')">
       <div class="quick-icon ai">🤖</div>
       <div><h4>AI Essay Grading</h4><p>Write, get graded, improve. Real exam-style feedback.</p></div>
     </div>
@@ -755,6 +826,98 @@ tr:hover td{background:var(--bg3);}
   </div>
 </div>
 
+<!-- AI PRACTICE PAGE -->
+<div class="page" id="page-aipractice">
+  <div class="aip-page">
+
+    <!-- SETUP SCREEN -->
+    <div class="aip-setup-screen" id="aip-setup-screen">
+      <div class="aip-setup">
+        <h2>🤖 AI Essay Practice</h2>
+        <p class="aip-sub">Choose your paper and question type, then get real-time AI marking and feedback tailored to Edexcel mark schemes.</p>
+
+        <!-- PAPER PICKER -->
+        <div style="margin-bottom:10px;font-size:0.78rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;">Select Paper</div>
+        <div class="aip-paper-pills" id="aip-paper-pills">
+          <div class="aip-paper-pill p1" onclick="aipSelectPaper(1)">
+            <h4>Paper 1</h4>
+            <p>Marketing, People & Global</p>
+          </div>
+          <div class="aip-paper-pill p2" onclick="aipSelectPaper(2)">
+            <h4>Paper 2</h4>
+            <p>Activities, Decisions & Strategy</p>
+          </div>
+          <div class="aip-paper-pill p3" onclick="aipSelectPaper(3)">
+            <h4>Paper 3</h4>
+            <p>Investigating Business</p>
+          </div>
+        </div>
+
+        <!-- QUESTION TYPE PICKER -->
+        <div class="aip-qtype-group" id="aip-qtype-group" style="display:none;">
+          <label>Select Question Type</label>
+          <div class="aip-qtype-pills" id="aip-qtype-pills"></div>
+        </div>
+
+        <!-- QUESTION SELECTOR -->
+        <div id="aip-q-selector" style="display:none;margin-bottom:24px;">
+          <div style="font-size:0.78rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Select a Question</div>
+          <div class="question-select-grid" id="aip-q-grid" style="margin-bottom:12px;"></div>
+          <div class="custom-q-row">
+            <input class="custom-q-input" id="aip-custom-q" placeholder="Or type your own question...">
+            <button class="btn btn-ghost" onclick="aipUseCustomQ()">Use</button>
+          </div>
+          <div id="aip-selected-q-display" style="display:none;background:var(--bg3);border-radius:var(--radius-sm);padding:10px 14px;margin-top:10px;font-size:0.85rem;color:var(--text2)">
+            <strong style="color:var(--text)">📝 Selected:</strong> <span id="aip-selected-q-text"></span>
+          </div>
+        </div>
+
+        <button class="aip-continue-btn" id="aip-continue-btn" onclick="aipContinue()">Continue to Writing →</button>
+      </div>
+    </div>
+
+    <!-- WRITING SCREEN -->
+    <div class="aip-writing" id="aip-writing-screen">
+      <div class="aip-writing-header">
+        <span class="aip-back" onclick="aipGoBack()">← Back</span>
+        <span class="aip-meta-pill" id="aip-paper-pill-label">Paper 1</span>
+        <span style="font-size:0.8rem;color:var(--text3)" id="aip-qtype-label"></span>
+      </div>
+
+      <!-- QUESTION DISPLAY -->
+      <div class="aip-question-box">
+        <div class="aip-q-label">Your Question</div>
+        <div class="aip-q-text" id="aip-active-question"></div>
+        <span class="aip-mark-badge" id="aip-mark-badge"></span>
+      </div>
+
+      <!-- TIPS -->
+      <div class="aip-tips-row" id="aip-tips-row"></div>
+
+      <!-- AI HINT -->
+      <button class="aip-ai-hint-btn" onclick="aipGetHint()">
+        <span>✨</span> Get an AI Planning Hint
+      </button>
+      <div class="aip-hint-box" id="aip-hint-box">
+        <div class="loading-spinner" id="aip-hint-loading" style="display:none"><div class="spinner"></div> Generating hint...</div>
+        <div id="aip-hint-text"></div>
+      </div>
+
+      <!-- ESSAY INPUT -->
+      <div class="ai-essay-box" style="margin-top:0;">
+        <textarea class="essay-textarea" id="aip-essay-text" placeholder="Write your answer here..." oninput="aipUpdateWC()"></textarea>
+        <div class="essay-controls">
+          <button class="btn btn-primary" onclick="aipSubmit()">Submit for AI Grading →</button>
+          <button class="btn btn-ghost" onclick="aipClear()">Clear</button>
+          <span class="word-count" id="aip-wc">0 words</span>
+        </div>
+        <div class="ai-feedback-box" id="aip-feedback"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- MODALS -->
 <div class="modal-overlay" id="name-modal">
   <div class="modal">
@@ -934,7 +1097,7 @@ function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const navMap = {home:0,paper1:1,paper2:2,paper3:3,flashcards:4,analytics:5};
+  const navMap = {home:0,paper1:1,paper2:2,paper3:3,flashcards:4,aipractice:5,analytics:6};
   document.querySelectorAll('.nav-link')[navMap[id] ?? 0]?.classList.add('active');
   if(id === 'analytics') renderCharts();
   window.scrollTo(0,0);
@@ -1883,12 +2046,384 @@ function init(){
   }, 100);
 }
 
-document.addEventListener('DOMContentLoaded', init);
+// ============================================================
+// AI PRACTICE PAGE
+// ============================================================
+const AIP_QTYPES = {
+  1: [
+    { label:'Multiple Choice', marks:1, tips:['Recall exact definitions','Eliminate wrong options','No need to explain'], structure:['Pick the correct answer','Use process of elimination','Trust your first instinct'] },
+    { label:'Short Answer (2–3 marks)', marks:3, tips:['Define the term precisely','One developed point per mark','Use business terminology'], structure:['Define','Apply briefly','Link to context'] },
+    { label:'Calculation (4 marks)', marks:4, tips:['Show ALL working','Label every step','State the formula first'], structure:['Write formula','Substitute numbers','Calculate','State the answer with units'] },
+    { label:'Explain (6 marks)', marks:6, tips:['Apply theory to the scenario','Two developed points','Use "this means…" to extend'], structure:['Make a point','Explain the theory','Apply to business context','Use a connector to extend'] },
+    { label:'Analyse (8 marks)', marks:8, tips:['Build a chain of reasoning','Refer to the case study','Use "therefore" / "as a result"'], structure:['Point','Evidence','Explain cause','Explain effect','Link back to question'] },
+    { label:'Evaluate (10 marks)', marks:10, tips:['Both sides needed','Context is key','Reach a clear judgement'], structure:['Argument FOR','Argument AGAINST','Weigh up both sides','Justified conclusion'] },
+    { label:'Extended Essay (20 marks)', marks:20, tips:['Plan before writing','Equal time on each argument','Strong conclusion is essential'], structure:['Intro + thesis','Argument 1 with analysis','Argument 2 with analysis','Counter point','Justified conclusion'] },
+  ],
+  2: [
+    { label:'Multiple Choice', marks:1, tips:['Recall exact definitions','Eliminate wrong options','No need to explain'], structure:['Pick the correct answer','Use process of elimination','Trust your first instinct'] },
+    { label:'Short Answer (2–3 marks)', marks:3, tips:['Explain the concept clearly','One mark per developed point','Use financial terminology'], structure:['State the concept','Brief explanation','Apply to context'] },
+    { label:'Calculation (4–6 marks)', marks:6, tips:['Show ALL working clearly','Label every step','State formula first — always'], structure:['Write formula','Substitute values','Calculate step by step','State final answer with units'] },
+    { label:'Explain (6 marks)', marks:6, tips:['Apply to the case study','Use "this means…" to develop','Two distinct points'], structure:['Make a point','Explain the theory','Apply to the business','Develop the implication'] },
+    { label:'Analyse (8 marks)', marks:8, tips:['Cause → Effect chains','Reference data from the case','Use "therefore" / "consequently"'], structure:['Point','Evidence from case','Explain mechanism','Explain consequence','Link to question'] },
+    { label:'Evaluate (10 marks)', marks:10, tips:['Context is everything','Consider both sides','Make a clear decision'], structure:['Argument FOR','Argument AGAINST','Weigh factors','Justified conclusion'] },
+    { label:'Extended Essay (20 marks)', marks:20, tips:['Strategic evaluation needed','Use specific business examples','Conclude decisively'], structure:['Clear thesis','Argument 1 with depth','Argument 2 with depth','Mini judgements throughout','Final justified conclusion'] },
+  ],
+  3: [
+    { label:'Short Context (4–6 marks)', marks:6, tips:['Apply directly to the pre-release case','Reference specific data','Keep it focused'], structure:['State point','Apply to case context','Support with data','Brief explanation'] },
+    { label:'Analysis (8–12 marks)', marks:12, tips:['Deep chains of reasoning','Synoptic links between themes','Always tie back to the case'], structure:['Point linked to case','Evidence from pre-release','Detailed chain of reasoning','Link multiple themes'] },
+    { label:'Evaluation (10–12 marks)', marks:12, tips:['Judgement using the data','Both sides required','Strong conclusion essential'], structure:['Argument using case data','Counter argument','Weigh up significance','Justified conclusion with context'] },
+    { label:'Synoptic Essay (20 marks)', marks:20, tips:['Link ALL themes together','No memorised essays — adapt to case','Data interpretation is key'], structure:['Thesis using case context','Multi-theme argument 1','Multi-theme argument 2','Synoptic judgements','Conclusion grounded in case data'] },
+  ],
+};
+
+const AIP_QUESTIONS = {
+  1: {
+    'Explain (6 marks)': [
+      'Explain two benefits of market segmentation for a new business. [6 marks]',
+      'Explain why a business might use price skimming when launching a new product. [6 marks]',
+      'Explain two advantages of using primary market research. [6 marks]',
+      'Explain the impact of a rise in interest rates on a business with high borrowing. [6 marks]',
+    ],
+    'Analyse (8 marks)': [
+      'Analyse why a business might decide to move from batch to flow production. [8 marks]',
+      'Analyse the impact of a weak pound on a UK business that imports raw materials. [8 marks]',
+      'Analyse how flexible working could affect employee motivation and productivity. [8 marks]',
+    ],
+    'Evaluate (10 marks)': [
+      'Evaluate whether penetration pricing is always the best strategy for entering a competitive market. [10 marks]',
+      'Evaluate the most important factor a business should consider when setting its pricing strategy. [10 marks]',
+      'Evaluate whether a business should prioritise customer satisfaction over profit. [10 marks]',
+    ],
+    'Extended Essay (20 marks)': [
+      'Evaluate the importance of price elasticity of demand in setting pricing strategy for a new product launch. [20 marks]',
+      'To what extent is market research essential for a startup business to succeed? [20 marks]',
+      'Evaluate the effectiveness of the marketing mix as a tool for achieving competitive advantage. [20 marks]',
+      'To what extent does labour productivity determine the long-term success of a business? [20 marks]',
+    ],
+  },
+  2: {
+    'Explain (6 marks)': [
+      'Explain two reasons why a business might choose to use debt finance rather than equity finance. [6 marks]',
+      'Explain how Lewin\'s Force Field Analysis can help a manager plan organisational change. [6 marks]',
+      'Explain why a business might outsource part of its operations. [6 marks]',
+    ],
+    'Analyse (8 marks)': [
+      'Analyse how a rise in corporation tax might affect the strategic decisions of a large PLC. [8 marks]',
+      'Analyse the impact of poor capacity utilisation on a manufacturing business. [8 marks]',
+      'Analyse why a business might choose organic growth over inorganic growth. [8 marks]',
+    ],
+    'Evaluate (10 marks)': [
+      'Evaluate whether investment appraisal methods are the most important factor in making capital investment decisions. [10 marks]',
+      'Evaluate the usefulness of critical path analysis as a project management tool. [10 marks]',
+      'Evaluate whether CSR creates more benefits than costs for a large business. [10 marks]',
+    ],
+    'Extended Essay (20 marks)': [
+      'Evaluate whether organic growth is always preferable to inorganic growth for a large PLC. [20 marks]',
+      'To what extent does Ansoff\'s Matrix provide useful strategic guidance for a business seeking growth? [20 marks]',
+      'Evaluate the usefulness of investment appraisal methods in making capital investment decisions. [20 marks]',
+      'Evaluate whether CSR creates more benefits than costs for a multinational company. [20 marks]',
+    ],
+  },
+  3: {
+    'Short Context (4–6 marks)': [
+      'Using the case study, explain one reason why the business may face increased competition in a global market. [4 marks]',
+      'Using the data, explain one benefit the business might gain from operating in an emerging economy. [4 marks]',
+    ],
+    'Analysis (8–12 marks)': [
+      'Analyse how exchange rate fluctuations might affect the business described in the pre-release material. [12 marks]',
+      'Analyse how globalisation has created both opportunities and threats for the business in the case study. [12 marks]',
+    ],
+    'Evaluation (10–12 marks)': [
+      'Using the case study, evaluate whether the business should pursue further international expansion. [12 marks]',
+      'Evaluate the extent to which cultural differences represent the greatest challenge for the business in the pre-release. [12 marks]',
+    ],
+    'Synoptic Essay (20 marks)': [
+      'Evaluate the impact of globalisation on businesses operating in the UK. [20 marks]',
+      'To what extent should multinational corporations prioritise ethical behaviour over profit maximisation in emerging economies? [20 marks]',
+      'Evaluate the strategies a multinational corporation should adopt to respond to cultural differences in global markets. [20 marks]',
+    ],
+  },
+};
+
+let aipState = { paper: null, qtype: null, question: null };
+
+function aipSelectPaper(num){
+  aipState.paper = num;
+  aipState.qtype = null;
+  aipState.question = null;
+  // Update pill styles
+  document.querySelectorAll('.aip-paper-pill').forEach((el,i)=>{
+    el.classList.toggle('selected', i === num-1);
+  });
+  // Render question type pills
+  const types = AIP_QTYPES[num];
+  const pillsEl = document.getElementById('aip-qtype-pills');
+  pillsEl.innerHTML = types.map(t=>`<div class="aip-qtype-pill" onclick="aipSelectQType('${t.label}')">${t.label} <span style="opacity:0.6;font-size:0.74rem">[${t.marks === 1 ? '1' : t.marks} marks]</span></div>`).join('');
+  document.getElementById('aip-qtype-group').style.display = 'block';
+  document.getElementById('aip-q-selector').style.display = 'none';
+  document.getElementById('aip-continue-btn').classList.remove('show');
+}
+
+function aipSelectQType(label){
+  aipState.qtype = label;
+  aipState.question = null;
+  // Highlight selected pill
+  document.querySelectorAll('.aip-qtype-pill').forEach(el=>{
+    el.classList.toggle('selected', el.textContent.trim().startsWith(label));
+  });
+  // Render question grid (if questions exist for this type)
+  const qs = (AIP_QUESTIONS[aipState.paper] || {})[label] || [];
+  const selectorEl = document.getElementById('aip-q-selector');
+  const gridEl = document.getElementById('aip-q-grid');
+  if(qs.length){
+    gridEl.innerHTML = qs.map((q,i)=>`
+      <div class="q-select-btn" id="aip-qbtn-${i}" onclick="aipSelectQ(${i})">
+        <div class="q-num">Q${i+1}</div>
+        <div class="q-text">${q}</div>
+      </div>`).join('');
+    selectorEl.style.display = 'block';
+  } else {
+    gridEl.innerHTML = '<p style="color:var(--text3);font-size:0.85rem">No preset questions for this type — use the custom input below.</p>';
+    selectorEl.style.display = 'block';
+  }
+  document.getElementById('aip-selected-q-display').style.display = 'none';
+  document.getElementById('aip-continue-btn').classList.remove('show');
+}
+
+function aipSelectQ(idx){
+  const qs = (AIP_QUESTIONS[aipState.paper] || {})[aipState.qtype] || [];
+  aipState.question = qs[idx];
+  document.querySelectorAll('#aip-q-grid .q-select-btn').forEach((b,i)=>b.classList.toggle('selected', i===idx));
+  document.getElementById('aip-selected-q-text').textContent = aipState.question;
+  document.getElementById('aip-selected-q-display').style.display = 'block';
+  document.getElementById('aip-continue-btn').classList.add('show');
+}
+
+function aipUseCustomQ(){
+  const val = document.getElementById('aip-custom-q').value.trim();
+  if(!val) return;
+  aipState.question = val;
+  document.querySelectorAll('#aip-q-grid .q-select-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('aip-selected-q-text').textContent = val;
+  document.getElementById('aip-selected-q-display').style.display = 'block';
+  document.getElementById('aip-continue-btn').classList.add('show');
+}
+
+function aipContinue(){
+  if(!aipState.question) return;
+  const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
+  const marks = qtypeData.marks;
+  const paperLabels = {1:'Paper 1',2:'Paper 2',3:'Paper 3'};
+  const paperClasses = {1:'p1',2:'p2',3:'p3'};
+  // Set writing screen content
+  document.getElementById('aip-paper-pill-label').textContent = paperLabels[aipState.paper];
+  document.getElementById('aip-paper-pill-label').className = `aip-meta-pill ${paperClasses[aipState.paper]}`;
+  document.getElementById('aip-qtype-label').textContent = aipState.qtype;
+  document.getElementById('aip-active-question').textContent = aipState.question;
+  document.getElementById('aip-mark-badge').textContent = `${marks} mark${marks!==1?'s':''}`;
+  // Tips
+  const tipsEl = document.getElementById('aip-tips-row');
+  tipsEl.innerHTML = `
+    <div class="aip-tip-card">
+      <h5>📋 Examiner Tips</h5>
+      <ul>${qtypeData.tips.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>
+    <div class="aip-tip-card">
+      <h5>🏗 Answer Structure</h5>
+      <ul>${qtypeData.structure.map(s=>`<li>${s}</li>`).join('')}</ul>
+    </div>`;
+  // Clear writing area
+  document.getElementById('aip-essay-text').value = '';
+  document.getElementById('aip-wc').textContent = '0 words';
+  document.getElementById('aip-feedback').classList.remove('show');
+  document.getElementById('aip-hint-box').classList.remove('show');
+  document.getElementById('aip-hint-text').textContent = '';
+  // Switch screens
+  document.getElementById('aip-setup-screen').classList.add('hide');
+  document.getElementById('aip-writing-screen').classList.add('show');
+  window.scrollTo(0,0);
+  aipTimerStart(aipState.qtype);
+}
+
+function aipGoBack(){
+  aipTimerStop();
+  document.getElementById('aip-setup-screen').classList.remove('hide');
+  document.getElementById('aip-writing-screen').classList.remove('show');
+  window.scrollTo(0,0);
+}
+
+function aipUpdateWC(){
+  const txt = document.getElementById('aip-essay-text').value;
+  const words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+  document.getElementById('aip-wc').textContent = words + ' words';
+}
+
+function aipClear(){
+  document.getElementById('aip-essay-text').value = '';
+  document.getElementById('aip-wc').textContent = '0 words';
+  document.getElementById('aip-feedback').classList.remove('show');
+}
+
+async function aipGetHint(){
+  const hintBox = document.getElementById('aip-hint-box');
+  const hintText = document.getElementById('aip-hint-text');
+  const hintLoading = document.getElementById('aip-hint-loading');
+  hintBox.classList.add('show');
+  hintLoading.style.display = 'flex';
+  hintText.textContent = '';
+  const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
+  const prompt = `You are an Edexcel A Level Business teacher. Give a student a brief planning hint for this question. Do NOT write the answer — just give 3-4 bullet points of what to include in their plan, key concepts to mention, and one example business they could reference. Keep it concise and practical.
+
+Question: ${aipState.question}
+Paper: ${aipState.paper}
+Question type: ${aipState.qtype} (${qtypeData.marks} marks)`;
+  try {
+    const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:400, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await resp.json();
+    const text = data.content?.map(c=>c.text||'').join('\n') || 'Could not generate hint.';
+    hintLoading.style.display = 'none';
+    hintText.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  } catch(e){
+    hintLoading.style.display = 'none';
+    hintText.textContent = '⚠️ Could not load hint. Check connection.';
+  }
+}
+
+async function aipSubmit(){
+  const ans = document.getElementById('aip-essay-text').value.trim();
+  if(ans.length < 30){ alert('Please write a more complete answer before submitting.'); return; }
+  const fbEl = document.getElementById('aip-feedback');
+  fbEl.classList.add('show');
+  fbEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>AI is reading your answer and preparing feedback...</div>';
+  const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
+  const marks = qtypeData.marks;
+  const prompt = `You are an experienced Edexcel A Level Business examiner. A student has answered the following exam question:
+
+PAPER: ${aipState.paper}
+QUESTION TYPE: ${aipState.qtype}
+QUESTION: ${aipState.question}
+MARKS AVAILABLE: ${marks}
+
+STUDENT ANSWER:
+${ans}
+
+Please provide detailed, constructive feedback as an Edexcel examiner. Your response MUST include:
+1. An overall mark out of ${marks} with a grade (A*=90%+, A=80%+, B=70%+, C=60%+, D=50%+, E=40%+, U=below)
+2. Knowledge & Application score: /${Math.round(marks*0.4)}
+3. Analysis score: /${Math.round(marks*0.3)}
+${marks >= 10 ? `4. Evaluation score: /${Math.round(marks*0.3)}` : ''}
+5. 3 specific strengths
+6. 3 specific, actionable improvements
+7. What a top answer would include
+${marks >= 10 ? '8. One example paragraph rewrite showing excellent technique' : ''}
+
+Be honest but encouraging. Reference specific parts of their answer. Use Edexcel-specific terminology. Tailor feedback to the question type: ${aipState.qtype}.`;
+  try {
+    const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{role:'user',content:prompt}] })
+    });
+    if(!resp.ok){ const err = await resp.json().catch(()=>({})); fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ API Error: ${err.error?.message||'HTTP '+resp.status}</div>`; return; }
+    const data = await resp.json();
+    const text = data.content?.map(c=>c.text||'').join('\n') || 'Unable to get feedback.';
+    fbEl.innerHTML = formatFeedback(text, marks);
+    state.essaysGraded = (state.essaysGraded||0) + 1;
+    const xp = Math.round(30 + ans.split(/\s+/).length / 10);
+    addXP(xp, 'AI Practice essay graded');
+    addActivity('🤖', `AI Practice: ${aipState.question.substring(0,40)}...`, xp);
+    saveState();
+  } catch(e){
+    fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ Error: ${e.message}</div>`;
+  }
+}
+
+
+
+// ============================================================
+// AI PRACTICE TIMER
+// ============================================================
+const AIP_SUGGESTED_TIMES = {
+  'Multiple Choice':           { mins: 2,  label: '~2 min' },
+  'Short Answer (2–3 marks)':  { mins: 5,  label: '~5 min' },
+  'Calculation (4 marks)':     { mins: 8,  label: '~8 min' },
+  'Calculation (4–6 marks)':   { mins: 10, label: '~10 min' },
+  'Explain (6 marks)':         { mins: 10, label: '~10 min' },
+  'Analyse (8 marks)':         { mins: 12, label: '~12 min' },
+  'Evaluate (10 marks)':       { mins: 16, label: '~16 min' },
+  'Extended Essay (20 marks)': { mins: 35, label: '~35 min' },
+  'Short Context (4–6 marks)': { mins: 8,  label: '~8 min' },
+  'Analysis (8–12 marks)':     { mins: 18, label: '~18 min' },
+  'Evaluation (10–12 marks)':  { mins: 18, label: '~18 min' },
+  'Synoptic Essay (20 marks)': { mins: 35, label: '~35 min' },
+};
+
+let _timerSeconds = 0;
+let _timerInterval = null;
+let _timerPaused = false;
+let _timerSuggestedMins = null;
+
+function aipTimerStart(qtypeLabel){
+  aipTimerStop();
+  _timerSeconds = 0;
+  _timerPaused = false;
+  const suggested = AIP_SUGGESTED_TIMES[qtypeLabel];
+  _timerSuggestedMins = suggested ? suggested.mins : null;
+  const sugEl = document.getElementById('aip-timer-suggested');
+  sugEl.innerHTML = suggested
+    ? `Suggested: <span>${suggested.label}</span>`
+    : `Suggested: <span>varies</span>`;
+  aipTimerRender();
+  document.getElementById('aip-timer-wrap').classList.add('show');
+  document.getElementById('aip-timer-toggle-btn').textContent = '⏸ Pause';
+  _timerInterval = setInterval(()=>{ if(!_timerPaused){ _timerSeconds++; aipTimerRender(); } }, 1000);
+}
+
+function aipTimerStop(){
+  if(_timerInterval){ clearInterval(_timerInterval); _timerInterval = null; }
+  document.getElementById('aip-timer-wrap').classList.remove('show');
+}
+
+function aipTimerToggle(){
+  _timerPaused = !_timerPaused;
+  document.getElementById('aip-timer-toggle-btn').textContent = _timerPaused ? '▶ Resume' : '⏸ Pause';
+}
+
+function aipTimerReset(){
+  _timerSeconds = 0;
+  _timerPaused = false;
+  document.getElementById('aip-timer-toggle-btn').textContent = '⏸ Pause';
+  aipTimerRender();
+}
+
+function aipTimerRender(){
+  const m = Math.floor(_timerSeconds / 60);
+  const s = _timerSeconds % 60;
+  const over = _timerSuggestedMins && _timerSeconds > _timerSuggestedMins * 60;
+  document.getElementById('aip-timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  document.getElementById('aip-timer-display').className = 'aip-timer-time' + (over ? ' over' : '');
+  document.getElementById('aip-timer-dot').className = 'aip-timer-dot' + (over ? ' over' : '');
+}
 
 // Close modals on overlay click
 document.querySelectorAll('.modal-overlay').forEach(o=>{
   o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('show'); });
 });
 </script>
+<!-- TIMER WIDGET -->
+<div class="aip-timer-wrap" id="aip-timer-wrap">
+  <div class="aip-timer-top">
+    <div class="aip-timer-dot" id="aip-timer-dot"></div>
+    <span class="aip-timer-time" id="aip-timer-display">0:00</span>
+  </div>
+  <div class="aip-timer-suggested" id="aip-timer-suggested">Suggested: <span>—</span></div>
+  <div class="aip-timer-btns">
+    <div class="aip-timer-btn" onclick="aipTimerToggle()" id="aip-timer-toggle-btn">⏸ Pause</div>
+    <div class="aip-timer-btn danger" onclick="aipTimerReset()">↺ Reset</div>
+  </div>
+</div>
+
 </body>
 </html>
