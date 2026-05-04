@@ -2394,10 +2394,13 @@ score: 2=correct, 1=partial, 0=wrong.`;
     });
     const data = await resp.json();
     const raw = data.content?.map(c=>c.text||'').join('') || '';
-    const clean = raw.replace(/```json|```/g,'').trim();
+    // Strip markdown fences and extract JSON object from anywhere in the string
+    let clean = raw.replace(/```json|```/gi,'').trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
     let result;
-    try { result = JSON.parse(clean); }
-    catch { result = {verdict:'wrong', score:0, feedback:'Could not parse response. The correct formula is: ' + f.eq}; }
+    try { result = jsonMatch ? JSON.parse(jsonMatch[0]) : null; }
+    catch { result = null; }
+    if(!result){ result = {verdict:'wrong', score:0, feedback:'Could not parse response. The correct formula is: ' + f.eq}; }
 
     const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
     const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
