@@ -2266,7 +2266,10 @@ function getSelectedFormulas(){
 
 function startEqSession(){
   const cards = getSelectedFormulas();
-  if(!cards.length){ alert('Select at least one paper.'); return; }
+  if(!cards.length){
+    document.getElementById('eq-arena').innerHTML = '<div class="fc-empty" style="color:var(--red)"><div class="emoji">⚠️</div><p>Select at least one paper above first.</p></div>';
+    return;
+  }
   eqCards = cards;
   eqIdx = 0;
   eqStats = {correct:0, wrong:0};
@@ -2357,7 +2360,11 @@ async function checkEqAnswer(){
   if(eqChecking) return;
   const f = eqCards[eqIdx];
   const answer = (document.getElementById('eq-gap-input')?.value || '').trim();
-  if(!answer){ alert('Please write a formula first.'); return; }
+  if(!answer){
+    const inp = document.getElementById('eq-gap-input');
+    if(inp){ inp.style.borderColor='var(--red)'; inp.placeholder='Write your formula above first…'; setTimeout(()=>{ inp.style.borderColor=''; inp.placeholder='e.g. Fixed Costs ÷ Contribution per Unit'; },2000); }
+    return;
+  }
 
   eqChecking = true;
   const btn = document.getElementById('eq-check-btn');
