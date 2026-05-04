@@ -1952,32 +1952,32 @@ function formatFeedback(text, marks){
 // ============================================================
 const FORMULAS = {
   p1: [
-    {name:'Market Share (%)',eq:'(Sales of business ÷ Total market sales) × 100'},
-    {name:'Price Elasticity (PED)',eq:'% Δ Quantity Demanded ÷ % Δ Price'},
-    {name:'Income Elasticity (YED)',eq:'% Δ Quantity Demanded ÷ % Δ Income'},
-    {name:'Net Cash Flow',eq:'Total Inflows − Total Outflows'},
-    {name:'Sales Revenue',eq:'Units Sold × Selling Price'},
+    {name:'Market Share (%)',eq:'(Sales of business / Total market sales) x 100'},
+    {name:'Price Elasticity (PED)',eq:'% change in Quantity Demanded / % change in Price'},
+    {name:'Income Elasticity (YED)',eq:'% change in Quantity Demanded / % change in Income'},
+    {name:'Net Cash Flow',eq:'Total Inflows - Total Outflows'},
+    {name:'Sales Revenue',eq:'Units Sold x Selling Price'},
     {name:'Total Costs',eq:'Fixed Costs + Total Variable Costs'},
-    {name:'Contribution per Unit',eq:'Selling Price − Variable Cost per Unit'},
-    {name:'Break-Even Output',eq:'Fixed Costs ÷ Contribution per Unit'},
-    {name:'Gross Profit Margin',eq:'(Gross Profit ÷ Sales Revenue) × 100'},
-    {name:'Labour Productivity',eq:'Output ÷ Number of Employees'},
-    {name:'Capacity Utilisation',eq:'(Actual Output ÷ Max Possible Output) × 100'},
-    {name:'Labour Turnover',eq:'(Staff Leaving ÷ Total Staff) × 100'},
+    {name:'Contribution per Unit',eq:'Selling Price - Variable Cost per Unit'},
+    {name:'Break-Even Output',eq:'Fixed Costs / Contribution per Unit'},
+    {name:'Gross Profit Margin (%)',eq:'(Gross Profit / Sales Revenue) x 100'},
+    {name:'Labour Productivity',eq:'Output / Number of Employees'},
+    {name:'Capacity Utilisation (%)',eq:'(Actual Output / Max Possible Output) x 100'},
+    {name:'Labour Turnover (%)',eq:'(Staff Leaving / Total Staff) x 100'},
   ],
   p2: [
-    {name:'ARR (%)',eq:'(Average Annual Profit ÷ Initial Outlay) × 100'},
-    {name:'Average Annual Profit',eq:'(Total Net Cash Flow − Initial Investment) ÷ Years'},
-    {name:'Net Present Value',eq:'Σ (Cash Flow × Discount Factor) − Initial Investment'},
-    {name:'Expected Value (Decision Tree)',eq:'Financial Outcome × Probability'},
-    {name:'Net Gain (Decision Tree)',eq:'Total Expected Value − Cost of Decision'},
-    {name:'Float (CPA)',eq:'Latest Finish Time − Earliest Start Time − Duration'},
-    {name:'ROCE (%)',eq:'(Operating Profit ÷ Capital Employed) × 100'},
-    {name:'Gearing (%)',eq:'(Long-term Debt ÷ Capital Employed) × 100'},
-    {name:'Current Ratio',eq:'Current Assets ÷ Current Liabilities'},
-    {name:'Acid Test Ratio',eq:'(Current Assets − Stock) ÷ Current Liabilities'},
-    {name:'Operating Profit Margin',eq:'(Operating Profit ÷ Revenue) × 100'},
-    {name:'% Change',eq:'(Difference ÷ Original) × 100'},
+    {name:'ARR (%)',eq:'(Average Annual Profit / Initial Outlay) x 100'},
+    {name:'Average Annual Profit',eq:'(Total Net Cash Flow - Initial Investment) / Number of Years'},
+    {name:'Net Present Value',eq:'Sum of (Cash Flow x Discount Factor) - Initial Investment'},
+    {name:'Expected Value (Decision Tree)',eq:'Financial Outcome x Probability'},
+    {name:'Net Gain (Decision Tree)',eq:'Total Expected Value - Cost of Decision'},
+    {name:'Float (CPA)',eq:'Latest Finish Time - Earliest Start Time - Duration'},
+    {name:'ROCE (%)',eq:'(Operating Profit / Capital Employed) x 100'},
+    {name:'Gearing (%)',eq:'(Long-term Debt / Capital Employed) x 100'},
+    {name:'Current Ratio',eq:'Current Assets / Current Liabilities'},
+    {name:'Acid Test Ratio',eq:'(Current Assets - Stock) / Current Liabilities'},
+    {name:'Operating Profit Margin (%)',eq:'(Operating Profit / Revenue) x 100'},
+    {name:'Percentage Change (%)',eq:'(Difference / Original Value) x 100'},
   ]
 };
 
@@ -2324,7 +2324,7 @@ function renderEqCard(){
         <div class="eq-gap-paper">${f.paper}</div>
         <div class="eq-gap-name">${f.name}</div>
         <div class="eq-gap-label">Write the formula:</div>
-        <textarea class="eq-gap-input" id="eq-gap-input" placeholder="e.g. Fixed Costs ÷ Contribution per Unit" rows="2"></textarea>
+        <textarea class="eq-gap-input" id="eq-gap-input" placeholder="e.g. Fixed Costs / Contribution per Unit" rows="2"></textarea>
         <div class="eq-gap-actions">
           <button class="btn btn-primary" id="eq-check-btn" onclick="checkEqAnswer()">✨ Check with AI</button>
           <button class="btn btn-ghost" onclick="revealEqAnswer()">Show Answer</button>
@@ -2362,7 +2362,7 @@ async function checkEqAnswer(){
   const answer = (document.getElementById('eq-gap-input')?.value || '').trim();
   if(!answer){
     const inp = document.getElementById('eq-gap-input');
-    if(inp){ inp.style.borderColor='var(--red)'; inp.placeholder='Write your formula above first…'; setTimeout(()=>{ inp.style.borderColor=''; inp.placeholder='e.g. Fixed Costs ÷ Contribution per Unit'; },2000); }
+    if(inp){ inp.style.borderColor='var(--red)'; inp.placeholder='Write your formula above first…'; setTimeout(()=>{ inp.style.borderColor=''; inp.placeholder='e.g. Fixed Costs / Contribution per Unit'; },2000); }
     return;
   }
 
@@ -2380,10 +2380,10 @@ Formula name: "${f.name}"
 Correct formula: "${f.eq}"
 Student's answer: "${answer}"
 
-Assess the student's formula. Be lenient with formatting (e.g. × vs x, ÷ vs /, missing brackets for grouping if the intent is clear). Respond in EXACTLY this JSON format with no other text:
-{"verdict":"correct"|"partial"|"wrong","score":0|1|2,"feedback":"One sentence explaining what was right or wrong and the exact correct formula."}
+The formulas use simple symbols: + - x / and brackets. Assess whether the student has the right components and operations. Be lenient with exact wording of variable names if the meaning is clear. Respond in EXACTLY this JSON format with no other text:
+{"verdict":"correct"|"partial"|"wrong","score":0|1|2,"feedback":"One sentence explaining what was right or wrong and stating the correct formula."}
 
-verdict: "correct" if fully right, "partial" if the key components are there but formatting/order is off, "wrong" if key terms are missing or wrong.
+verdict: "correct" if all key terms and operations are right, "partial" if the main idea is there but something is missing or wrong, "wrong" if the core formula is incorrect.
 score: 2=correct, 1=partial, 0=wrong.`;
 
   try {
