@@ -409,6 +409,38 @@ tr:hover td{background:var(--bg3);}
 .aip-hint-box{background:var(--bg3);border:1px solid rgba(108,99,255,0.25);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:0.85rem;color:var(--text2);line-height:1.6;display:none;}
 .aip-hint-box.show{display:block;}
 
+/* FLASHCARD / EQUATION MODE SWITCH */
+.fc-mode-switch{display:flex;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:5px;width:fit-content;margin-bottom:4px;}
+.fc-mode-btn{padding:8px 20px;border-radius:var(--radius-sm);font-size:0.875rem;font-weight:500;cursor:pointer;transition:var(--transition);color:var(--text2);border:none;background:none;}
+.fc-mode-btn.active{background:var(--bg4);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+/* EQUATION CONTROLS */
+.eq-controls{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
+.eq-paper-check{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:0.85rem;font-weight:600;padding:7px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg2);transition:var(--transition);}
+.eq-paper-check input[type=checkbox]{appearance:none;width:15px;height:15px;border-radius:3px;border:1px solid var(--border2);background:var(--bg3);flex-shrink:0;cursor:pointer;transition:var(--transition);position:relative;}
+.eq-paper-check input[type=checkbox]:checked::after{content:'✓';position:absolute;color:#fff;font-size:0.6rem;font-weight:700;top:50%;left:50%;transform:translate(-50%,-50%);}
+.eq-paper-check.p1 input:checked{background:var(--accent);border-color:var(--accent);}
+.eq-paper-check.p2 input:checked{background:var(--gold);border-color:var(--gold);}
+.eq-paper-check.p1{color:var(--accent2);}
+.eq-paper-check.p2{color:var(--gold);}
+.eq-mode-toggle{display:flex;gap:8px;width:fit-content;}
+.eq-mode-btn{padding:8px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:0.85rem;font-weight:500;cursor:pointer;transition:var(--transition);}
+.eq-mode-btn.active{border-color:var(--accent);background:rgba(108,99,255,0.12);color:var(--accent2);font-weight:600;}
+/* FILL-THE-GAP CARD */
+.eq-gap-card{width:100%;max-width:600px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:36px;margin-bottom:20px;}
+.eq-gap-name{font-size:1.2rem;font-weight:600;margin-bottom:6px;}
+.eq-gap-paper{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px;}
+.eq-gap-label{font-size:0.78rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
+.eq-gap-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;color:var(--text);font-size:0.95rem;font-family:'Space Mono',monospace;outline:none;resize:none;min-height:60px;line-height:1.5;transition:var(--transition);}
+.eq-gap-input:focus{border-color:var(--accent);}
+.eq-gap-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+.eq-ai-result{margin-top:16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;font-size:0.875rem;line-height:1.6;display:none;}
+.eq-ai-result.show{display:block;}
+.eq-ai-result.correct{border-color:rgba(16,217,138,0.4);background:rgba(16,217,138,0.06);}
+.eq-ai-result.wrong{border-color:rgba(255,92,106,0.4);background:rgba(255,92,106,0.06);}
+.eq-ai-result.partial{border-color:rgba(245,200,66,0.4);background:rgba(245,200,66,0.06);}
+.eq-result-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-weight:600;font-size:0.9rem;}
+.eq-flash-back .fc-def{font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent2);}
+
 /* TIMER */
 .aip-timer-wrap{position:fixed;bottom:28px;left:28px;z-index:500;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow);min-width:160px;display:none;}
 .aip-timer-wrap.show{display:block;}
@@ -747,23 +779,81 @@ tr:hover td{background:var(--bg3);}
 <div class="page" id="page-flashcards">
   <div class="paper-page">
     <span class="back-btn" onclick="showPage('home')">← Back to Home</span>
-    <div class="paper-header">
-      <h1>🃏 Adaptive Flashcards</h1>
-      <p>SM-2 spaced repetition algorithm. Cards you find hard appear more often. Cards you know well are spaced out over time.</p>
+
+    <!-- MODE SWITCHER -->
+    <div class="fc-mode-switch">
+      <button class="fc-mode-btn active" id="fcmode-cards" onclick="switchFcMode('cards')">🃏 Term Flashcards</button>
+      <button class="fc-mode-btn" id="fcmode-eq" onclick="switchFcMode('eq')">∑ Equation Practice</button>
     </div>
-    <div class="flashcard-controls">
-      <div id="fc-filters" style="width:100%"></div>
-      <div style="display:flex;gap:10px;align-items:center;margin-top:16px;">
-        <button class="btn btn-primary" onclick="startSession()">Start Session →</button>
-        <button class="btn btn-ghost" onclick="resetSession()">Reset</button>
+
+    <!-- TERM FLASHCARDS PANEL -->
+    <div id="fc-cards-panel">
+      <div class="paper-header" style="margin-top:16px">
+        <h1>🃏 Adaptive Flashcards</h1>
+        <p>SM-2 spaced repetition algorithm. Cards you find hard appear more often. Cards you know well are spaced out over time.</p>
+      </div>
+      <div class="flashcard-controls">
+        <div id="fc-filters" style="width:100%"></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:16px;">
+          <button class="btn btn-primary" onclick="startSession()">Start Session →</button>
+          <button class="btn btn-ghost" onclick="resetSession()">Reset</button>
+        </div>
+      </div>
+      <div class="flashcard-arena" id="fc-arena">
+        <div class="fc-empty">
+          <div class="emoji">🃏</div>
+          <p>Select topics above and click "Start Session" to begin</p>
+        </div>
       </div>
     </div>
-    <div class="flashcard-arena" id="fc-arena">
-      <div class="fc-empty">
-        <div class="emoji">🃏</div>
-        <p>Select topics above and click "Start Session" to begin</p>
+
+    <!-- EQUATIONS PANEL -->
+    <div id="fc-eq-panel" style="display:none">
+      <div class="paper-header" style="margin-top:16px">
+        <h1>∑ Equation Practice</h1>
+        <p>Practice key formulas as flashcards or fill-in-the-gaps — AI checks your working in real time.</p>
+      </div>
+
+      <!-- Equation controls -->
+      <div class="eq-controls">
+        <div style="width:100%">
+          <!-- Paper filter -->
+          <div class="fc-select-all-row" style="margin-bottom:10px">
+            <input type="checkbox" id="eq-all-check" checked onchange="eqToggleAll(this)">
+            <label for="eq-all-check" style="font-size:0.78rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;cursor:pointer">All Papers</label>
+            <span id="eq-selected-count" style="font-size:0.78rem;color:var(--text3);margin-left:auto"></span>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+            <label class="eq-paper-check p1">
+              <input type="checkbox" data-eq-paper="p1" checked onchange="eqPaperChange()"> Paper 1
+            </label>
+            <label class="eq-paper-check p2">
+              <input type="checkbox" data-eq-paper="p2" checked onchange="eqPaperChange()"> Paper 2
+            </label>
+          </div>
+          <!-- Mode toggle -->
+          <div style="font-size:0.78rem;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Practice Mode</div>
+          <div class="eq-mode-toggle">
+            <button class="eq-mode-btn active" id="eqmode-flash" onclick="setEqMode('flash')">🃏 Flashcard</button>
+            <button class="eq-mode-btn" id="eqmode-gap" onclick="setEqMode('gap')">✍️ Fill the Gap</button>
+          </div>
+          <p id="eq-mode-desc" style="font-size:0.82rem;color:var(--text3);margin-top:8px;margin-bottom:0">You'll see the formula name — flip to reveal the full equation.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:16px">
+          <button class="btn btn-primary" onclick="startEqSession()">Start Session →</button>
+          <button class="btn btn-ghost" onclick="resetEqSession()">Reset</button>
+        </div>
+      </div>
+
+      <!-- Equation arena -->
+      <div class="flashcard-arena" id="eq-arena">
+        <div class="fc-empty">
+          <div class="emoji">∑</div>
+          <p>Select papers and a mode, then click "Start Session"</p>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -2115,6 +2205,261 @@ function confirmReset(){
 }
 
 // ============================================================
+// EQUATION PRACTICE SYSTEM
+// ============================================================
+
+// Build ALL_FORMULAS flat list with paper label
+const ALL_FORMULAS = [
+  ...FORMULAS.p1.map(f=>({...f, paper:'Paper 1', paperId:'p1'})),
+  ...FORMULAS.p2.map(f=>({...f, paper:'Paper 2', paperId:'p2'})),
+];
+
+let eqMode = 'flash'; // 'flash' | 'gap'
+let eqCards = [];
+let eqIdx = 0;
+let eqStats = {correct:0, wrong:0};
+let eqChecking = false;
+
+function switchFcMode(mode){
+  document.getElementById('fc-cards-panel').style.display = mode === 'cards' ? 'block' : 'none';
+  document.getElementById('fc-eq-panel').style.display   = mode === 'eq'    ? 'block' : 'none';
+  document.getElementById('fcmode-cards').classList.toggle('active', mode === 'cards');
+  document.getElementById('fcmode-eq').classList.toggle('active', mode === 'eq');
+  eqUpdateCount();
+}
+
+function setEqMode(mode){
+  eqMode = mode;
+  document.getElementById('eqmode-flash').classList.toggle('active', mode === 'flash');
+  document.getElementById('eqmode-gap').classList.toggle('active', mode === 'gap');
+  document.getElementById('eq-mode-desc').textContent = mode === 'flash'
+    ? "You'll see the formula name — flip to reveal the full equation."
+    : "You'll see the formula name — type in the equation and the AI will check it for you.";
+}
+
+function eqToggleAll(cb){
+  document.querySelectorAll('input[data-eq-paper]').forEach(p => p.checked = cb.checked);
+  eqUpdateCount();
+}
+
+function eqPaperChange(){
+  const checks = [...document.querySelectorAll('input[data-eq-paper]')];
+  const n = checks.filter(c=>c.checked).length;
+  const allCb = document.getElementById('eq-all-check');
+  if(n === 0){ allCb.checked = false; allCb.indeterminate = false; }
+  else if(n === checks.length){ allCb.checked = true; allCb.indeterminate = false; }
+  else { allCb.checked = false; allCb.indeterminate = true; }
+  eqUpdateCount();
+}
+
+function eqUpdateCount(){
+  const selected = new Set([...document.querySelectorAll('input[data-eq-paper]:checked')].map(c=>c.dataset.eqPaper));
+  const count = ALL_FORMULAS.filter(f=>selected.has(f.paperId)).length;
+  const el = document.getElementById('eq-selected-count');
+  if(el) el.textContent = `${count} formula${count===1?'':'s'} selected`;
+}
+
+function getSelectedFormulas(){
+  const selected = new Set([...document.querySelectorAll('input[data-eq-paper]:checked')].map(c=>c.dataset.eqPaper));
+  return ALL_FORMULAS.filter(f=>selected.has(f.paperId)).sort(()=>Math.random()-0.5);
+}
+
+function startEqSession(){
+  const cards = getSelectedFormulas();
+  if(!cards.length){ alert('Select at least one paper.'); return; }
+  eqCards = cards;
+  eqIdx = 0;
+  eqStats = {correct:0, wrong:0};
+  renderEqCard();
+}
+
+function resetEqSession(){
+  eqCards = [];
+  document.getElementById('eq-arena').innerHTML = '<div class="fc-empty"><div class="emoji">∑</div><p>Select papers and a mode, then click "Start Session"</p></div>';
+}
+
+function renderEqCard(){
+  const arena = document.getElementById('eq-arena');
+  if(eqIdx >= eqCards.length){ showEqComplete(); return; }
+  const f = eqCards[eqIdx];
+  const total = eqCards.length;
+  const pct = Math.round((eqIdx / total) * 100);
+
+  const progressHtml = `
+    <div class="fc-progress" style="max-width:600px;width:100%">
+      <div class="fc-progress-bar"><div class="fc-progress-fill" style="width:${pct}%"></div></div>
+      <div class="fc-stats-row">
+        <span style="color:var(--green)">✓ ${eqStats.correct}</span>
+        <span style="color:var(--red)">✗ ${eqStats.wrong}</span>
+        <span style="color:var(--text3)">${eqIdx}/${total}</span>
+      </div>
+    </div>`;
+
+  if(eqMode === 'flash'){
+    arena.innerHTML = progressHtml + `
+      <div class="flashcard" id="eq-flash-card" onclick="flipEqCard()">
+        <div class="flashcard-face flashcard-front">
+          <div class="fc-topic-tag">${f.paper}</div>
+          <div class="fc-term">${f.name}</div>
+          <div class="fc-hint">Tap to reveal formula</div>
+        </div>
+        <div class="flashcard-face flashcard-back eq-flash-back">
+          <div class="fc-topic-tag">${f.paper}</div>
+          <div class="fc-term" style="font-size:1rem;margin-bottom:12px">${f.name}</div>
+          <div class="fc-def">${f.eq}</div>
+        </div>
+      </div>
+      <div class="fc-tap-hint" id="eq-tap">Tap card to flip</div>
+      <div class="fc-rating" id="eq-rating" style="display:none;max-width:600px;width:100%">
+        <button class="fc-rate-btn hard" onclick="rateEqCard(false)">😓 Didn't know it</button>
+        <button class="fc-rate-btn easy" onclick="rateEqCard(true)">✓ Got it</button>
+      </div>`;
+  } else {
+    // Fill the gap
+    arena.innerHTML = progressHtml + `
+      <div class="eq-gap-card" id="eq-gap-card">
+        <div class="eq-gap-paper">${f.paper}</div>
+        <div class="eq-gap-name">${f.name}</div>
+        <div class="eq-gap-label">Write the formula:</div>
+        <textarea class="eq-gap-input" id="eq-gap-input" placeholder="e.g. Fixed Costs ÷ Contribution per Unit" rows="2"></textarea>
+        <div class="eq-gap-actions">
+          <button class="btn btn-primary" id="eq-check-btn" onclick="checkEqAnswer()">✨ Check with AI</button>
+          <button class="btn btn-ghost" onclick="revealEqAnswer()">Show Answer</button>
+          <button class="btn btn-ghost" id="eq-next-btn" style="display:none" onclick="advanceEq(true)">Next →</button>
+        </div>
+        <div class="eq-ai-result" id="eq-ai-result"></div>
+        <div id="eq-reveal-box" style="display:none;margin-top:14px;padding:12px 14px;background:var(--bg3);border-radius:var(--radius-sm)">
+          <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">Correct formula</div>
+          <div style="font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent2)">${f.eq}</div>
+        </div>
+      </div>`;
+    // focus the textarea
+    setTimeout(()=>{ const inp = document.getElementById('eq-gap-input'); if(inp) inp.focus(); }, 100);
+  }
+}
+
+function flipEqCard(){
+  const card = document.getElementById('eq-flash-card');
+  if(!card) return;
+  card.classList.toggle('flipped');
+  document.getElementById('eq-tap').style.display = 'none';
+  document.getElementById('eq-rating').style.display = 'flex';
+}
+
+function rateEqCard(correct){
+  if(correct){ eqStats.correct++; addXP(5, `Equation: ${eqCards[eqIdx].name}`); }
+  else { eqStats.wrong++; addXP(2, `Equation: ${eqCards[eqIdx].name}`); }
+  eqIdx++;
+  renderEqCard();
+}
+
+async function checkEqAnswer(){
+  if(eqChecking) return;
+  const f = eqCards[eqIdx];
+  const answer = (document.getElementById('eq-gap-input')?.value || '').trim();
+  if(!answer){ alert('Please write a formula first.'); return; }
+
+  eqChecking = true;
+  const btn = document.getElementById('eq-check-btn');
+  const resultEl = document.getElementById('eq-ai-result');
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking...';
+  resultEl.className = 'eq-ai-result show';
+  resultEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>AI is checking your formula...</div>';
+
+  const prompt = `You are a precise A-Level Business maths checker.
+
+Formula name: "${f.name}"
+Correct formula: "${f.eq}"
+Student's answer: "${answer}"
+
+Assess the student's formula. Be lenient with formatting (e.g. × vs x, ÷ vs /, missing brackets for grouping if the intent is clear). Respond in EXACTLY this JSON format with no other text:
+{"verdict":"correct"|"partial"|"wrong","score":0|1|2,"feedback":"One sentence explaining what was right or wrong and the exact correct formula."}
+
+verdict: "correct" if fully right, "partial" if the key components are there but formatting/order is off, "wrong" if key terms are missing or wrong.
+score: 2=correct, 1=partial, 0=wrong.`;
+
+  try {
+    const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:200,
+        messages:[{role:'user', content:prompt}] })
+    });
+    const data = await resp.json();
+    const raw = data.content?.map(c=>c.text||'').join('') || '';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    let result;
+    try { result = JSON.parse(clean); }
+    catch { result = {verdict:'wrong', score:0, feedback:'Could not parse response. The correct formula is: ' + f.eq}; }
+
+    const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
+    const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
+    const colors = {correct:'var(--green)', partial:'var(--gold)', wrong:'var(--red)'};
+
+    resultEl.className = `eq-ai-result show ${result.verdict}`;
+    resultEl.innerHTML = `
+      <div class="eq-result-header" style="color:${colors[result.verdict]}">
+        ${icons[result.verdict]} ${labels[result.verdict]}
+      </div>
+      <div style="color:var(--text2)">${result.feedback}</div>
+      ${result.verdict !== 'correct' ? `<div style="margin-top:10px;padding:8px 12px;background:var(--bg4);border-radius:6px;font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--accent2)">${f.eq}</div>` : ''}`;
+
+    // XP
+    const xpMap = {correct:8, partial:4, wrong:1};
+    addXP(xpMap[result.verdict], `Equation fill-gap: ${f.name}`, false);
+    if(result.score < 2) eqStats.wrong++; else eqStats.correct++;
+
+    // Show next button
+    document.getElementById('eq-next-btn').style.display = 'inline-flex';
+    btn.style.display = 'none';
+
+  } catch(e){
+    resultEl.className = 'eq-ai-result show wrong';
+    resultEl.innerHTML = `<div style="color:var(--red)">⚠️ Could not connect to AI. Check your connection.</div>`;
+    btn.disabled = false;
+    btn.textContent = '✨ Check with AI';
+  }
+  eqChecking = false;
+}
+
+function revealEqAnswer(){
+  const box = document.getElementById('eq-reveal-box');
+  if(box) box.style.display = 'block';
+  const nextBtn = document.getElementById('eq-next-btn');
+  if(nextBtn) nextBtn.style.display = 'inline-flex';
+  // Count as wrong if they gave up without checking
+  const resultEl = document.getElementById('eq-ai-result');
+  if(resultEl && !resultEl.classList.contains('show')){
+    eqStats.wrong++;
+    addXP(1, `Equation revealed: ${eqCards[eqIdx].name}`);
+  }
+}
+
+function advanceEq(countedAlready){
+  eqIdx++;
+  eqChecking = false;
+  renderEqCard();
+}
+
+function showEqComplete(){
+  const arena = document.getElementById('eq-arena');
+  const total = eqCards.length;
+  const pct = total > 0 ? Math.round((eqStats.correct/total)*100) : 0;
+  addActivity('∑', `Equations session — ${eqStats.correct}/${total} correct`, eqStats.correct * 5);
+  saveState();
+  arena.innerHTML = `
+    <div class="session-complete">
+      <div class="big-emoji">${pct>=80?'🏆':pct>=60?'⭐':'📚'}</div>
+      <h3>Session Complete!</h3>
+      <p>${eqStats.correct} correct · ${eqStats.wrong} incorrect · ${pct}% accuracy</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
+        <button class="btn btn-primary" onclick="startEqSession()">Go Again →</button>
+        <button class="btn btn-ghost" onclick="resetEqSession()">Done</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
 // INIT
 // ============================================================
 function init(){
@@ -2125,6 +2470,7 @@ function init(){
   buildFlashcardFilters();
   buildFormulaGrids();
   buildPrerelease();
+  eqUpdateCount();
   updateUI();
   startActiveTracking();
   // Open first topic on each paper
