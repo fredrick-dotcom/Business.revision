@@ -2392,6 +2392,9 @@ score: 2=correct, 1=partial, 0=wrong.`;
       body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:200,
         messages:[{role:'user', content:prompt}] })
     });
+
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+
     const data = await resp.json();
     const raw = data.content?.map(c=>c.text||'').join('') || '';
     // Strip markdown fences and extract JSON object from anywhere in the string
@@ -2400,7 +2403,7 @@ score: 2=correct, 1=partial, 0=wrong.`;
     let result;
     try { result = jsonMatch ? JSON.parse(jsonMatch[0]) : null; }
     catch { result = null; }
-    if(!result){ result = {verdict:'wrong', score:0, feedback:'Could not parse response. The correct formula is: ' + f.eq}; }
+    if(!result){ result = localEqCheck(answer, f.eq); }
 
     const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
     const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
@@ -2424,12 +2427,38 @@ score: 2=correct, 1=partial, 0=wrong.`;
     btn.style.display = 'none';
 
   } catch(e){
-    resultEl.className = 'eq-ai-result show wrong';
-    resultEl.innerHTML = `<div style="color:var(--red)">⚠️ Could not connect to AI. Check your connection.</div>`;
-    btn.disabled = false;
-    btn.textContent = '✨ Check with AI';
+    // AI unavailable — fall back to local string comparison
+    const result = localEqCheck(answer, f.eq);
+    const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
+    const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
+    const colors = {correct:'var(--green)', partial:'var(--gold)', wrong:'var(--red)'};
+    resultEl.className = `eq-ai-result show ${result.verdict}`;
+    resultEl.innerHTML = `
+      <div class="eq-result-header" style="color:${colors[result.verdict]}">
+        ${icons[result.verdict]} ${labels[result.verdict]} <span style="font-size:0.72rem;opacity:0.6;font-weight:400">(checked locally)</span>
+      </div>
+      <div style="color:var(--text2)">${result.feedback}</div>
+      ${result.verdict !== 'correct' ? `<div style="margin-top:10px;padding:8px 12px;background:var(--bg4);border-radius:6px;font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--accent2)">${f.eq}</div>` : ''}`;
+    const xpMap = {correct:8, partial:4, wrong:1};
+    addXP(xpMap[result.verdict], `Equation fill-gap: ${f.name}`, false);
+    if(result.score < 2) eqStats.wrong++; else eqStats.correct++;
+    document.getElementById('eq-next-btn').style.display = 'inline-flex';
+    btn.style.display = 'none';
   }
   eqChecking = false;
+}
+
+// Local fuzzy check — normalises both strings and compares key tokens
+function localEqCheck(answer, correct){
+  const norm = s => s.toLowerCase().replace(/[()%]/g,'').replace(/\s+/g,' ').trim();
+  const tokens = s => norm(s).split(/[\s\/\+\-x\*]+/).filter(Boolean);
+  const ansTokens = tokens(answer);
+  const corTokens = tokens(correct);
+  const matched = corTokens.filter(t => ansTokens.includes(t)).length;
+  const ratio = matched / corTokens.length;
+  if(ratio >= 0.9) return {verdict:'correct', score:2, feedback:`Correct! The formula is: ${correct}`};
+  if(ratio >= 0.5) return {verdict:'partial', score:1, feedback:`Partially right — you got some terms but the formula is: ${correct}`};
+  return {verdict:'wrong', score:0, feedback:`Not quite. The correct formula is: ${correct}`};
 }
 
 function revealEqAnswer(){
