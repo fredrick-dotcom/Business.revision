@@ -2472,7 +2472,7 @@ function renderEqCard(){
     // Partial fill-the-gap
     const isPartial = f.gapIdx !== -1;
     const displayEq = isPartial ? f.gapDisplay : `${f.name} = ___`;
-    const placeholder = isPartial ? f.gapAnswer : 'Write the full formula…';
+    const placeholder = isPartial ? 'Type the missing term…' : 'Write the full formula…';
     // Highlight ___ in display
     const displayHtml = displayEq.replace(/___/g,
       '<span style="display:inline-block;min-width:80px;border-bottom:2px solid var(--accent);color:var(--accent2);font-weight:700;padding:0 4px">___</span>');
