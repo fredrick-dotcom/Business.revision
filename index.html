@@ -1209,8 +1209,11 @@ function renderWrongAnswers(){
     el.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No weak areas tracked yet.</div>';
     return;
   }
-  // Filter out any terms that no longer exist in the card pool
-  const visible = state.wrongAnswers.filter(w => ALL_FLASHCARDS.some(c=>c.term===w.term));
+  // Keep entries that exist in flashcard pool OR are equation formula entries (identified by topic ending in "Formula")
+  const allFormulaNames = new Set(ALL_FORMULAS.map(f => f.name));
+  const visible = state.wrongAnswers.filter(w =>
+    ALL_FLASHCARDS.some(c => c.term === w.term) || allFormulaNames.has(w.term)
+  );
   if(!visible.length){
     state.wrongAnswers = [];
     saveState();
@@ -1758,6 +1761,27 @@ function openFlashcardsFor(topicId){
 function retryWrong(idx){
   if(!state.wrongAnswers || !state.wrongAnswers[idx]) return;
   const w = state.wrongAnswers[idx];
+  // Check if it's an equation formula entry
+  const formulaEntry = ALL_FORMULAS.find(f => f.name === w.term && f.gapIdx !== -1);
+  if(formulaEntry){
+    // Navigate to flashcards → equations tab and pre-load just this formula
+    showPage('flashcards');
+    setTimeout(()=>{
+      switchFcMode('eq');
+      // Start a single-card session for this formula's gap variants
+      eqCards = ALL_FORMULAS.filter(f => f.name === w.term && f.gapIdx !== -1).sort(()=>Math.random()-0.5);
+      eqIdx = 0;
+      eqStats = {correct:0, wrong:0};
+      eqChecking = false;
+      renderEqCard();
+      showToast(`Practising: ${w.term}`);
+    }, 200);
+    state.wrongAnswers[idx].retried = true;
+    saveState();
+    renderWrongAnswers();
+    return;
+  }
+  // Regular flashcard entry
   const card = ALL_FLASHCARDS.find(c=>c.term===w.term);
   if(!card){ showToast('Card not found — it may have been removed.'); return; }
   sessionCards = [card];
@@ -2569,14 +2593,30 @@ function flipEqCard(){
 
 function rateEqCard(correct){
   const f = eqCards[eqIdx];
-  if(correct){ eqStats.correct++; addXP(5, `Equation: ${f.name}`); }
-  else { eqStats.wrong++; addXP(2, `Equation: ${f.name}`); }
+  if(correct){ 
+    eqStats.correct++; 
+    addXP(5, `Equation: ${f.name}`);
+    // Remove from weak list if now correct
+    if(state.wrongAnswers){
+      const wi = state.wrongAnswers.findIndex(w => w.term === f.name);
+      if(wi !== -1) state.wrongAnswers[wi].retried = true;
+    }
+  } else { 
+    eqStats.wrong++; 
+    addXP(2, `Equation: ${f.name}`);
+    // Add to weak areas
+    if(!state.wrongAnswers) state.wrongAnswers = [];
+    const exists = state.wrongAnswers.find(w => w.term === f.name);
+    if(exists){ exists.retried = false; }
+    else state.wrongAnswers.push({term: f.name, topic: `${f.paper} Formula`, paper: f.paper, retried: false});
+  }
   // Track in history
   if(!state.eqHistory) state.eqHistory = [];
   state.eqHistory.push({name:f.name, verdict:correct?'correct':'wrong', time:Date.now()});
   if(state.eqHistory.length > 200) state.eqHistory = state.eqHistory.slice(-200);
   state.equationsAnswered = (state.equationsAnswered||0) + 1;
   saveState();
+  renderWrongAnswers();
   eqIdx++;
   renderEqCard();
 }
@@ -2665,11 +2705,26 @@ The formulas use simple symbols: + - x / and brackets. Be lenient with exact wor
 
   const xpMap = {correct:8, partial:4, wrong:1};
   addXP(xpMap[result.verdict], `Equation gap: ${f.name}`);
-  if(result.score < 2) eqStats.wrong++; else eqStats.correct++;
+  if(result.score < 2){
+    eqStats.wrong++;
+    // Add to weak areas on wrong or partial
+    if(!state.wrongAnswers) state.wrongAnswers = [];
+    const exists = state.wrongAnswers.find(w => w.term === f.name);
+    if(exists){ exists.retried = false; }
+    else state.wrongAnswers.push({term: f.name, topic: `${f.paper} Formula`, paper: f.paper, retried: false});
+  } else {
+    eqStats.correct++;
+    // Mark as retried if previously weak
+    if(state.wrongAnswers){
+      const wi = state.wrongAnswers.findIndex(w => w.term === f.name);
+      if(wi !== -1) state.wrongAnswers[wi].retried = true;
+    }
+  }
 
   document.getElementById('eq-next-btn').style.display = 'inline-flex';
   btn.style.display = 'none';
   saveState();
+  renderWrongAnswers();
   eqChecking = false;
 }
 
@@ -2779,8 +2834,14 @@ function revealEqAnswer(){
     if(!state.eqHistory) state.eqHistory = [];
     state.eqHistory.push({name:f.name, gapIdx:f.gapIdx, verdict:'revealed', time:Date.now()});
     state.equationsAnswered = (state.equationsAnswered||0) + 1;
+    // Add to weak areas
+    if(!state.wrongAnswers) state.wrongAnswers = [];
+    const exists = state.wrongAnswers.find(w => w.term === f.name);
+    if(exists){ exists.retried = false; }
+    else state.wrongAnswers.push({term: f.name, topic: `${f.paper} Formula`, paper: f.paper, retried: false});
     addXP(1, `Equation revealed: ${f.name}`);
     saveState();
+    renderWrongAnswers();
   }
 }
 
