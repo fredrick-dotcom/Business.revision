@@ -1070,7 +1070,7 @@ tr:hover td{background:var(--bg3);}
 // ============================================================
 const DEFAULT_STATE = {
   name: 'Student', avatar: null,
-  xp: 0, level: 1, xpToNext: 500,
+  xp: 0, level: 1, xpToNext: 150,
   totalTime: 0, cardsReviewed: 0, essaysGraded: 0, equationsAnswered: 0,
   xpHistory: [], activityFeed: [], wrongAnswers: [],
   fcData: {},    // flashcard SM-2: term -> {interval, repetitions, efactor, dueDate, correct, wrong}
@@ -1125,7 +1125,7 @@ function addXP(amount, source, isRetry=false){
   while(state.xp >= state.xpToNext){
     state.xp -= state.xpToNext;
     state.level++;
-    state.xpToNext = Math.round(500 * Math.pow(1.3, state.level - 1));
+    state.xpToNext = Math.round(150 * Math.pow(1.25, state.level - 1));
     showToast(`You reached Level ${state.level}! — ${LEVEL_TITLES[Math.min(state.level-1, LEVEL_TITLES.length-1)]}`);
   }
   updateUI();
@@ -1209,7 +1209,7 @@ function renderWrongAnswers(){
     el.innerHTML = '<div style="color:var(--text3);font-size:0.85rem;padding:10px 0">No weak areas tracked yet.</div>';
     return;
   }
-  // Only show unretried or recently retried wrong items; filter out any with no matching card
+  // Filter out any terms that no longer exist in the card pool
   const visible = state.wrongAnswers.filter(w => ALL_FLASHCARDS.some(c=>c.term===w.term));
   if(!visible.length){
     state.wrongAnswers = [];
@@ -1220,13 +1220,15 @@ function renderWrongAnswers(){
   el.innerHTML = visible.slice(0,10).map((w,i)=>{
     const realIdx = state.wrongAnswers.findIndex(x => x.term === w.term);
     const paperLabel = w.paper ? `<span style="font-size:0.7rem;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:6px;margin-left:6px">${w.paper}</span>` : '';
+    const retriedBadge = w.retried ? `<span class="retry-badge">✓ Retried</span>` : '';
     return `<div class="wrong-item">
       <div style="width:6px;height:6px;border-radius:50%;background:${w.retried?'var(--green)':'var(--red)'};flex-shrink:0"></div>
       <div class="wi-text">${w.term}${paperLabel}<br><em style="font-size:0.75rem;color:var(--text3)">${w.topic}</em></div>
-      ${w.retried
-        ? `<span class="retry-badge">✓ Retried</span><button class="btn btn-ghost btn-sm" onclick="dismissWrong(${realIdx})" style="flex-shrink:0;margin-left:6px">Dismiss</button>`
-        : `<button class="btn btn-ghost btn-sm" onclick="retryWrong(${realIdx})" style="flex-shrink:0">Retry (+1.5× XP)</button>`
-      }
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${retriedBadge}
+        <button class="btn btn-ghost btn-sm" onclick="retryWrong(${realIdx})">Retry (+1.5× XP)</button>
+        <button class="btn btn-ghost btn-sm" onclick="dismissWrong(${realIdx})" style="color:var(--text3)">✕</button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -2286,7 +2288,9 @@ function savePhoto(){
 // DATA EXPORT / IMPORT
 // ============================================================
 function downloadData(){
-  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  // Tag the save with a version so future uploads can detect old saves
+  const saveData = {...state, _version: 2, _savedAt: new Date().toISOString()};
+  const blob = new Blob([JSON.stringify(saveData, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -2309,8 +2313,23 @@ function uploadData(e){
         `Restore save file?\n\nThis will replace ALL your current progress (Level ${state.level}, ${state.cardsReviewed||0} cards reviewed, ${state.essaysGraded||0} essays graded).\n\nThis cannot be undone. Continue?`
       );
       if(!confirmed) return;
-      state = {...DEFAULT_STATE, ...data};
+      // Deep merge: DEFAULT_STATE provides fallbacks for any fields missing in older saves
+      // Object fields (fcData, eqSm2) are merged at the top level; arrays replaced wholesale
+      state = {
+        ...DEFAULT_STATE,
+        ...data,
+        // Ensure object fields are always valid objects even if save predates them
+        fcData:    (data.fcData    && typeof data.fcData    === 'object') ? data.fcData    : {},
+        eqSm2:     (data.eqSm2    && typeof data.eqSm2     === 'object') ? data.eqSm2     : {},
+        // Ensure array fields are always valid arrays
+        xpHistory:    Array.isArray(data.xpHistory)    ? data.xpHistory    : [],
+        activityFeed: Array.isArray(data.activityFeed) ? data.activityFeed : [],
+        wrongAnswers: Array.isArray(data.wrongAnswers)  ? data.wrongAnswers  : [],
+        eqHistory:    Array.isArray(data.eqHistory)    ? data.eqHistory    : [],
+        aipHistory:   Array.isArray(data.aipHistory)   ? data.aipHistory   : [],
+      };
       saveState(); updateUI();
+      chartsBuilt = false; // force charts to re-render with restored data
       showToast('Save data restored successfully!');
     } catch(err){ alert('Could not read save file: '+err.message); }
   };
