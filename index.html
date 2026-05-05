@@ -182,6 +182,12 @@ main{padding-top:60px;min-height:100vh;}
 .spinner{width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
+/* MULTIPLE CHOICE OPTIONS */
+.aip-mc-options{display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}
+.aip-mc-opt{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 18px;text-align:left;color:var(--text);font-size:0.9rem;font-family:inherit;cursor:pointer;transition:var(--transition);line-height:1.4;}
+.aip-mc-opt:hover:not(:disabled){border-color:var(--accent);background:rgba(108,99,255,0.08);}
+.aip-mc-opt:disabled{cursor:default;}
+
 /* FLASHCARD SYSTEM */
 .flashcard-controls{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
 .fc-paper-group{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;}
@@ -1001,6 +1007,7 @@ tr:hover td{background:var(--bg3);}
       <div class="aip-tips-row" id="aip-tips-row"></div>
 
       <!-- AI HINT -->
+      <div id="aip-hint-btn-wrap">
       <button class="aip-ai-hint-btn" onclick="aipGetHint()">
         <span>✨</span> Get an AI Planning Hint
       </button>
@@ -1008,8 +1015,13 @@ tr:hover td{background:var(--bg3);}
         <div class="loading-spinner" id="aip-hint-loading" style="display:none"><div class="spinner"></div> Generating hint...</div>
         <div id="aip-hint-text"></div>
       </div>
+      </div>
+
+      <!-- MULTIPLE CHOICE INPUT -->
+      <div id="aip-mc-wrap" style="display:none"></div>
 
       <!-- ESSAY INPUT -->
+      <div id="aip-essay-box-wrap">
       <div class="ai-essay-box" style="margin-top:0;">
         <textarea class="essay-textarea" id="aip-essay-text" placeholder="Write your answer here..." oninput="aipUpdateWC()"></textarea>
         <div class="essay-controls">
@@ -1018,6 +1030,7 @@ tr:hover td{background:var(--bg3);}
           <span class="word-count" id="aip-wc">0 words</span>
         </div>
         <div class="ai-feedback-box" id="aip-feedback"></div>
+      </div>
       </div>
     </div>
 
@@ -2602,16 +2615,86 @@ The formulas use simple symbols: + - x / and brackets. Be lenient with exact wor
   eqChecking = false;
 }
 
+// Synonym groups — any terms within a group are treated as equivalent
+const EQ_SYNONYMS = [
+  ['sales of business','sales revenue','revenue','turnover','sales','income','total sales','total revenue'],
+  ['total market sales','total market revenue','market sales','market revenue','total market'],
+  ['variable cost per unit','variable costs per unit','variable cost','vc per unit','variable unit cost'],
+  ['fixed costs','fixed cost','total fixed costs','fc'],
+  ['contribution per unit','contribution','contrib per unit'],
+  ['number of employees','number of workers','workforce size','staff numbers','employees','workers','headcount'],
+  ['output','total output','production','units produced'],
+  ['actual output','actual production','current output'],
+  ['max possible output','maximum output','maximum capacity','max capacity','maximum possible output'],
+  ['staff leaving','leavers','employees leaving','workers leaving','number leaving'],
+  ['total staff','total workforce','total employees','total workers'],
+  ['gross profit','gross profit figure'],
+  ['sales revenue','revenue','turnover','sales','total revenue','total sales','income'],
+  ['operating profit','operating profit figure','op profit'],
+  ['initial outlay','initial investment','initial cost','investment cost','capital outlay','outlay'],
+  ['average annual profit','avg annual profit','mean annual profit','annual average profit'],
+  ['total net cash flow','total cash flow','net cash flow total','total net cashflow'],
+  ['number of years','years','project life','lifespan'],
+  ['discount factor','discount rate','discounting factor'],
+  ['financial outcome','outcome','cash outcome','financial result'],
+  ['probability','prob','likelihood'],
+  ['total expected value','total ev','expected value total'],
+  ['cost of decision','cost','decision cost'],
+  ['latest finish time','lft','latest finish'],
+  ['earliest start time','est','earliest start'],
+  ['duration','activity duration','time','length'],
+  ['long-term debt','long term debt','debt','borrowings','long-term liabilities'],
+  ['capital employed','total capital employed','ce'],
+  ['current assets','current asset total'],
+  ['current liabilities','current liability total'],
+  ['stock','inventory','inventories'],
+  ['difference','change','net change'],
+  ['original value','original','base value','starting value'],
+  ['selling price','sale price','price per unit','price'],
+];
+
+function normTerm(s){ return s.toLowerCase().replace(/[()%\-]/g,' ').replace(/\s+/g,' ').trim(); }
+
+function synonymMatch(answer, correct){
+  const a = normTerm(answer);
+  const c = normTerm(correct);
+  if(a === c) return true;
+  for(const group of EQ_SYNONYMS){
+    const normGroup = group.map(normTerm);
+    if(normGroup.includes(c) && normGroup.includes(a)) return true;
+  }
+  return false;
+}
+
 function localEqCheck(answer, correct){
-  const norm = s => s.toLowerCase().replace(/[()%]/g,'').replace(/\s+/g,' ').trim();
-  const tokens = s => norm(s).split(/[\s\/\+\-x\*]+/).filter(Boolean);
+  // Direct or synonym match → correct immediately
+  if(synonymMatch(answer, correct)){
+    return {verdict:'correct', score:2, feedback:`Correct! The answer is: ${correct}`};
+  }
+  // Token-level matching
+  const tokens = s => normTerm(s).split(/[\s\/\+\-x\*]+/).filter(Boolean);
   const ansTokens = tokens(answer);
   const corTokens = tokens(correct);
-  const matched = corTokens.filter(t => ansTokens.includes(t)).length;
-  const ratio = matched / corTokens.length;
+  // Also expand tokens through synonyms — if any answer token is a synonym of any correct token, count it
+  const matched = corTokens.filter(ct => {
+    if(ansTokens.includes(ct)) return true;
+    // Check if any answer token is in the same synonym group as ct
+    return ansTokens.some(at => {
+      for(const group of EQ_SYNONYMS){
+        const ng = group.map(normTerm);
+        // single-word synonym check
+        if(ng.some(g=>g===at) && ng.some(g=>g===ct)) return true;
+      }
+      return false;
+    });
+  }).length;
+  const ratio = corTokens.length > 0 ? matched / corTokens.length : 0;
   if(ratio >= 0.85) return {verdict:'correct', score:2, feedback:`Correct! The answer is: ${correct}`};
-  if(ratio >= 0.5)  return {verdict:'partial',  score:1, feedback:`Partially right — the answer is: ${correct}`};
-  return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
+  // Anything not clearly correct or clearly nonsense → send to AI
+  // Only return 'wrong' locally if answer has NO overlap at all and is very short (likely gibberish)
+  if(ratio === 0 && answer.length < 3) return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
+  // Otherwise treat as partial so AI adjudicates
+  return {verdict:'partial', score:1, feedback:`Partially right — the answer is: ${correct}`};
 }
 
 function revealEqAnswer(){
@@ -2715,11 +2798,14 @@ const AIP_QTYPES = {
 const AIP_QUESTIONS = {
   1: {
     'Multiple Choice': [
-      'Which of the following best describes price elasticity of demand? [1 mark]',
-      'A business uses batch production. Which statement is correct? [1 mark]',
-      'Which type of market research involves collecting new data for the first time? [1 mark]',
-      'What does USP stand for in a marketing context? [1 mark]',
-      'Which motivational theorist introduced the concept of hygiene factors? [1 mark]',
+      { q:'Which of the following best describes price elasticity of demand? [1 mark]', options:['A) The change in price when demand increases','B) The responsiveness of quantity demanded to a change in price','C) The total revenue generated from sales','D) The number of substitutes available in the market'], answer:'B', explain:'PED measures how sensitive quantity demanded is to a price change. A coefficient >1 means elastic (demand is responsive); <1 means inelastic.' },
+      { q:'A business uses batch production. Which statement is correct? [1 mark]', options:['A) Each item is made individually to customer specification','B) Items move continuously through the production process','C) Groups of identical items are produced together before moving to the next stage','D) Production is fully automated with no human input'], answer:'C', explain:'Batch production makes groups (batches) of the same item together. Job production is custom per item; flow is continuous.' },
+      { q:'Which type of market research involves collecting new data for the first time? [1 mark]', options:['A) Secondary research','B) Desk research','C) Primary research','D) Quantitative research'], answer:'C', explain:'Primary research (field research) collects new, original data e.g. surveys or interviews. Secondary research uses existing data.' },
+      { q:'What does USP stand for in a marketing context? [1 mark]', options:['A) Universal Sales Percentage','B) Unique Selling Point','C) Unit Sales Price','D) Unlimited Supply Position'], answer:'B', explain:'USP — Unique Selling Point — is the distinctive feature that differentiates a product from competitors and gives customers a reason to buy.' },
+      { q:'Which motivational theorist introduced the concept of hygiene factors? [1 mark]', options:['A) Abraham Maslow','B) Douglas McGregor','C) Frederick Taylor','D) Frederick Herzberg'], answer:'D', explain:'Herzberg\'s Two-Factor Theory separates hygiene factors (which prevent dissatisfaction, e.g. pay, conditions) from motivators (which drive satisfaction, e.g. achievement, recognition).' },
+      { q:'Which of the following is an example of a variable cost? [1 mark]', options:['A) Monthly rent on a factory','B) Manager\'s annual salary','C) Raw materials used in production','D) Insurance premium'], answer:'C', explain:'Variable costs change directly with output level. Raw materials increase as more units are produced. Rent, salaries, and insurance are fixed costs.' },
+      { q:'What is meant by "market segmentation"? [1 mark]', options:['A) The total size of a market measured by sales','B) Dividing a market into distinct groups of consumers with similar needs','C) The process of setting a price for a new product','D) Analysing competitor products'], answer:'B', explain:'Market segmentation divides consumers into groups sharing characteristics (age, income, lifestyle) so businesses can target them more effectively.' },
+      { q:'Which pricing strategy involves setting a high initial price then lowering it over time? [1 mark]', options:['A) Penetration pricing','B) Cost-plus pricing','C) Price skimming','D) Competitive pricing'], answer:'C', explain:'Price skimming sets a high launch price to maximise revenue from early adopters, then reduces price to attract more price-sensitive customers.' },
     ],
     'Short Answer (2–3 marks)': [
       'Explain what is meant by "market segmentation". [2 marks]',
@@ -2762,11 +2848,14 @@ const AIP_QUESTIONS = {
   },
   2: {
     'Multiple Choice': [
-      'Which ratio measures a business\'s ability to meet short-term debts? [1 mark]',
-      'What does ARR stand for in investment appraisal? [1 mark]',
-      'Which of the following is a method of inorganic growth? [1 mark]',
-      'What is meant by "capacity utilisation"? [1 mark]',
-      'Which type of economy is characterised by high GDP growth and low labour costs? [1 mark]',
+      { q:'Which ratio measures a business\'s ability to meet short-term debts? [1 mark]', options:['A) ROCE','B) Gearing ratio','C) Current ratio','D) Gross profit margin'], answer:'C', explain:'The current ratio (Current Assets ÷ Current Liabilities) measures short-term liquidity. A ratio above 1.5 is generally considered healthy.' },
+      { q:'What does ARR stand for in investment appraisal? [1 mark]', options:['A) Annual Revenue Return','B) Average Rate of Return','C) Adjusted Risk Ratio','D) Asset Recovery Rate'], answer:'B', explain:'ARR = (Average Annual Profit ÷ Initial Outlay) × 100. It expresses the annual return as a percentage of the initial investment.' },
+      { q:'Which of the following is a method of inorganic growth? [1 mark]', options:['A) Launching a new product line','B) Opening a new branch','C) Acquiring a rival company','D) Increasing marketing spend'], answer:'C', explain:'Inorganic (external) growth happens through mergers, acquisitions, or joint ventures — not through internal expansion.' },
+      { q:'What is meant by "capacity utilisation"? [1 mark]', options:['A) The maximum output a business can produce','B) The percentage of maximum capacity currently being used','C) The cost of increasing production capacity','D) The number of employees relative to output'], answer:'B', explain:'Capacity utilisation = (Actual Output ÷ Maximum Possible Output) × 100. 100% means fully utilised; below 85% suggests underuse.' },
+      { q:'Which type of economy is characterised by rapid GDP growth and lower labour costs? [1 mark]', options:['A) Developed economy','B) Planned economy','C) Emerging economy','D) Mixed economy'], answer:'C', explain:'Emerging economies (e.g. BRICS, MINTS) have rapid GDP growth, rising incomes, and relatively lower labour costs, making them attractive for MNC investment.' },
+      { q:'Which of the following best describes "gearing"? [1 mark]', options:['A) The proportion of profit paid as dividends','B) The proportion of capital employed funded by long-term debt','C) The ratio of current assets to current liabilities','D) The return earned on total assets'], answer:'B', explain:'Gearing = (Long-term Debt ÷ Capital Employed) × 100. High gearing (>50%) means the business is heavily reliant on borrowing, increasing financial risk.' },
+      { q:'What is the purpose of a decision tree in business? [1 mark]', options:['A) To map out an organisation\'s hierarchy','B) To calculate a business\'s break-even point','C) To evaluate the expected value of different decisions under uncertainty','D) To plan the critical path of a project'], answer:'C', explain:'Decision trees calculate the Expected Value (financial outcome × probability) of each option, helping managers choose between alternatives under risk.' },
+      { q:'Which of the following is a characteristic of organic growth? [1 mark]', options:['A) Faster than external growth','B) Funded by acquiring another business','C) Lower risk and internally generated','D) Requires a merger or joint venture'], answer:'C', explain:'Organic growth is internal — expanding through increased sales, new products, or new markets. It is slower but lower risk than inorganic growth.' },
     ],
     'Short Answer (2–3 marks)': [
       'Explain what is meant by "contribution per unit". [2 marks]',
@@ -2841,6 +2930,7 @@ function aipSelectPaper(num){
   aipState.qtype = null;
   aipState.question = null;
   aipState.marks = null;
+  aipState.mcData = null;
   // Update pill styles
   document.querySelectorAll('.aip-paper-pill').forEach((el,i)=>{
     el.classList.toggle('selected', i === num-1);
@@ -2858,20 +2948,23 @@ function aipSelectQType(label){
   aipState.qtype = label;
   aipState.question = null;
   aipState.marks = null;
+  aipState.mcData = null;
   // Highlight selected pill
   document.querySelectorAll('.aip-qtype-pill').forEach(el=>{
     el.classList.toggle('selected', el.textContent.trim() === label);
   });
-  // Render question grid (if questions exist for this type)
+  // Render question grid
   const qs = (AIP_QUESTIONS[aipState.paper] || {})[label] || [];
   const selectorEl = document.getElementById('aip-q-selector');
   const gridEl = document.getElementById('aip-q-grid');
   if(qs.length){
-    gridEl.innerHTML = qs.map((q,i)=>`
-      <div class="q-select-btn" id="aip-qbtn-${i}" onclick="aipSelectQ(${i})">
+    gridEl.innerHTML = qs.map((q,i)=>{
+      const text = (q && typeof q === 'object') ? q.q : q;
+      return `<div class="q-select-btn" id="aip-qbtn-${i}" onclick="aipSelectQ(${i})">
         <div class="q-num">Q${i+1}</div>
-        <div class="q-text">${q}</div>
-      </div>`).join('');
+        <div class="q-text">${text}</div>
+      </div>`;
+    }).join('');
     selectorEl.style.display = 'block';
   } else {
     gridEl.innerHTML = '<p style="color:var(--text3);font-size:0.85rem">No preset questions for this type — use the custom input below.</p>';
@@ -2883,7 +2976,10 @@ function aipSelectQType(label){
 
 function aipSelectQ(idx){
   const qs = (AIP_QUESTIONS[aipState.paper] || {})[aipState.qtype] || [];
-  aipState.question = qs[idx];
+  const q = qs[idx];
+  // MC questions are objects; all others are plain strings
+  aipState.question = (q && typeof q === 'object') ? q.q : q;
+  aipState.mcData = (q && typeof q === 'object') ? q : null;
   document.querySelectorAll('#aip-q-grid .q-select-btn').forEach((b,i)=>b.classList.toggle('selected', i===idx));
   document.getElementById('aip-selected-q-text').textContent = aipState.question;
   document.getElementById('aip-selected-q-display').style.display = 'block';
@@ -2903,13 +2999,11 @@ function aipUseCustomQ(){
 function aipContinue(){
   if(!aipState.question) return;
   const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
-  // Parse marks from question text e.g. "[4 marks]" or "[20 marks]", fallback to qtype default
   const marksMatch = aipState.question.match(/\[(\d+)\s*marks?\]/i);
   const marks = marksMatch ? parseInt(marksMatch[1]) : qtypeData.marks;
-  aipState.marks = marks; // store for aipSubmit
+  aipState.marks = marks;
   const paperLabels = {1:'Paper 1',2:'Paper 2',3:'Paper 3'};
   const paperClasses = {1:'p1',2:'p2',3:'p3'};
-  // Set writing screen content
   document.getElementById('aip-paper-pill-label').textContent = paperLabels[aipState.paper];
   document.getElementById('aip-paper-pill-label').className = `aip-meta-pill ${paperClasses[aipState.paper]}`;
   document.getElementById('aip-qtype-label').textContent = aipState.qtype;
@@ -2926,17 +3020,83 @@ function aipContinue(){
       <h5>🏗 Answer Structure</h5>
       <ul>${qtypeData.structure.map(s=>`<li>${s}</li>`).join('')}</ul>
     </div>`;
-  // Clear writing area
-  document.getElementById('aip-essay-text').value = '';
-  document.getElementById('aip-wc').textContent = '0 words';
-  document.getElementById('aip-feedback').classList.remove('show');
-  document.getElementById('aip-hint-box').classList.remove('show');
-  document.getElementById('aip-hint-text').textContent = '';
-  // Switch screens
+
+  const essayBox = document.getElementById('aip-essay-box-wrap');
+  const mcBox = document.getElementById('aip-mc-wrap');
+  const hintBtn = document.getElementById('aip-hint-btn-wrap');
+
+  if(aipState.mcData){
+    // Multiple Choice mode — show option buttons, hide textarea
+    essayBox.style.display = 'none';
+    hintBtn.style.display = 'none';
+    mcBox.style.display = 'block';
+    document.getElementById('aip-feedback').classList.remove('show');
+    // Render options
+    mcBox.innerHTML = `
+      <div class="aip-mc-options" id="aip-mc-options">
+        ${aipState.mcData.options.map((opt,i)=>`
+          <button class="aip-mc-opt" onclick="aipSelectMC(${i})">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="ai-feedback-box" id="aip-mc-feedback" style="margin-top:16px"></div>`;
+  } else {
+    // Essay/written mode
+    essayBox.style.display = 'block';
+    hintBtn.style.display = 'block';
+    mcBox.style.display = 'none';
+    document.getElementById('aip-essay-text').value = '';
+    document.getElementById('aip-wc').textContent = '0 words';
+    document.getElementById('aip-feedback').classList.remove('show');
+    document.getElementById('aip-hint-box').classList.remove('show');
+    document.getElementById('aip-hint-text').textContent = '';
+  }
+
   document.getElementById('aip-setup-screen').classList.add('hide');
   document.getElementById('aip-writing-screen').classList.add('show');
   window.scrollTo(0,0);
   aipTimerStart(aipState.qtype);
+}
+
+function aipSelectMC(idx){
+  const mc = aipState.mcData;
+  if(!mc) return;
+  const letters = ['A','B','C','D','E'];
+  const chosen = letters[idx];
+  const correct = mc.answer;
+  const isCorrect = chosen === correct;
+  // Style the buttons
+  document.querySelectorAll('.aip-mc-opt').forEach((btn, i) => {
+    btn.disabled = true;
+    const letter = letters[i];
+    if(letter === correct){
+      btn.style.background = 'rgba(16,217,138,0.15)';
+      btn.style.borderColor = 'var(--green)';
+      btn.style.color = 'var(--green)';
+    } else if(i === idx && !isCorrect){
+      btn.style.background = 'rgba(255,92,106,0.15)';
+      btn.style.borderColor = 'var(--red)';
+      btn.style.color = 'var(--red)';
+    }
+  });
+  // Show feedback
+  const fbEl = document.getElementById('aip-mc-feedback');
+  fbEl.classList.add('show');
+  fbEl.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <span style="font-size:1.5rem">${isCorrect ? '✅' : '❌'}</span>
+      <strong style="color:${isCorrect ? 'var(--green)' : 'var(--red)'};font-size:1rem">${isCorrect ? 'Correct!' : `Incorrect — the answer is ${correct}`}</strong>
+    </div>
+    <div style="font-size:0.875rem;color:var(--text2);line-height:1.65"><strong style="color:var(--text)">Explanation:</strong> ${mc.explain}</div>
+    <button class="btn btn-ghost btn-sm" style="margin-top:14px" onclick="aipGoBack()">← Try another question</button>`;
+  // XP + tracking
+  const xp = isCorrect ? 10 : 3;
+  addXP(xp, `MC: ${mc.q.substring(0,40)}`);
+  addActivity('🤖', `MC: ${mc.q.substring(0,35)}…`, xp);
+  if(!state.aipHistory) state.aipHistory = [];
+  state.aipHistory.push({paper:aipState.paper, qtype:'Multiple Choice', marks:1, correct:isCorrect, time:Date.now()});
+  if(state.aipHistory.length > 100) state.aipHistory = state.aipHistory.slice(-100);
+  aipTimerStop();
+  saveState();
 }
 
 function aipGoBack(){
