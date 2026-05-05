@@ -1807,6 +1807,9 @@ function rateCard(quality){
   const isRetry = window._isRetry || false;
   addXP(baseXp, `Flashcard: ${card.term}`, isRetry);
   if(isRetry) window._isRetry = false;
+  // Save and update weak areas list immediately — don't wait for session end
+  saveState();
+  renderWrongAnswers();
   currentCardIdx++;
   renderCard();
 }
