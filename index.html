@@ -543,7 +543,7 @@ tr:hover td{background:var(--bg3);}
     <div class="paper-card p2" onclick="showPage('paper2')">
       <div class="paper-num">Paper 2</div>
       <h3>Business Activities</h3>
-      <p>Themes 3 — Corporate strategy, growth, change management and financial decision-making.</p>
+      <p>Theme 3 — Corporate strategy, growth, change management and financial decision-making.</p>
       <div class="paper-themes">
         <span class="theme-tag">Theme 3: Strategy</span>
         <span class="theme-tag">Decisions</span>
@@ -1883,12 +1883,17 @@ function clearEssay(paper){
 // ============================================================
 // API KEY MANAGEMENT
 // ============================================================
+let _essaySubmitting = {};
 async function submitEssay(paper){
+  if(_essaySubmitting[paper]) return;
+  _essaySubmitting[paper] = true;
   const q = selectedQuestions[paper];
   const ans = document.getElementById(`${paper}-essay-text`).value.trim();
-  if(!q){ alert('Please select or enter a question first.'); return; }
-  if(ans.length < 50){ alert('Please write a more complete answer (at least 50 characters).'); return; }
+  if(!q){ alert('Please select or enter a question first.'); _essaySubmitting[paper]=false; return; }
+  if(ans.length < 50){ alert('Please write a more complete answer (at least 50 characters).'); _essaySubmitting[paper]=false; return; }
   const fbEl = document.getElementById(`${paper}-feedback`);
+  const btn = [...document.querySelectorAll(`[onclick="submitEssay('${paper}')"]`)][0];
+  if(btn){ btn.disabled=true; btn.textContent='Grading…'; }
   fbEl.classList.add('show');
   fbEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>AI is reading your answer and preparing feedback...</div>';
   const marks = q.includes('[20 marks]') ? 20 : q.includes('[10 marks]') ? 10 : q.includes('[6 marks]') ? 6 : q.includes('[4 marks]') ? 4 : 20;
@@ -1929,14 +1934,18 @@ Format your response clearly with section headers. Be honest but encouraging. Re
     }
     const data = await resp.json();
     let text = data.content?.map(c=>c.text||'').join('\n') || 'Unable to get feedback.';
-    fbEl.innerHTML = formatFeedback(text, marks);
+    const fb = formatFeedback(text, marks);
+    fbEl.innerHTML = fb.html;
     state.essaysGraded = (state.essaysGraded||0) + 1;
-    const essayXp = Math.round(30 + (ans.split(/\s+/).length / 10));
+    const essayXp = 30; // flat XP — quality not word count
     addXP(essayXp, 'Essay graded by AI');
     addActivity('🤖', `Essay: ${q.substring(0,40)}...`, essayXp);
     saveState();
   } catch(e){
-    fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ Unable to connect to AI. Check your connection and API key. Error: ${e.message}</div>`;
+    fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ Unable to connect to AI. Check your connection. Error: ${e.message}</div>`;
+  } finally {
+    if(btn){ btn.disabled=false; btn.textContent='Submit for AI Grading →'; }
+    _essaySubmitting[paper] = false;
   }
 }
 
@@ -1948,7 +1957,7 @@ function formatFeedback(text, marks){
   const grade = pct >= 90?'A*':pct>=80?'A':pct>=70?'B':pct>=60?'C':pct>=50?'D':pct>=40?'E':'U';
   const gradeColor = {'A*':'var(--gold)','A':'var(--green)','B':'var(--cyan)','C':'var(--accent2)','D':'var(--orange)','E':'var(--red)','U':'var(--red)'}[grade]||'var(--text)';
   const formatted = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-  return `
+  const html = `
     <div class="feedback-header">
       <div class="score-circle" style="background:${gradeColor}22;color:${gradeColor};border:2px solid ${gradeColor}">
         ${score ? score+'/'+marks : grade}
@@ -1959,6 +1968,7 @@ function formatFeedback(text, marks){
       </div>
     </div>
     <div class="feedback-body"><p>${formatted}</p></div>`;
+  return { html, score, grade, pct };
 }
 
 // ============================================================
@@ -2172,23 +2182,42 @@ function updateCharts(){
   xpChartInst.update();
   breakdownChartInst.data.datasets[0].data = [state.cardsReviewed||1, state.essaysGraded||0, Math.max(1,Math.round((state.totalTime||0)/60))];
   breakdownChartInst.update();
+  // Also refresh topic performance chart
+  if(topicChartInst){
+    const topics = Object.keys(TOPICS).flatMap(p=>TOPICS[p].map(t=>t.title));
+    const perf = topics.slice(0,6).map(t=>{
+      const cards = ALL_FLASHCARDS.filter(c=>c.topic===t);
+      const scores = cards.map(c=>{
+        const d = state.fcData[c.term];
+        if(!d) return 0;
+        return d.correct/(d.correct+d.wrong||1)*100;
+      }).filter(s=>s>0);
+      return scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+    });
+    topicChartInst.data.datasets[0].data = perf;
+    topicChartInst.data.datasets[0].backgroundColor = perf.map(v=>v>70?'rgba(16,217,138,0.6)':v>40?'rgba(245,200,66,0.6)':'rgba(255,92,106,0.6)');
+    topicChartInst.update();
+  }
 }
 
 function getXpHistory(){
   const hist = state.xpHistory || [];
-  // Group by day (last 7 days)
-  const days = {};
+  // Group by calendar date (last 7 days) using full date as key to avoid same-weekday collisions
+  const dayMap = {};
+  const dayLabels = {};
   const now = Date.now();
   for(let i=6;i>=0;i--){
     const d = new Date(now - i*86400000);
-    days[d.toLocaleDateString('en-GB',{weekday:'short'})] = 0;
+    const key = d.toISOString().slice(0,10); // "2025-01-15"
+    const label = d.toLocaleDateString('en-GB',{weekday:'short'});
+    dayMap[key] = 0;
+    dayLabels[key] = label;
   }
   hist.forEach(h=>{
-    const d = new Date(h.time);
-    const label = d.toLocaleDateString('en-GB',{weekday:'short'});
-    if(days[label] !== undefined) days[label] += h.amount;
+    const key = new Date(h.time).toISOString().slice(0,10);
+    if(dayMap[key] !== undefined) dayMap[key] += h.amount;
   });
-  return {labels:Object.keys(days), values:Object.values(days)};
+  return {labels:Object.keys(dayMap).map(k=>dayLabels[k]), values:Object.values(dayMap)};
 }
 
 // ============================================================
@@ -2497,7 +2526,14 @@ function renderEqCard(){
           <div style="font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent2)">${isPartial ? f.gapAnswer : f.eq}</div>
         </div>
       </div>`;
-    setTimeout(()=>{ const inp = document.getElementById('eq-gap-input'); if(inp) inp.focus(); }, 100);
+    setTimeout(()=>{ 
+      const inp = document.getElementById('eq-gap-input'); 
+      if(inp){ 
+        inp.focus(); 
+        // On mobile, scroll the card into view after the virtual keyboard opens
+        setTimeout(()=>inp.scrollIntoView({behavior:'smooth', block:'center'}), 300);
+      } 
+    }, 100);
   }
 }
 
@@ -2623,7 +2659,7 @@ const EQ_SYNONYMS = [
   // Costs
   ['variable cost per unit','variable costs per unit','variable cost per unit','vc per unit','variable unit cost'],
   ['fixed costs','fixed cost','total fixed costs','total fixed cost','fc'],
-  ['contribution per unit','contribution per unit','contrib per unit'],
+  ['contribution per unit','contrib per unit','contribution p.u.'],
   // Labour / workforce
   ['number of employees','number of workers','workforce size','staff numbers','employees','workers','headcount'],
   // Output — removed bare 'output' and 'production' (too generic)
@@ -2701,7 +2737,9 @@ function localEqCheck(answer, correct){
   const ratio = corTokens.length > 0 ? matched / corTokens.length : 0;
   if(ratio >= 0.85) return {verdict:'correct', score:2, feedback:`Correct! The answer is: ${correct}`};
   // Zero overlap = clearly wrong — no AI call needed
-  if(ratio === 0) return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
+  // Single-word answer with zero overlap = clearly wrong (e.g. "cost" vs "Probability")
+  // Multi-word answer with zero overlap = plausible attempt, let AI adjudicate (e.g. "expected revenue" vs "Financial Outcome")
+  if(ratio === 0 && ansTokens.length === 1) return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
   // Some overlap but not enough to confirm → send to AI to adjudicate
   return {verdict:'partial', score:1, feedback:`Partially right — the answer is: ${correct}`};
 }
@@ -2783,7 +2821,6 @@ const AIP_QTYPES = {
     { label:'Short Answer (2–3 marks)', marks:3, tips:['Define the term precisely','One developed point per mark','Use business terminology'], structure:['Define','Apply briefly','Link to context'] },
     { label:'Calculation (4 marks)', marks:4, tips:['Show ALL working','Label every step','State the formula first'], structure:['Write formula','Substitute numbers','Calculate','State the answer with units'] },
     { label:'Explain (6 marks)', marks:6, tips:['Apply theory to the scenario','Two developed points','Use "this means…" to extend'], structure:['Make a point','Explain the theory','Apply to business context','Use a connector to extend'] },
-    { label:'Analyse (8 marks)', marks:8, tips:['Build a chain of reasoning','Refer to the case study','Use "therefore" / "as a result"'], structure:['Point','Evidence','Explain cause','Explain effect','Link back to question'] },
     { label:'Evaluate (10 marks)', marks:10, tips:['Both sides needed','Context is key','Reach a clear judgement'], structure:['Argument FOR','Argument AGAINST','Weigh up both sides','Justified conclusion'] },
     { label:'Extended Essay (20 marks)', marks:20, tips:['Plan before writing','Equal time on each argument','Strong conclusion is essential'], structure:['Intro + thesis','Argument 1 with analysis','Argument 2 with analysis','Counter point','Justified conclusion'] },
   ],
@@ -2835,12 +2872,6 @@ const AIP_QUESTIONS = {
       'Explain two advantages of using primary market research. [6 marks]',
       'Explain the impact of a rise in interest rates on a business with high borrowing. [6 marks]',
       'Explain two ways that digital technology has changed how businesses market their products. [6 marks]',
-    ],
-    'Analyse (8 marks)': [
-      'Analyse why a business might decide to move from batch to flow production. [8 marks]',
-      'Analyse the impact of a weak pound on a UK business that imports raw materials. [8 marks]',
-      'Analyse how flexible working could affect employee motivation and productivity. [8 marks]',
-      'Analyse how Herzberg\'s two-factor theory could be used to improve performance in a retail business. [8 marks]',
     ],
     'Evaluate (10 marks)': [
       'Evaluate whether penetration pricing is always the best strategy for entering a competitive market. [10 marks]',
@@ -3197,13 +3228,14 @@ Be honest but encouraging. Reference specific parts of their answer. Use Edexcel
     if(!resp.ok){ const err = await resp.json().catch(()=>({})); fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ API Error: ${err.error?.message||'HTTP '+resp.status}</div>`; return; }
     const data = await resp.json();
     const text = data.content?.map(c=>c.text||'').join('\n') || 'Unable to get feedback.';
-    fbEl.innerHTML = formatFeedback(text, marks);
+    const fb = formatFeedback(text, marks);
+    fbEl.innerHTML = fb.html;
     state.essaysGraded = (state.essaysGraded||0) + 1;
-    // Track in aipHistory
+    // Track in aipHistory with score
     if(!state.aipHistory) state.aipHistory = [];
-    state.aipHistory.push({paper:aipState.paper, qtype:aipState.qtype, marks, time:Date.now()});
+    state.aipHistory.push({paper:aipState.paper, qtype:aipState.qtype, marks, score:fb.score, grade:fb.grade, pct:fb.pct, time:Date.now()});
     if(state.aipHistory.length > 100) state.aipHistory = state.aipHistory.slice(-100);
-    const xp = Math.round(30 + ans.split(/\s+/).length / 10);
+    const xp = 30; // flat XP — quality not word count
     addXP(xp, 'AI Practice essay graded');
     addActivity('🤖', `AI Practice: ${aipState.question.substring(0,40)}...`, xp);
     saveState();
