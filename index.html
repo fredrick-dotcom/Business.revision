@@ -2615,6 +2615,7 @@ function rateEqCard(correct){
   state.eqHistory.push({name:f.name, verdict:correct?'correct':'wrong', time:Date.now()});
   if(state.eqHistory.length > 200) state.eqHistory = state.eqHistory.slice(-200);
   state.equationsAnswered = (state.equationsAnswered||0) + 1;
+  state.cardsReviewed = (state.cardsReviewed||0) + 1;
   saveState();
   renderWrongAnswers();
   eqIdx++;
@@ -2690,6 +2691,7 @@ The formulas use simple symbols: + - x / and brackets. Be lenient with exact wor
   state.eqHistory.push({name:f.name, gapIdx:f.gapIdx, verdict:result.verdict, time:Date.now()});
   if(state.eqHistory.length > 200) state.eqHistory = state.eqHistory.slice(-200);
   state.equationsAnswered = (state.equationsAnswered||0) + 1;
+  state.cardsReviewed = (state.cardsReviewed||0) + 1;
 
   const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
   const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
@@ -2834,6 +2836,7 @@ function revealEqAnswer(){
     if(!state.eqHistory) state.eqHistory = [];
     state.eqHistory.push({name:f.name, gapIdx:f.gapIdx, verdict:'revealed', time:Date.now()});
     state.equationsAnswered = (state.equationsAnswered||0) + 1;
+    state.cardsReviewed = (state.cardsReviewed||0) + 1;
     // Add to weak areas
     if(!state.wrongAnswers) state.wrongAnswers = [];
     const exists = state.wrongAnswers.find(w => w.term === f.name);
