@@ -2689,7 +2689,10 @@ function aipUseCustomQ(){
 function aipContinue(){
   if(!aipState.question) return;
   const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
-  const marks = qtypeData.marks;
+  // Parse marks from question text e.g. "[4 marks]" or "[20 marks]", fallback to qtype default
+  const marksMatch = aipState.question.match(/\[(\d+)\s*marks?\]/i);
+  const marks = marksMatch ? parseInt(marksMatch[1]) : qtypeData.marks;
+  aipState.marks = marks; // store for aipSubmit
   const paperLabels = {1:'Paper 1',2:'Paper 2',3:'Paper 3'};
   const paperClasses = {1:'p1',2:'p2',3:'p3'};
   // Set writing screen content
@@ -2759,13 +2762,18 @@ Question type: ${aipState.qtype} (${qtypeData.marks} marks)`;
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:400, messages:[{role:'user',content:prompt}] })
     });
+    if(!resp.ok){
+      const err = await resp.json().catch(()=>({}));
+      throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    }
     const data = await resp.json();
-    const text = data.content?.map(c=>c.text||'').join('\n') || 'Could not generate hint.';
+    const text = data.content?.map(c=>c.text||'').join('\n') || '';
+    if(!text) throw new Error('Empty response');
     hintLoading.style.display = 'none';
     hintText.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
   } catch(e){
     hintLoading.style.display = 'none';
-    hintText.textContent = '⚠️ Could not load hint. Check connection.';
+    hintText.innerHTML = `⚠️ Could not load hint: ${e.message}`;
   }
 }
 
@@ -2776,7 +2784,7 @@ async function aipSubmit(){
   fbEl.classList.add('show');
   fbEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>AI is reading your answer and preparing feedback...</div>';
   const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
-  const marks = qtypeData.marks;
+  const marks = aipState.marks || qtypeData.marks;
   const prompt = `You are an experienced Edexcel A Level Business examiner. A student has answered the following exam question:
 
 PAPER: ${aipState.paper}
