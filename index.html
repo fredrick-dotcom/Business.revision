@@ -2617,40 +2617,50 @@ The formulas use simple symbols: + - x / and brackets. Be lenient with exact wor
 
 // Synonym groups — any terms within a group are treated as equivalent
 const EQ_SYNONYMS = [
-  ['sales of business','sales revenue','revenue','turnover','sales','income','total sales','total revenue'],
+  // Revenue / sales — kept multi-word aliases only; bare 'sales' and 'income' removed (too generic)
+  ['sales of business','sales revenue','revenue','turnover','total sales','total revenue'],
   ['total market sales','total market revenue','market sales','market revenue','total market'],
-  ['variable cost per unit','variable costs per unit','variable cost','vc per unit','variable unit cost'],
-  ['fixed costs','fixed cost','total fixed costs','fc'],
-  ['contribution per unit','contribution','contrib per unit'],
+  // Costs
+  ['variable cost per unit','variable costs per unit','variable cost per unit','vc per unit','variable unit cost'],
+  ['fixed costs','fixed cost','total fixed costs','total fixed cost','fc'],
+  ['contribution per unit','contribution per unit','contrib per unit'],
+  // Labour / workforce
   ['number of employees','number of workers','workforce size','staff numbers','employees','workers','headcount'],
-  ['output','total output','production','units produced'],
+  // Output — removed bare 'output' and 'production' (too generic)
+  ['total output','units produced','total units produced'],
   ['actual output','actual production','current output'],
   ['max possible output','maximum output','maximum capacity','max capacity','maximum possible output'],
   ['staff leaving','leavers','employees leaving','workers leaving','number leaving'],
   ['total staff','total workforce','total employees','total workers'],
+  // Profit
   ['gross profit','gross profit figure'],
-  ['sales revenue','revenue','turnover','sales','total revenue','total sales','income'],
   ['operating profit','operating profit figure','op profit'],
-  ['initial outlay','initial investment','initial cost','investment cost','capital outlay','outlay'],
+  // Investment appraisal
+  ['initial outlay','initial investment','initial cost','investment cost','capital outlay'],
   ['average annual profit','avg annual profit','mean annual profit','annual average profit'],
   ['total net cash flow','total cash flow','net cash flow total','total net cashflow'],
-  ['number of years','years','project life','lifespan'],
+  ['number of years','years of project','project life','project lifespan'],
   ['discount factor','discount rate','discounting factor'],
-  ['financial outcome','outcome','cash outcome','financial result'],
+  // Decision trees — kept specific; removed bare 'cost' and 'outcome'
+  ['financial outcome','financial result','cash outcome'],
   ['probability','prob','likelihood'],
   ['total expected value','total ev','expected value total'],
-  ['cost of decision','cost','decision cost'],
+  ['cost of decision','decision cost'],
+  // Critical path
   ['latest finish time','lft','latest finish'],
   ['earliest start time','est','earliest start'],
-  ['duration','activity duration','time','length'],
-  ['long-term debt','long term debt','debt','borrowings','long-term liabilities'],
+  ['duration','activity duration'],  // removed bare 'time' and 'length'
+  // Finance ratios
+  ['long-term debt','long term debt','borrowings','long-term liabilities'],
   ['capital employed','total capital employed','ce'],
   ['current assets','current asset total'],
   ['current liabilities','current liability total'],
   ['stock','inventory','inventories'],
-  ['difference','change','net change'],
-  ['original value','original','base value','starting value'],
-  ['selling price','sale price','price per unit','price'],
+  // Percentage change
+  ['difference','net change'],        // removed bare 'change'
+  ['original value','base value','starting value'],
+  // Pricing
+  ['selling price','sale price','price per unit'],  // removed bare 'price'
 ];
 
 function normTerm(s){ return s.toLowerCase().replace(/[()%\-]/g,' ').replace(/\s+/g,' ').trim(); }
@@ -2690,10 +2700,9 @@ function localEqCheck(answer, correct){
   }).length;
   const ratio = corTokens.length > 0 ? matched / corTokens.length : 0;
   if(ratio >= 0.85) return {verdict:'correct', score:2, feedback:`Correct! The answer is: ${correct}`};
-  // Anything not clearly correct or clearly nonsense → send to AI
-  // Only return 'wrong' locally if answer has NO overlap at all and is very short (likely gibberish)
-  if(ratio === 0 && answer.length < 3) return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
-  // Otherwise treat as partial so AI adjudicates
+  // Zero overlap = clearly wrong — no AI call needed
+  if(ratio === 0) return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
+  // Some overlap but not enough to confirm → send to AI to adjudicate
   return {verdict:'partial', score:1, feedback:`Partially right — the answer is: ${correct}`};
 }
 
