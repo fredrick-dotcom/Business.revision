@@ -314,17 +314,6 @@ main{padding-top:60px;min-height:100vh;}
 .photo-preview{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);margin:10px auto;display:block;}
 .photo-error{color:var(--red);font-size:0.8rem;margin-bottom:8px;display:none;}
 
-/* API KEY BANNER */
-.api-key-banner{display:flex;align-items:center;gap:12px;background:rgba(108,99,255,0.08);border:1px solid rgba(108,99,255,0.25);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;}
-.api-key-banner .ak-icon{font-size:1.4rem;flex-shrink:0;}
-.api-key-banner .ak-text{flex:1;font-size:0.85rem;color:var(--text2);line-height:1.4;}
-.api-key-banner .ak-text strong{color:var(--text);}
-.api-key-status{display:inline-flex;align-items:center;gap:6px;font-size:0.78rem;padding:3px 10px;border-radius:10px;font-weight:600;}
-.api-key-status.connected{background:rgba(16,217,138,0.12);color:var(--green);border:1px solid rgba(16,217,138,0.25);}
-.api-key-status.disconnected{background:rgba(255,92,106,0.12);color:var(--red);border:1px solid rgba(255,92,106,0.25);}
-.api-key-input-row{display:flex;gap:8px;margin-top:10px;}
-.api-key-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-size:0.82rem;outline:none;font-family:'Space Mono',monospace;}
-.api-key-input-row input:focus{border-color:var(--accent);}
 /* LEVEL UP TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;padding:14px 20px;border-radius:var(--radius);font-weight:600;font-size:0.9rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);max-width:300px;box-shadow:0 8px 30px rgba(245,200,66,0.3);}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -444,6 +433,15 @@ tr:hover td{background:var(--bg3);}
 /* TIMER */
 .aip-timer-wrap{position:fixed;bottom:28px;left:28px;z-index:500;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow);min-width:160px;display:none;}
 .aip-timer-wrap.show{display:block;}
+
+@media(max-width:768px){
+  .aip-timer-wrap{bottom:12px;left:12px;right:12px;min-width:unset;}
+  .aip-page{padding:20px 16px;}
+  .aip-paper-pills{flex-direction:column;}
+  .aip-tips-row{grid-template-columns:1fr;}
+  .aip-timer-btns{justify-content:flex-start;}
+  .formula-grid{grid-template-columns:1fr;}
+}
 .aip-timer-top{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
 .aip-timer-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite;}
 .aip-timer-dot.over{background:var(--red);animation:none;}
@@ -737,6 +735,9 @@ tr:hover td{background:var(--bg3);}
     </div>
     <div class="tab-content active" id="p3-guide"><div class="topics-accordion" id="p3-accordion"></div></div>
     <div class="tab-content" id="p3-qtypes">
+      <div style="background:rgba(16,217,138,0.06);border:1px solid rgba(16,217,138,0.2);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:18px;font-size:0.85rem;color:var(--text2)">
+        <strong style="color:var(--green)">📐 Formulas:</strong> Paper 3 has no dedicated formula sheet — all formulae from Papers 1 & 2 remain examinable. Use the <span style="color:var(--accent);cursor:pointer;text-decoration:underline" onclick="showPage('paper1');setTimeout(()=>document.querySelector('#page-paper1 .tab:last-child').click(),150)">Paper 1 Formulas tab</span> or <span style="color:var(--gold);cursor:pointer;text-decoration:underline" onclick="showPage('paper2');setTimeout(()=>document.querySelector('#page-paper2 .tab:last-child').click(),150)">Paper 2 Formulas tab</span> to revise them.
+      </div>
       <div class="qtypes-grid">
         <div class="qtype-card"><h4>Context-Based Analysis <span class="mark-badge">6-10 marks</span></h4><p>All questions relate to the pre-release scenario. Weave in facts from the case throughout.</p><ul><li>Reference specific data from the pre-release material</li><li>Link global business concepts to the case</li><li>Consider stakeholder perspectives</li></ul></div>
         <div class="qtype-card"><h4>Globalisation Questions <span class="mark-badge">4-10 marks</span></h4><p>Push/pull factors, trading blocs, FDI, emerging economies, MNC impacts.</p><ul><li>Use BRICS/MINTS examples</li><li>Consider both host and home country effects</li><li>GDP, HDI, literacy, health indicators</li></ul></div>
@@ -1057,9 +1058,12 @@ tr:hover td{background:var(--bg3);}
 const DEFAULT_STATE = {
   name: 'Student', avatar: null,
   xp: 0, level: 1, xpToNext: 500,
-  totalTime: 0, cardsReviewed: 0, essaysGraded: 0,
+  totalTime: 0, cardsReviewed: 0, essaysGraded: 0, equationsAnswered: 0,
   xpHistory: [], activityFeed: [], wrongAnswers: [],
-  fcData: {}, // term -> {interval, repetitions, efactor, dueDate, correct, wrong}
+  fcData: {},    // flashcard SM-2: term -> {interval, repetitions, efactor, dueDate, correct, wrong}
+  eqSm2: {},     // equation SM-2: "name||gapIdx" -> {interval, repetitions, efactor, dueDate, correct, wrong}
+  eqHistory: [], // [{name, verdict, time}]
+  aipHistory: [], // [{paper, qtype, marks, score, time}]
   activeFilters: ['all'],
   lastSaved: null
 };
@@ -1079,7 +1083,20 @@ const LEVEL_TITLES = [
 
 function saveState(){
   state.lastSaved = Date.now();
-  localStorage.setItem('nexus_state', JSON.stringify(state));
+  try {
+    localStorage.setItem('nexus_state', JSON.stringify(state));
+  } catch(e){
+    if(e.name === 'QuotaExceededError' || e.code === 22){
+      const slim = {...state, avatar: null};
+      try {
+        localStorage.setItem('nexus_state', JSON.stringify(slim));
+        console.warn('Nexus: avatar removed from save to fit localStorage quota.');
+      } catch(e2){
+        console.error('Nexus: could not save state — localStorage full.', e2);
+        showToast('⚠️ Save failed — storage full. Try clearing browser data.');
+      }
+    }
+  }
 }
 
 function addXP(amount, source, isRetry=false){
@@ -1188,7 +1205,7 @@ function renderWrongAnswers(){
     return;
   }
   el.innerHTML = visible.slice(0,10).map((w,i)=>{
-    const realIdx = state.wrongAnswers.indexOf(w);
+    const realIdx = state.wrongAnswers.findIndex(x => x.term === w.term);
     const paperLabel = w.paper ? `<span style="font-size:0.7rem;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:6px;margin-left:6px">${w.paper}</span>` : '';
     return `<div class="wrong-item">
       <div style="width:6px;height:6px;border-radius:50%;background:${w.retried?'var(--green)':'var(--red)'};flex-shrink:0"></div>
@@ -1853,22 +1870,6 @@ function clearEssay(paper){
 // ============================================================
 // API KEY MANAGEMENT
 // ============================================================
-let _apiKey = '';
-
-function saveApiKey(){
-  const val = document.getElementById('api-key-input').value.trim();
-  if(!val.startsWith('sk-ant-')){
-    alert('Please enter a valid Anthropic API key (starts with sk-ant-)');
-    return;
-  }
-  _apiKey = val;
-  const statusEl = document.getElementById('api-key-status');
-  statusEl.textContent = '● Connected';
-  statusEl.className = 'api-key-status connected';
-  document.getElementById('api-key-input').value = '••••••••••••••••••••';
-  showToast('API key connected! AI grading is ready.');
-}
-
 async function submitEssay(paper){
   const q = selectedQuestions[paper];
   const ans = document.getElementById(`${paper}-essay-text`).value.trim();
@@ -1902,7 +1903,7 @@ Format your response clearly with section headers. Be honest but encouraging. Re
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5-20251001',
         max_tokens:1500,
         messages:[{role:'user',content:prompt}]
       })
@@ -1948,36 +1949,112 @@ function formatFeedback(text, marks){
 }
 
 // ============================================================
-// FORMULAS
+// FORMULAS — each entry has name, eq, and gap variants
+// gap: array of {display, answer} where ___ marks what the student fills in
 // ============================================================
 const FORMULAS = {
   p1: [
-    {name:'Market Share (%)',eq:'(Sales of business / Total market sales) x 100'},
-    {name:'Price Elasticity (PED)',eq:'% change in Quantity Demanded / % change in Price'},
-    {name:'Income Elasticity (YED)',eq:'% change in Quantity Demanded / % change in Income'},
-    {name:'Net Cash Flow',eq:'Total Inflows - Total Outflows'},
-    {name:'Sales Revenue',eq:'Units Sold x Selling Price'},
-    {name:'Total Costs',eq:'Fixed Costs + Total Variable Costs'},
-    {name:'Contribution per Unit',eq:'Selling Price - Variable Cost per Unit'},
-    {name:'Break-Even Output',eq:'Fixed Costs / Contribution per Unit'},
-    {name:'Gross Profit Margin (%)',eq:'(Gross Profit / Sales Revenue) x 100'},
-    {name:'Labour Productivity',eq:'Output / Number of Employees'},
-    {name:'Capacity Utilisation (%)',eq:'(Actual Output / Max Possible Output) x 100'},
-    {name:'Labour Turnover (%)',eq:'(Staff Leaving / Total Staff) x 100'},
+    {name:'Market Share (%)', eq:'(Sales of business / Total market sales) x 100', gaps:[
+      {display:'Market Share (%) = (___ / Total market sales) x 100', answer:'Sales of business', hint:'Sales of business'},
+      {display:'Market Share (%) = (Sales of business / ___) x 100', answer:'Total market sales', hint:'Total market sales'},
+      {display:'Market Share (%) = (Sales of business / Total market sales) x ___', answer:'100', hint:'100'},
+    ]},
+    {name:'Price Elasticity (PED)', eq:'% change in Quantity Demanded / % change in Price', gaps:[
+      {display:'PED = ___ / % change in Price', answer:'% change in Quantity Demanded', hint:'% change in Quantity Demanded'},
+      {display:'PED = % change in Quantity Demanded / ___', answer:'% change in Price', hint:'% change in Price'},
+    ]},
+    {name:'Income Elasticity (YED)', eq:'% change in Quantity Demanded / % change in Income', gaps:[
+      {display:'YED = ___ / % change in Income', answer:'% change in Quantity Demanded', hint:'% change in Quantity Demanded'},
+      {display:'YED = % change in Quantity Demanded / ___', answer:'% change in Income', hint:'% change in Income'},
+    ]},
+    {name:'Net Cash Flow', eq:'Total Inflows - Total Outflows', gaps:[
+      {display:'Net Cash Flow = ___ - Total Outflows', answer:'Total Inflows', hint:'Total Inflows'},
+      {display:'Net Cash Flow = Total Inflows - ___', answer:'Total Outflows', hint:'Total Outflows'},
+    ]},
+    {name:'Sales Revenue', eq:'Units Sold x Selling Price', gaps:[
+      {display:'Sales Revenue = ___ x Selling Price', answer:'Units Sold', hint:'Units Sold'},
+      {display:'Sales Revenue = Units Sold x ___', answer:'Selling Price', hint:'Selling Price'},
+    ]},
+    {name:'Total Costs', eq:'Fixed Costs + Total Variable Costs', gaps:[
+      {display:'Total Costs = ___ + Total Variable Costs', answer:'Fixed Costs', hint:'Fixed Costs'},
+      {display:'Total Costs = Fixed Costs + ___', answer:'Total Variable Costs', hint:'Total Variable Costs'},
+    ]},
+    {name:'Contribution per Unit', eq:'Selling Price - Variable Cost per Unit', gaps:[
+      {display:'Contribution per Unit = ___ - Variable Cost per Unit', answer:'Selling Price', hint:'Selling Price'},
+      {display:'Contribution per Unit = Selling Price - ___', answer:'Variable Cost per Unit', hint:'Variable Cost per Unit'},
+    ]},
+    {name:'Break-Even Output', eq:'Fixed Costs / Contribution per Unit', gaps:[
+      {display:'Break-Even Output = ___ / Contribution per Unit', answer:'Fixed Costs', hint:'Fixed Costs'},
+      {display:'Break-Even Output = Fixed Costs / ___', answer:'Contribution per Unit', hint:'Contribution per Unit'},
+    ]},
+    {name:'Gross Profit Margin (%)', eq:'(Gross Profit / Sales Revenue) x 100', gaps:[
+      {display:'Gross Profit Margin (%) = (___ / Sales Revenue) x 100', answer:'Gross Profit', hint:'Gross Profit'},
+      {display:'Gross Profit Margin (%) = (Gross Profit / ___) x 100', answer:'Sales Revenue', hint:'Sales Revenue'},
+    ]},
+    {name:'Labour Productivity', eq:'Output / Number of Employees', gaps:[
+      {display:'Labour Productivity = ___ / Number of Employees', answer:'Output', hint:'Output'},
+      {display:'Labour Productivity = Output / ___', answer:'Number of Employees', hint:'Number of Employees'},
+    ]},
+    {name:'Capacity Utilisation (%)', eq:'(Actual Output / Max Possible Output) x 100', gaps:[
+      {display:'Capacity Utilisation (%) = (___ / Max Possible Output) x 100', answer:'Actual Output', hint:'Actual Output'},
+      {display:'Capacity Utilisation (%) = (Actual Output / ___) x 100', answer:'Max Possible Output', hint:'Max Possible Output'},
+    ]},
+    {name:'Labour Turnover (%)', eq:'(Staff Leaving / Total Staff) x 100', gaps:[
+      {display:'Labour Turnover (%) = (___ / Total Staff) x 100', answer:'Staff Leaving', hint:'Staff Leaving'},
+      {display:'Labour Turnover (%) = (Staff Leaving / ___) x 100', answer:'Total Staff', hint:'Total Staff'},
+    ]},
   ],
   p2: [
-    {name:'ARR (%)',eq:'(Average Annual Profit / Initial Outlay) x 100'},
-    {name:'Average Annual Profit',eq:'(Total Net Cash Flow - Initial Investment) / Number of Years'},
-    {name:'Net Present Value',eq:'Sum of (Cash Flow x Discount Factor) - Initial Investment'},
-    {name:'Expected Value (Decision Tree)',eq:'Financial Outcome x Probability'},
-    {name:'Net Gain (Decision Tree)',eq:'Total Expected Value - Cost of Decision'},
-    {name:'Float (CPA)',eq:'Latest Finish Time - Earliest Start Time - Duration'},
-    {name:'ROCE (%)',eq:'(Operating Profit / Capital Employed) x 100'},
-    {name:'Gearing (%)',eq:'(Long-term Debt / Capital Employed) x 100'},
-    {name:'Current Ratio',eq:'Current Assets / Current Liabilities'},
-    {name:'Acid Test Ratio',eq:'(Current Assets - Stock) / Current Liabilities'},
-    {name:'Operating Profit Margin (%)',eq:'(Operating Profit / Revenue) x 100'},
-    {name:'Percentage Change (%)',eq:'(Difference / Original Value) x 100'},
+    {name:'ARR (%)', eq:'(Average Annual Profit / Initial Outlay) x 100', gaps:[
+      {display:'ARR (%) = (___ / Initial Outlay) x 100', answer:'Average Annual Profit', hint:'Average Annual Profit'},
+      {display:'ARR (%) = (Average Annual Profit / ___) x 100', answer:'Initial Outlay', hint:'Initial Outlay'},
+    ]},
+    {name:'Average Annual Profit', eq:'(Total Net Cash Flow - Initial Investment) / Number of Years', gaps:[
+      {display:'Avg Annual Profit = (___ - Initial Investment) / Number of Years', answer:'Total Net Cash Flow', hint:'Total Net Cash Flow'},
+      {display:'Avg Annual Profit = (Total Net Cash Flow - ___) / Number of Years', answer:'Initial Investment', hint:'Initial Investment'},
+      {display:'Avg Annual Profit = (Total Net Cash Flow - Initial Investment) / ___', answer:'Number of Years', hint:'Number of Years'},
+    ]},
+    {name:'Net Present Value', eq:'Sum of (Cash Flow x Discount Factor) - Initial Investment', gaps:[
+      {display:'NPV = Sum of (Cash Flow x ___) - Initial Investment', answer:'Discount Factor', hint:'Discount Factor'},
+      {display:'NPV = Sum of (Cash Flow x Discount Factor) - ___', answer:'Initial Investment', hint:'Initial Investment'},
+    ]},
+    {name:'Expected Value (Decision Tree)', eq:'Financial Outcome x Probability', gaps:[
+      {display:'Expected Value = ___ x Probability', answer:'Financial Outcome', hint:'Financial Outcome'},
+      {display:'Expected Value = Financial Outcome x ___', answer:'Probability', hint:'Probability'},
+    ]},
+    {name:'Net Gain (Decision Tree)', eq:'Total Expected Value - Cost of Decision', gaps:[
+      {display:'Net Gain = ___ - Cost of Decision', answer:'Total Expected Value', hint:'Total Expected Value'},
+      {display:'Net Gain = Total Expected Value - ___', answer:'Cost of Decision', hint:'Cost of Decision'},
+    ]},
+    {name:'Float (CPA)', eq:'Latest Finish Time - Earliest Start Time - Duration', gaps:[
+      {display:'Float = ___ - Earliest Start Time - Duration', answer:'Latest Finish Time', hint:'Latest Finish Time'},
+      {display:'Float = Latest Finish Time - ___ - Duration', answer:'Earliest Start Time', hint:'Earliest Start Time'},
+      {display:'Float = Latest Finish Time - Earliest Start Time - ___', answer:'Duration', hint:'Duration'},
+    ]},
+    {name:'ROCE (%)', eq:'(Operating Profit / Capital Employed) x 100', gaps:[
+      {display:'ROCE (%) = (___ / Capital Employed) x 100', answer:'Operating Profit', hint:'Operating Profit'},
+      {display:'ROCE (%) = (Operating Profit / ___) x 100', answer:'Capital Employed', hint:'Capital Employed'},
+    ]},
+    {name:'Gearing (%)', eq:'(Long-term Debt / Capital Employed) x 100', gaps:[
+      {display:'Gearing (%) = (___ / Capital Employed) x 100', answer:'Long-term Debt', hint:'Long-term Debt'},
+      {display:'Gearing (%) = (Long-term Debt / ___) x 100', answer:'Capital Employed', hint:'Capital Employed'},
+    ]},
+    {name:'Current Ratio', eq:'Current Assets / Current Liabilities', gaps:[
+      {display:'Current Ratio = ___ / Current Liabilities', answer:'Current Assets', hint:'Current Assets'},
+      {display:'Current Ratio = Current Assets / ___', answer:'Current Liabilities', hint:'Current Liabilities'},
+    ]},
+    {name:'Acid Test Ratio', eq:'(Current Assets - Stock) / Current Liabilities', gaps:[
+      {display:'Acid Test = (Current Assets - ___) / Current Liabilities', answer:'Stock', hint:'Stock'},
+      {display:'Acid Test = (Current Assets - Stock) / ___', answer:'Current Liabilities', hint:'Current Liabilities'},
+    ]},
+    {name:'Operating Profit Margin (%)', eq:'(Operating Profit / Revenue) x 100', gaps:[
+      {display:'Op. Profit Margin (%) = (___ / Revenue) x 100', answer:'Operating Profit', hint:'Operating Profit'},
+      {display:'Op. Profit Margin (%) = (Operating Profit / ___) x 100', answer:'Revenue', hint:'Revenue'},
+    ]},
+    {name:'Percentage Change (%)', eq:'(Difference / Original Value) x 100', gaps:[
+      {display:'% Change = (___ / Original Value) x 100', answer:'Difference', hint:'Difference'},
+      {display:'% Change = (Difference / ___) x 100', answer:'Original Value', hint:'Original Value'},
+    ]},
   ]
 };
 
@@ -2075,7 +2152,7 @@ function renderCharts(){
 }
 
 function updateCharts(){
-  if(!xpChartInst) return;
+  if(!xpChartInst || !breakdownChartInst) return;
   const xpData = getXpHistory();
   xpChartInst.data.labels = xpData.labels;
   xpChartInst.data.datasets[0].data = xpData.values;
@@ -2185,7 +2262,11 @@ function uploadData(e){
   reader.onload = ev=>{
     try {
       const data = JSON.parse(ev.target.result);
-      if(!data.hasOwnProperty('xp')){ alert('Invalid save file.'); return; }
+      if(!data.hasOwnProperty('xp')){ alert('Invalid save file — this does not appear to be a Nexus Business save.'); return; }
+      const confirmed = confirm(
+        `Restore save file?\n\nThis will replace ALL your current progress (Level ${state.level}, ${state.cardsReviewed||0} cards reviewed, ${state.essaysGraded||0} essays graded).\n\nThis cannot be undone. Continue?`
+      );
+      if(!confirmed) return;
       state = {...DEFAULT_STATE, ...data};
       saveState(); updateUI();
       showToast('Save data restored successfully!');
@@ -2205,67 +2286,120 @@ function confirmReset(){
 }
 
 // ============================================================
-// EQUATION PRACTICE SYSTEM
+// EQUATION HELPERS
 // ============================================================
-
-// Build ALL_FORMULAS flat list with paper label
-const ALL_FORMULAS = [
-  ...FORMULAS.p1.map(f=>({...f, paper:'Paper 1', paperId:'p1'})),
-  ...FORMULAS.p2.map(f=>({...f, paper:'Paper 2', paperId:'p2'})),
-];
-
-let eqMode = 'flash'; // 'flash' | 'gap'
-let eqCards = [];
-let eqIdx = 0;
-let eqStats = {correct:0, wrong:0};
-let eqChecking = false;
-
 function switchFcMode(mode){
   document.getElementById('fc-cards-panel').style.display = mode === 'cards' ? 'block' : 'none';
   document.getElementById('fc-eq-panel').style.display   = mode === 'eq'    ? 'block' : 'none';
   document.getElementById('fcmode-cards').classList.toggle('active', mode === 'cards');
   document.getElementById('fcmode-eq').classList.toggle('active', mode === 'eq');
-  eqUpdateCount();
-}
-
-function setEqMode(mode){
-  eqMode = mode;
-  document.getElementById('eqmode-flash').classList.toggle('active', mode === 'flash');
-  document.getElementById('eqmode-gap').classList.toggle('active', mode === 'gap');
-  document.getElementById('eq-mode-desc').textContent = mode === 'flash'
-    ? "You'll see the formula name — flip to reveal the full equation."
-    : "You'll see the formula name — type in the equation and the AI will check it for you.";
+  updateEqCount();
 }
 
 function eqToggleAll(cb){
   document.querySelectorAll('input[data-eq-paper]').forEach(p => p.checked = cb.checked);
-  eqUpdateCount();
+  updateEqCount();
 }
 
 function eqPaperChange(){
   const checks = [...document.querySelectorAll('input[data-eq-paper]')];
   const n = checks.filter(c=>c.checked).length;
   const allCb = document.getElementById('eq-all-check');
-  if(n === 0){ allCb.checked = false; allCb.indeterminate = false; }
-  else if(n === checks.length){ allCb.checked = true; allCb.indeterminate = false; }
-  else { allCb.checked = false; allCb.indeterminate = true; }
-  eqUpdateCount();
+  if(allCb){
+    if(n === 0){ allCb.checked = false; allCb.indeterminate = false; }
+    else if(n === checks.length){ allCb.checked = true; allCb.indeterminate = false; }
+    else { allCb.checked = false; allCb.indeterminate = true; }
+  }
+  updateEqCount();
 }
 
-function eqUpdateCount(){
+// ============================================================
+// EQUATION PRACTICE SYSTEM — SM-2 + PARTIAL GAP VARIANTS
+// ============================================================
+
+// Build ALL_FORMULAS — expand each formula into one entry per gap variant
+const ALL_FORMULAS = [];
+['p1','p2'].forEach(p=>{
+  const paperLabel = p==='p1'?'Paper 1':'Paper 2';
+  (FORMULAS[p]||[]).forEach(f=>{
+    // Always include the full "write the whole formula" variant
+    ALL_FORMULAS.push({...f, paper:paperLabel, paperId:p, gapIdx:-1,
+      gapDisplay: null, gapAnswer: null}); // gapIdx -1 = full formula mode
+    // Add each partial gap variant
+    (f.gaps||[]).forEach((g,gi)=>{
+      ALL_FORMULAS.push({...f, paper:paperLabel, paperId:p, gapIdx:gi,
+        gapDisplay: g.display, gapAnswer: g.answer});
+    });
+  });
+});
+
+function eqSmKey(f){ return `${f.name}||${f.gapIdx}`; }
+
+function getEqSm2(f){
+  if(!state.eqSm2) state.eqSm2 = {};
+  return state.eqSm2[eqSmKey(f)] || {interval:1, repetitions:0, efactor:2.5, dueDate:0, correct:0, wrong:0};
+}
+
+function updateEqSm2(f, verdict){
+  if(!state.eqSm2) state.eqSm2 = {};
+  const key = eqSmKey(f);
+  let d = getEqSm2(f);
+  const q = verdict==='correct' ? 5 : verdict==='partial' ? 3 : 1;
+  if(q >= 3){
+    if(d.repetitions === 0) d.interval = 1;
+    else if(d.repetitions === 1) d.interval = 6;
+    else d.interval = Math.round(d.interval * d.efactor);
+    d.repetitions++;
+    d.efactor = Math.max(1.3, d.efactor + 0.1 - (5-q)*(0.08+(5-q)*0.02));
+  } else {
+    d.repetitions = 0;
+    d.interval = 1;
+  }
+  d.dueDate = Date.now() + d.interval * 86400000;
+  if(verdict==='correct') d.correct++;
+  else d.wrong++;
+  state.eqSm2[key] = d;
+}
+
+let eqCards = [], eqIdx = 0, eqMode = 'gap', eqStats = {correct:0, wrong:0}, eqChecking = false;
+
+function setEqMode(mode){
+  eqMode = mode;
+  document.querySelectorAll('.eq-mode-btn').forEach(b=>b.classList.toggle('active', b.id===`eqmode-${mode}`));
+}
+
+function getEqCards(){
   const selected = new Set([...document.querySelectorAll('input[data-eq-paper]:checked')].map(c=>c.dataset.eqPaper));
-  const count = ALL_FORMULAS.filter(f=>selected.has(f.paperId)).length;
+  if(!selected.size) return [];
+  const pool = ALL_FORMULAS.filter(f=>selected.has(f.paperId));
+  if(eqMode === 'flash'){
+    // Flash mode: one card per formula (gapIdx -1 only)
+    return pool.filter(f=>f.gapIdx===-1).sort(()=>Math.random()-0.5);
+  }
+  // Gap mode: SM-2 — prioritise overdue cards, then new ones, shuffle
+  const now = Date.now();
+  const sorted = pool.filter(f=>f.gapIdx !== -1).map(f=>{
+    const d = getEqSm2(f);
+    return {...f, _due: d.dueDate <= now, _interval: d.interval};
+  });
+  const due = sorted.filter(f=>f._due).sort(()=>Math.random()-0.5);
+  const notDue = sorted.filter(f=>!f._due).sort((a,b)=>a._interval-b._interval);
+  return [...due, ...notDue];
+}
+
+function updateEqCount(){
+  const checks = [...document.querySelectorAll('input[data-eq-paper]')];
+  const allCb = document.getElementById('eq-all-check');
+  const allChecked = checks.every(c=>c.checked);
+  if(allCb) allCb.checked = allChecked;
+  const selected = new Set([...document.querySelectorAll('input[data-eq-paper]:checked')].map(c=>c.dataset.eqPaper));
+  const count = ALL_FORMULAS.filter(f=>selected.has(f.paperId) && f.gapIdx !== -1).length;
   const el = document.getElementById('eq-selected-count');
-  if(el) el.textContent = `${count} formula${count===1?'':'s'} selected`;
-}
-
-function getSelectedFormulas(){
-  const selected = new Set([...document.querySelectorAll('input[data-eq-paper]:checked')].map(c=>c.dataset.eqPaper));
-  return ALL_FORMULAS.filter(f=>selected.has(f.paperId)).sort(()=>Math.random()-0.5);
+  if(el) el.textContent = `${count} gap variant${count!==1?'s':''} selected`;
 }
 
 function startEqSession(){
-  const cards = getSelectedFormulas();
+  const cards = getEqCards();
   if(!cards.length){
     document.getElementById('eq-arena').innerHTML = '<div class="fc-empty" style="color:var(--red)"><div class="emoji">⚠️</div><p>Select at least one paper above first.</p></div>';
     return;
@@ -2287,6 +2421,10 @@ function renderEqCard(){
   const f = eqCards[eqIdx];
   const total = eqCards.length;
   const pct = Math.round((eqIdx / total) * 100);
+  const d = getEqSm2(f);
+  const dueLabel = f.gapIdx !== -1
+    ? `<span style="font-size:0.72rem;color:var(--text3);margin-left:8px">Interval: ${d.interval}d · ✓${d.correct} ✗${d.wrong}</span>`
+    : '';
 
   const progressHtml = `
     <div class="fc-progress" style="max-width:600px;width:100%">
@@ -2318,25 +2456,34 @@ function renderEqCard(){
         <button class="fc-rate-btn easy" onclick="rateEqCard(true)">✓ Got it</button>
       </div>`;
   } else {
-    // Fill the gap
+    // Partial fill-the-gap
+    const isPartial = f.gapIdx !== -1;
+    const displayEq = isPartial ? f.gapDisplay : `${f.name} = ___`;
+    const placeholder = isPartial ? f.gapAnswer : 'Write the full formula…';
+    // Highlight ___ in display
+    const displayHtml = displayEq.replace(/___/g,
+      '<span style="display:inline-block;min-width:80px;border-bottom:2px solid var(--accent);color:var(--accent2);font-weight:700;padding:0 4px">___</span>');
+
     arena.innerHTML = progressHtml + `
       <div class="eq-gap-card" id="eq-gap-card">
-        <div class="eq-gap-paper">${f.paper}</div>
+        <div class="eq-gap-paper">${f.paper} ${dueLabel}</div>
         <div class="eq-gap-name">${f.name}</div>
-        <div class="eq-gap-label">Write the formula:</div>
-        <textarea class="eq-gap-input" id="eq-gap-input" placeholder="e.g. Fixed Costs / Contribution per Unit" rows="2"></textarea>
+        <div style="font-family:'Space Mono',monospace;font-size:0.9rem;color:var(--text2);margin:10px 0 16px;line-height:1.8;word-break:break-word">${displayHtml}</div>
+        <div class="eq-gap-label">${isPartial ? 'Fill in the blank:' : 'Write the full formula:'}</div>
+        <input class="eq-gap-input" id="eq-gap-input" type="text" placeholder="${placeholder}" autocomplete="off"
+          style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:0.95rem;font-family:'Space Mono',monospace;outline:none;"
+          onkeydown="if(event.key==='Enter')checkEqAnswer()">
         <div class="eq-gap-actions">
-          <button class="btn btn-primary" id="eq-check-btn" onclick="checkEqAnswer()">✨ Check with AI</button>
+          <button class="btn btn-primary" id="eq-check-btn" onclick="checkEqAnswer()">✨ Check</button>
           <button class="btn btn-ghost" onclick="revealEqAnswer()">Show Answer</button>
-          <button class="btn btn-ghost" id="eq-next-btn" style="display:none" onclick="advanceEq(true)">Next →</button>
+          <button class="btn btn-ghost" id="eq-next-btn" style="display:none" onclick="advanceEq()">Next →</button>
         </div>
         <div class="eq-ai-result" id="eq-ai-result"></div>
         <div id="eq-reveal-box" style="display:none;margin-top:14px;padding:12px 14px;background:var(--bg3);border-radius:var(--radius-sm)">
-          <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">Correct formula</div>
-          <div style="font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent2)">${f.eq}</div>
+          <div style="font-size:0.75rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em">${isPartial ? 'Missing term' : 'Full formula'}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--accent2)">${isPartial ? f.gapAnswer : f.eq}</div>
         </div>
       </div>`;
-    // focus the textarea
     setTimeout(()=>{ const inp = document.getElementById('eq-gap-input'); if(inp) inp.focus(); }, 100);
   }
 }
@@ -2350,8 +2497,15 @@ function flipEqCard(){
 }
 
 function rateEqCard(correct){
-  if(correct){ eqStats.correct++; addXP(5, `Equation: ${eqCards[eqIdx].name}`); }
-  else { eqStats.wrong++; addXP(2, `Equation: ${eqCards[eqIdx].name}`); }
+  const f = eqCards[eqIdx];
+  if(correct){ eqStats.correct++; addXP(5, `Equation: ${f.name}`); }
+  else { eqStats.wrong++; addXP(2, `Equation: ${f.name}`); }
+  // Track in history
+  if(!state.eqHistory) state.eqHistory = [];
+  state.eqHistory.push({name:f.name, verdict:correct?'correct':'wrong', time:Date.now()});
+  if(state.eqHistory.length > 200) state.eqHistory = state.eqHistory.slice(-200);
+  state.equationsAnswered = (state.equationsAnswered||0) + 1;
+  saveState();
   eqIdx++;
   renderEqCard();
 }
@@ -2362,7 +2516,7 @@ async function checkEqAnswer(){
   const answer = (document.getElementById('eq-gap-input')?.value || '').trim();
   if(!answer){
     const inp = document.getElementById('eq-gap-input');
-    if(inp){ inp.style.borderColor='var(--red)'; inp.placeholder='Write your formula above first…'; setTimeout(()=>{ inp.style.borderColor=''; inp.placeholder='e.g. Fixed Costs / Contribution per Unit'; },2000); }
+    if(inp){ inp.style.borderColor='var(--red)'; setTimeout(()=>inp.style.borderColor='',2000); }
     return;
   }
 
@@ -2372,83 +2526,82 @@ async function checkEqAnswer(){
   btn.disabled = true;
   btn.textContent = '⏳ Checking...';
   resultEl.className = 'eq-ai-result show';
-  resultEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>AI is checking your formula...</div>';
+  resultEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>Checking…</div>';
 
-  const prompt = `You are a precise A-Level Business maths checker.
+  const isPartial = f.gapIdx !== -1;
+  const correct = isPartial ? f.gapAnswer : f.eq;
 
+  // Run local check first — only call AI for ambiguous partial matches
+  const localResult = localEqCheck(answer, correct);
+  let result;
+  if(localResult.verdict === 'correct' || localResult.verdict === 'wrong'){
+    result = localResult;
+    eqChecking = false;
+  } else {
+    // Ambiguous — ask AI to adjudicate
+    const prompt = isPartial
+      ? `You are a precise A-Level Business maths checker.
+Formula: "${f.name}"
+Full formula: "${f.eq}"
+The student is filling in a blank. The question showed: "${f.gapDisplay}"
+The correct answer for the blank is: "${f.gapAnswer}"
+Student wrote: "${answer}"
+Be lenient with capitalisation and minor wording differences if the meaning is clear. Respond in EXACTLY this JSON format with no other text:
+{"verdict":"correct"|"partial"|"wrong","score":0|1|2,"feedback":"One sentence."}`
+      : `You are a precise A-Level Business maths checker.
 Formula name: "${f.name}"
 Correct formula: "${f.eq}"
 Student's answer: "${answer}"
-
-The formulas use simple symbols: + - x / and brackets. Assess whether the student has the right components and operations. Be lenient with exact wording of variable names if the meaning is clear. Respond in EXACTLY this JSON format with no other text:
-{"verdict":"correct"|"partial"|"wrong","score":0|1|2,"feedback":"One sentence explaining what was right or wrong and stating the correct formula."}
-
-verdict: "correct" if all key terms and operations are right, "partial" if the main idea is there but something is missing or wrong, "wrong" if the core formula is incorrect.
-score: 2=correct, 1=partial, 0=wrong.`;
-
-  try {
-    const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:200,
-        messages:[{role:'user', content:prompt}] })
-    });
-
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-
-    const data = await resp.json();
-    const raw = data.content?.map(c=>c.text||'').join('') || '';
-    // Strip markdown fences and extract JSON object from anywhere in the string
-    let clean = raw.replace(/```json|```/gi,'').trim();
-    const jsonMatch = clean.match(/\{[\s\S]*\}/);
-    let result;
-    try { result = jsonMatch ? JSON.parse(jsonMatch[0]) : null; }
-    catch { result = null; }
-    if(!result){ result = localEqCheck(answer, f.eq); }
-
-    const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
-    const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
-    const colors = {correct:'var(--green)', partial:'var(--gold)', wrong:'var(--red)'};
-
-    resultEl.className = `eq-ai-result show ${result.verdict}`;
-    resultEl.innerHTML = `
-      <div class="eq-result-header" style="color:${colors[result.verdict]}">
-        ${icons[result.verdict]} ${labels[result.verdict]}
-      </div>
-      <div style="color:var(--text2)">${result.feedback}</div>
-      ${result.verdict !== 'correct' ? `<div style="margin-top:10px;padding:8px 12px;background:var(--bg4);border-radius:6px;font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--accent2)">${f.eq}</div>` : ''}`;
-
-    // XP
-    const xpMap = {correct:8, partial:4, wrong:1};
-    addXP(xpMap[result.verdict], `Equation fill-gap: ${f.name}`, false);
-    if(result.score < 2) eqStats.wrong++; else eqStats.correct++;
-
-    // Show next button
-    document.getElementById('eq-next-btn').style.display = 'inline-flex';
-    btn.style.display = 'none';
-
-  } catch(e){
-    // AI unavailable — fall back to local string comparison
-    const result = localEqCheck(answer, f.eq);
-    const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
-    const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
-    const colors = {correct:'var(--green)', partial:'var(--gold)', wrong:'var(--red)'};
-    resultEl.className = `eq-ai-result show ${result.verdict}`;
-    resultEl.innerHTML = `
-      <div class="eq-result-header" style="color:${colors[result.verdict]}">
-        ${icons[result.verdict]} ${labels[result.verdict]} <span style="font-size:0.72rem;opacity:0.6;font-weight:400">(checked locally)</span>
-      </div>
-      <div style="color:var(--text2)">${result.feedback}</div>
-      ${result.verdict !== 'correct' ? `<div style="margin-top:10px;padding:8px 12px;background:var(--bg4);border-radius:6px;font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--accent2)">${f.eq}</div>` : ''}`;
-    const xpMap = {correct:8, partial:4, wrong:1};
-    addXP(xpMap[result.verdict], `Equation fill-gap: ${f.name}`, false);
-    if(result.score < 2) eqStats.wrong++; else eqStats.correct++;
-    document.getElementById('eq-next-btn').style.display = 'inline-flex';
-    btn.style.display = 'none';
+The formulas use simple symbols: + - x / and brackets. Be lenient with exact wording if meaning is clear. Respond in EXACTLY this JSON format with no other text:
+{"verdict":"correct"|"partial"|"wrong","score":0|1|2,"feedback":"One sentence explaining what was right or wrong and stating the correct formula."}`;
+    try {
+      const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ model:'claude-sonnet-4-5-20251001', max_tokens:200, messages:[{role:'user', content:prompt}] })
+      });
+      if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      const raw = data.content?.map(c=>c.text||'').join('') || '';
+      const jsonMatch = raw.replace(/```json|```/gi,'').trim().match(/\{[\s\S]*\}/);
+      try { result = jsonMatch ? JSON.parse(jsonMatch[0]) : null; } catch{ result = null; }
+      if(!result) result = localResult;
+    } catch(e){
+      result = localResult;
+      result.localFallback = true;
+    }
   }
+
+  // Update SM-2
+  updateEqSm2(f, result.verdict);
+
+  // Track
+  if(!state.eqHistory) state.eqHistory = [];
+  state.eqHistory.push({name:f.name, gapIdx:f.gapIdx, verdict:result.verdict, time:Date.now()});
+  if(state.eqHistory.length > 200) state.eqHistory = state.eqHistory.slice(-200);
+  state.equationsAnswered = (state.equationsAnswered||0) + 1;
+
+  const icons = {correct:'✅', partial:'⚠️', wrong:'❌'};
+  const labels = {correct:'Correct!', partial:'Partially right', wrong:'Not quite'};
+  const colors = {correct:'var(--green)', partial:'var(--gold)', wrong:'var(--red)'};
+
+  resultEl.className = `eq-ai-result show ${result.verdict}`;
+  resultEl.innerHTML = `
+    <div class="eq-result-header" style="color:${colors[result.verdict]}">
+      ${icons[result.verdict]} ${labels[result.verdict]}${result.localFallback?' <span style="font-size:0.72rem;opacity:0.6">(local check)</span>':''}
+    </div>
+    <div style="color:var(--text2)">${result.feedback}</div>
+    ${result.verdict !== 'correct' ? `<div style="margin-top:10px;padding:8px 12px;background:var(--bg4);border-radius:6px;font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--accent2)">${correct}</div>` : ''}`;
+
+  const xpMap = {correct:8, partial:4, wrong:1};
+  addXP(xpMap[result.verdict], `Equation gap: ${f.name}`);
+  if(result.score < 2) eqStats.wrong++; else eqStats.correct++;
+
+  document.getElementById('eq-next-btn').style.display = 'inline-flex';
+  btn.style.display = 'none';
+  saveState();
   eqChecking = false;
 }
 
-// Local fuzzy check — normalises both strings and compares key tokens
 function localEqCheck(answer, correct){
   const norm = s => s.toLowerCase().replace(/[()%]/g,'').replace(/\s+/g,' ').trim();
   const tokens = s => norm(s).split(/[\s\/\+\-x\*]+/).filter(Boolean);
@@ -2456,25 +2609,30 @@ function localEqCheck(answer, correct){
   const corTokens = tokens(correct);
   const matched = corTokens.filter(t => ansTokens.includes(t)).length;
   const ratio = matched / corTokens.length;
-  if(ratio >= 0.9) return {verdict:'correct', score:2, feedback:`Correct! The formula is: ${correct}`};
-  if(ratio >= 0.5) return {verdict:'partial', score:1, feedback:`Partially right — you got some terms but the formula is: ${correct}`};
-  return {verdict:'wrong', score:0, feedback:`Not quite. The correct formula is: ${correct}`};
+  if(ratio >= 0.85) return {verdict:'correct', score:2, feedback:`Correct! The answer is: ${correct}`};
+  if(ratio >= 0.5)  return {verdict:'partial',  score:1, feedback:`Partially right — the answer is: ${correct}`};
+  return {verdict:'wrong', score:0, feedback:`Not quite. The correct answer is: ${correct}`};
 }
 
 function revealEqAnswer(){
+  const f = eqCards[eqIdx];
   const box = document.getElementById('eq-reveal-box');
   if(box) box.style.display = 'block';
   const nextBtn = document.getElementById('eq-next-btn');
   if(nextBtn) nextBtn.style.display = 'inline-flex';
-  // Count as wrong if they gave up without checking
   const resultEl = document.getElementById('eq-ai-result');
   if(resultEl && !resultEl.classList.contains('show')){
     eqStats.wrong++;
-    addXP(1, `Equation revealed: ${eqCards[eqIdx].name}`);
+    updateEqSm2(f, 'wrong');
+    if(!state.eqHistory) state.eqHistory = [];
+    state.eqHistory.push({name:f.name, gapIdx:f.gapIdx, verdict:'revealed', time:Date.now()});
+    state.equationsAnswered = (state.equationsAnswered||0) + 1;
+    addXP(1, `Equation revealed: ${f.name}`);
+    saveState();
   }
 }
 
-function advanceEq(countedAlready){
+function advanceEq(){
   eqIdx++;
   eqChecking = false;
   renderEqCard();
@@ -2484,13 +2642,14 @@ function showEqComplete(){
   const arena = document.getElementById('eq-arena');
   const total = eqCards.length;
   const pct = total > 0 ? Math.round((eqStats.correct/total)*100) : 0;
-  addActivity('∑', `Equations session — ${eqStats.correct}/${total} correct`, eqStats.correct * 5);
+  addActivity('∑', `Equations — ${eqStats.correct}/${total} correct`, eqStats.correct * 5);
   saveState();
   arena.innerHTML = `
     <div class="session-complete">
       <div class="big-emoji">${pct>=80?'🏆':pct>=60?'⭐':'📚'}</div>
       <h3>Session Complete!</h3>
       <p>${eqStats.correct} correct · ${eqStats.wrong} incorrect · ${pct}% accuracy</p>
+      <p style="font-size:0.8rem;color:var(--text3);margin-top:6px">SM-2 intervals updated — harder cards will appear sooner next session.</p>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:16px">
         <button class="btn btn-primary" onclick="startEqSession()">Go Again →</button>
         <button class="btn btn-ghost" onclick="resetEqSession()">Done</button>
@@ -2509,7 +2668,7 @@ function init(){
   buildFlashcardFilters();
   buildFormulaGrids();
   buildPrerelease();
-  eqUpdateCount();
+  updateEqCount();
   updateUI();
   startActiveTracking();
   // Open first topic on each paper
@@ -2555,21 +2714,44 @@ const AIP_QTYPES = {
 
 const AIP_QUESTIONS = {
   1: {
+    'Multiple Choice': [
+      'Which of the following best describes price elasticity of demand? [1 mark]',
+      'A business uses batch production. Which statement is correct? [1 mark]',
+      'Which type of market research involves collecting new data for the first time? [1 mark]',
+      'What does USP stand for in a marketing context? [1 mark]',
+      'Which motivational theorist introduced the concept of hygiene factors? [1 mark]',
+    ],
+    'Short Answer (2–3 marks)': [
+      'Explain what is meant by "market segmentation". [2 marks]',
+      'Explain one advantage of using social media for marketing. [2 marks]',
+      'State and explain one benefit of a tall organisational structure. [3 marks]',
+      'Explain what is meant by "diseconomies of scale". [3 marks]',
+      'Explain one reason why a business might use job production rather than flow production. [3 marks]',
+    ],
+    'Calculation (4 marks)': [
+      'A business has total revenue of £480,000 and total costs of £310,000. Calculate the profit margin as a percentage of revenue. Show your working. [4 marks]',
+      'A business sells 2,400 units at £15 each. Variable costs are £8 per unit and fixed costs are £9,000. Calculate the contribution per unit and total profit. Show your working. [4 marks]',
+      'A business has a break-even output of 500 units. Fixed costs are £25,000. Calculate the selling price per unit if the variable cost is £12. Show your working. [4 marks]',
+      'A business has sales of £200,000. The cost of sales is £120,000 and overheads are £35,000. Calculate the gross profit margin and net profit margin. Show your working. [4 marks]',
+    ],
     'Explain (6 marks)': [
       'Explain two benefits of market segmentation for a new business. [6 marks]',
       'Explain why a business might use price skimming when launching a new product. [6 marks]',
       'Explain two advantages of using primary market research. [6 marks]',
       'Explain the impact of a rise in interest rates on a business with high borrowing. [6 marks]',
+      'Explain two ways that digital technology has changed how businesses market their products. [6 marks]',
     ],
     'Analyse (8 marks)': [
       'Analyse why a business might decide to move from batch to flow production. [8 marks]',
       'Analyse the impact of a weak pound on a UK business that imports raw materials. [8 marks]',
       'Analyse how flexible working could affect employee motivation and productivity. [8 marks]',
+      'Analyse how Herzberg\'s two-factor theory could be used to improve performance in a retail business. [8 marks]',
     ],
     'Evaluate (10 marks)': [
       'Evaluate whether penetration pricing is always the best strategy for entering a competitive market. [10 marks]',
       'Evaluate the most important factor a business should consider when setting its pricing strategy. [10 marks]',
       'Evaluate whether a business should prioritise customer satisfaction over profit. [10 marks]',
+      'Evaluate whether delegation is always beneficial for a growing business. [10 marks]',
     ],
     'Extended Essay (20 marks)': [
       'Evaluate the importance of price elasticity of demand in setting pricing strategy for a new product launch. [20 marks]',
@@ -2579,20 +2761,43 @@ const AIP_QUESTIONS = {
     ],
   },
   2: {
+    'Multiple Choice': [
+      'Which ratio measures a business\'s ability to meet short-term debts? [1 mark]',
+      'What does ARR stand for in investment appraisal? [1 mark]',
+      'Which of the following is a method of inorganic growth? [1 mark]',
+      'What is meant by "capacity utilisation"? [1 mark]',
+      'Which type of economy is characterised by high GDP growth and low labour costs? [1 mark]',
+    ],
+    'Short Answer (2–3 marks)': [
+      'Explain what is meant by "contribution per unit". [2 marks]',
+      'State and explain one disadvantage of using retained profit to fund expansion. [3 marks]',
+      'Explain the difference between a merger and an acquisition. [3 marks]',
+      'Explain what is meant by "economies of scale". [2 marks]',
+      'Explain one reason why a business might use just-in-time (JIT) stock management. [3 marks]',
+    ],
+    'Calculation (4–6 marks)': [
+      'A business is considering a £50,000 investment. Net cash inflows are £15,000 in Year 1, £20,000 in Year 2, and £25,000 in Year 3. Calculate the payback period. Show your working. [4 marks]',
+      'A business has current assets of £180,000 and current liabilities of £90,000. Inventories are £60,000. Calculate the current ratio and the acid test ratio. Show your working. [4 marks]',
+      'A business has capital employed of £500,000 and operating profit of £75,000. Calculate the ROCE. If the industry average ROCE is 12%, comment on the result. [6 marks]',
+      'A firm has fixed costs of £120,000, variable costs of £8 per unit, and sells at £20 per unit. Calculate the break-even output and the margin of safety if current output is 14,000 units. [6 marks]',
+    ],
     'Explain (6 marks)': [
       'Explain two reasons why a business might choose to use debt finance rather than equity finance. [6 marks]',
       'Explain how Lewin\'s Force Field Analysis can help a manager plan organisational change. [6 marks]',
       'Explain why a business might outsource part of its operations. [6 marks]',
+      'Explain two ways a business could improve its cash flow position in the short term. [6 marks]',
     ],
     'Analyse (8 marks)': [
       'Analyse how a rise in corporation tax might affect the strategic decisions of a large PLC. [8 marks]',
       'Analyse the impact of poor capacity utilisation on a manufacturing business. [8 marks]',
       'Analyse why a business might choose organic growth over inorganic growth. [8 marks]',
+      'Analyse how Kotter\'s 8-step change model could help a business successfully implement a major restructure. [8 marks]',
     ],
     'Evaluate (10 marks)': [
       'Evaluate whether investment appraisal methods are the most important factor in making capital investment decisions. [10 marks]',
       'Evaluate the usefulness of critical path analysis as a project management tool. [10 marks]',
       'Evaluate whether CSR creates more benefits than costs for a large business. [10 marks]',
+      'Evaluate whether a business should prioritise growth over profitability in its first five years. [10 marks]',
     ],
     'Extended Essay (20 marks)': [
       'Evaluate whether organic growth is always preferable to inorganic growth for a large PLC. [20 marks]',
@@ -2605,19 +2810,26 @@ const AIP_QUESTIONS = {
     'Short Context (4–6 marks)': [
       'Using the case study, explain one reason why the business may face increased competition in a global market. [4 marks]',
       'Using the data, explain one benefit the business might gain from operating in an emerging economy. [4 marks]',
+      'Using the case study, explain one risk the business faces from changes in exchange rates. [4 marks]',
+      'From the pre-release material, explain one way the business could respond to changing consumer tastes globally. [6 marks]',
     ],
     'Analysis (8–12 marks)': [
       'Analyse how exchange rate fluctuations might affect the business described in the pre-release material. [12 marks]',
       'Analyse how globalisation has created both opportunities and threats for the business in the case study. [12 marks]',
+      'Analyse the factors that might influence the business\'s decision to enter a new overseas market. [12 marks]',
+      'Analyse how differences in labour costs and productivity between countries affect the business in the case study. [8 marks]',
     ],
     'Evaluation (10–12 marks)': [
       'Using the case study, evaluate whether the business should pursue further international expansion. [12 marks]',
       'Evaluate the extent to which cultural differences represent the greatest challenge for the business in the pre-release. [12 marks]',
+      'Evaluate whether the business in the case study should standardise or adapt its marketing mix for different global markets. [12 marks]',
+      'Using the data, evaluate the most significant external factor currently affecting the business. [10 marks]',
     ],
     'Synoptic Essay (20 marks)': [
       'Evaluate the impact of globalisation on businesses operating in the UK. [20 marks]',
       'To what extent should multinational corporations prioritise ethical behaviour over profit maximisation in emerging economies? [20 marks]',
       'Evaluate the strategies a multinational corporation should adopt to respond to cultural differences in global markets. [20 marks]',
+      'To what extent is free trade always beneficial for businesses operating internationally? [20 marks]',
     ],
   },
 };
@@ -2628,6 +2840,7 @@ function aipSelectPaper(num){
   aipState.paper = num;
   aipState.qtype = null;
   aipState.question = null;
+  aipState.marks = null;
   // Update pill styles
   document.querySelectorAll('.aip-paper-pill').forEach((el,i)=>{
     el.classList.toggle('selected', i === num-1);
@@ -2635,7 +2848,7 @@ function aipSelectPaper(num){
   // Render question type pills
   const types = AIP_QTYPES[num];
   const pillsEl = document.getElementById('aip-qtype-pills');
-  pillsEl.innerHTML = types.map(t=>`<div class="aip-qtype-pill" onclick="aipSelectQType('${t.label}')">${t.label} <span style="opacity:0.6;font-size:0.74rem">[${t.marks === 1 ? '1' : t.marks} marks]</span></div>`).join('');
+  pillsEl.innerHTML = types.map(t=>`<div class="aip-qtype-pill" onclick="aipSelectQType('${t.label}')">${t.label}</div>`).join('');
   document.getElementById('aip-qtype-group').style.display = 'block';
   document.getElementById('aip-q-selector').style.display = 'none';
   document.getElementById('aip-continue-btn').classList.remove('show');
@@ -2644,9 +2857,10 @@ function aipSelectPaper(num){
 function aipSelectQType(label){
   aipState.qtype = label;
   aipState.question = null;
+  aipState.marks = null;
   // Highlight selected pill
   document.querySelectorAll('.aip-qtype-pill').forEach(el=>{
-    el.classList.toggle('selected', el.textContent.trim().startsWith(label));
+    el.classList.toggle('selected', el.textContent.trim() === label);
   });
   // Render question grid (if questions exist for this type)
   const qs = (AIP_QUESTIONS[aipState.paper] || {})[label] || [];
@@ -2760,7 +2974,7 @@ Question type: ${aipState.qtype} (${qtypeData.marks} marks)`;
   try {
     const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:400, messages:[{role:'user',content:prompt}] })
+      body: JSON.stringify({ model:'claude-sonnet-4-5-20251001', max_tokens:400, messages:[{role:'user',content:prompt}] })
     });
     if(!resp.ok){
       const err = await resp.json().catch(()=>({}));
@@ -2809,13 +3023,17 @@ Be honest but encouraging. Reference specific parts of their answer. Use Edexcel
   try {
     const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{role:'user',content:prompt}] })
+      body: JSON.stringify({ model:'claude-sonnet-4-5-20251001', max_tokens:1500, messages:[{role:'user',content:prompt}] })
     });
     if(!resp.ok){ const err = await resp.json().catch(()=>({})); fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ API Error: ${err.error?.message||'HTTP '+resp.status}</div>`; return; }
     const data = await resp.json();
     const text = data.content?.map(c=>c.text||'').join('\n') || 'Unable to get feedback.';
     fbEl.innerHTML = formatFeedback(text, marks);
     state.essaysGraded = (state.essaysGraded||0) + 1;
+    // Track in aipHistory
+    if(!state.aipHistory) state.aipHistory = [];
+    state.aipHistory.push({paper:aipState.paper, qtype:aipState.qtype, marks, time:Date.now()});
+    if(state.aipHistory.length > 100) state.aipHistory = state.aipHistory.slice(-100);
     const xp = Math.round(30 + ans.split(/\s+/).length / 10);
     addXP(xp, 'AI Practice essay graded');
     addActivity('🤖', `AI Practice: ${aipState.question.substring(0,40)}...`, xp);
