@@ -403,6 +403,15 @@ tr:hover td{background:var(--bg3);}
 .aip-ai-hint-btn:hover{border-color:var(--accent);color:var(--accent2);}
 .aip-hint-box{background:var(--bg3);border:1px solid rgba(108,99,255,0.25);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:0.85rem;color:var(--text2);line-height:1.6;display:none;}
 .aip-hint-box.show{display:block;}
+.aip-quotes-section{background:var(--bg3);border:1px solid rgba(245,200,66,0.25);border-radius:var(--radius-sm);padding:16px;margin-bottom:14px;}
+.aip-quotes-header{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:var(--gold);margin-bottom:12px;}
+.aip-quotes-badge{background:rgba(245,200,66,0.12);border:1px solid rgba(245,200,66,0.25);color:var(--gold2);font-size:0.7rem;font-weight:500;padding:2px 8px;border-radius:10px;margin-left:auto;}
+.aip-quotes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.aip-quote-card{background:var(--bg4);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--radius-sm);padding:12px 14px;}
+.aip-quote-card .quote-text{font-size:0.82rem;color:var(--text);line-height:1.5;font-style:italic;margin-bottom:6px;}
+.aip-quote-card .quote-text::before{content:'"';color:var(--gold);font-size:1rem;font-style:normal;margin-right:2px;}
+.aip-quote-card .quote-text::after{content:'"';color:var(--gold);font-size:1rem;font-style:normal;margin-left:2px;}
+.aip-quote-card .quote-source{font-size:0.72rem;color:var(--text3);font-weight:500;}
 
 /* FLASHCARD / EQUATION MODE SWITCH */
 .fc-mode-switch{display:flex;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:5px;width:fit-content;margin-bottom:4px;}
@@ -445,6 +454,7 @@ tr:hover td{background:var(--bg3);}
   .aip-page{padding:20px 16px;}
   .aip-paper-pills{flex-direction:column;}
   .aip-tips-row{grid-template-columns:1fr;}
+  .aip-quotes-grid{grid-template-columns:1fr;}
   .aip-timer-btns{justify-content:flex-start;}
   .formula-grid{grid-template-columns:1fr;}
 }
@@ -1014,6 +1024,16 @@ tr:hover td{background:var(--bg3);}
       <div class="aip-hint-box" id="aip-hint-box">
         <div class="loading-spinner" id="aip-hint-loading" style="display:none"><div class="spinner"></div> Generating hint...</div>
         <div id="aip-hint-text"></div>
+      </div>
+      <!-- QUOTES SECTION -->
+      <div class="aip-quotes-section" id="aip-quotes-section" style="display:none">
+        <div class="aip-quotes-header">
+          <span class="aip-quotes-icon">💬</span>
+          <span>Relevant Exam Quotes</span>
+          <span class="aip-quotes-badge">Use these in your answer</span>
+        </div>
+        <div class="loading-spinner" id="aip-quotes-loading" style="display:none"><div class="spinner"></div> Generating quotes...</div>
+        <div class="aip-quotes-grid" id="aip-quotes-grid"></div>
       </div>
       </div>
 
@@ -3175,6 +3195,8 @@ function aipContinue(){
     document.getElementById('aip-feedback').classList.remove('show');
     document.getElementById('aip-hint-box').classList.remove('show');
     document.getElementById('aip-hint-text').textContent = '';
+    document.getElementById('aip-quotes-section').style.display = 'none';
+    document.getElementById('aip-quotes-grid').innerHTML = '';
   }
 
   document.getElementById('aip-setup-screen').classList.add('hide');
@@ -3275,6 +3297,49 @@ Question type: ${aipState.qtype} (${qtypeData.marks} marks)`;
     hintLoading.style.display = 'none';
     hintText.innerHTML = `⚠️ Could not load hint: ${e.message}`;
   }
+  // Also fetch quotes
+  aipGetQuotes();
+}
+
+async function aipGetQuotes(){
+  const section = document.getElementById('aip-quotes-section');
+  const grid = document.getElementById('aip-quotes-grid');
+  const loading = document.getElementById('aip-quotes-loading');
+  section.style.display = 'block';
+  loading.style.display = 'flex';
+  grid.innerHTML = '';
+  const qtypeData = AIP_QTYPES[aipState.paper].find(t=>t.label===aipState.qtype) || AIP_QTYPES[aipState.paper][0];
+  const prompt = `You are an Edexcel A Level Business exam writer. For the question below, generate exactly 4 short, realistic exam-style quotes that a student could reference in their answer. These should look like quotes you would find in a real A Level Business exam pre-release or stimulus material — from business leaders, economists, news sources, or company reports. Make them feel authentic and directly relevant to the question topic.
+
+Question: ${aipState.question}
+Paper: ${aipState.paper}
+Question type: ${aipState.qtype} (${qtypeData.marks} marks)
+
+Return ONLY a JSON array of 4 objects, each with:
+- "quote": the quote text (1-2 sentences, realistic and specific)
+- "source": the attribution (e.g. "Mark Zuckerberg, Meta CEO, 2023" or "Harvard Business Review, 2022" or "Nike Annual Report, 2023")
+
+No preamble, no markdown fences, just the raw JSON array.`;
+  try {
+    const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:600, messages:[{role:'user',content:prompt}] })
+    });
+    if(!resp.ok){ throw new Error(`HTTP ${resp.status}`); }
+    const data = await resp.json();
+    const raw = data.content?.map(c=>c.text||'').join('\n') || '';
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const quotes = JSON.parse(clean);
+    loading.style.display = 'none';
+    grid.innerHTML = quotes.map(q=>`
+      <div class="aip-quote-card">
+        <div class="quote-text">${q.quote}</div>
+        <div class="quote-source">— ${q.source}</div>
+      </div>`).join('');
+  } catch(e){
+    loading.style.display = 'none';
+    grid.innerHTML = `<div style="color:var(--text3);font-size:0.82rem">⚠️ Could not load quotes.</div>`;
+  }
 }
 
 async function aipSubmit(){
@@ -3309,7 +3374,7 @@ Be honest but encouraging. Reference specific parts of their answer. Use Edexcel
   try {
     const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:1500, messages:[{role:'user',content:prompt}] })
+      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{role:'user',content:prompt}] })
     });
     if(!resp.ok){ const err = await resp.json().catch(()=>({})); fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ API Error: ${err.error?.message||'HTTP '+resp.status}</div>`; return; }
     const data = await resp.json();
