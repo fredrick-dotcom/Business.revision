@@ -3260,7 +3260,7 @@ Question type: ${aipState.qtype} (${qtypeData.marks} marks)`;
   try {
     const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:400, messages:[{role:'user',content:prompt}] })
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:400, messages:[{role:'user',content:prompt}] })
     });
     if(!resp.ok){
       const err = await resp.json().catch(()=>({}));
@@ -3309,7 +3309,7 @@ Be honest but encouraging. Reference specific parts of their answer. Use Edexcel
   try {
     const resp = await fetch('https://nexus-business-proxy.benmattrainor.workers.dev/', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{role:'user',content:prompt}] })
+      body: JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:1500, messages:[{role:'user',content:prompt}] })
     });
     if(!resp.ok){ const err = await resp.json().catch(()=>({})); fbEl.innerHTML = `<div style="color:var(--red);font-size:0.85rem">⚠️ API Error: ${err.error?.message||'HTTP '+resp.status}</div>`; return; }
     const data = await resp.json();
